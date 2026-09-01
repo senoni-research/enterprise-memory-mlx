@@ -113,11 +113,41 @@ def test_research_selector_uses_safety_first_tie_break() -> None:
     assert selected.candidate["ordinal"] == 1
 
 
-def test_real_report_builds_non_promotable_hash_bound_decision(
+def test_report_builds_non_promotable_hash_bound_decision_without_local_artifacts(
     tmp_path: Path,
     project_root: Path,
 ) -> None:
-    report = project_root / "artifacts" / "retrieval-calibration" / "v1" / "report.json"
+    report = tmp_path / "report.json"
+    report.write_text(
+        json.dumps(
+            {
+                "selection": {
+                    "candidates": [
+                        _candidate(
+                            0,
+                            correct=7,
+                            correct_oos=7,
+                            wrong=1,
+                            empty=2,
+                            top_k=1,
+                            threshold=9.25,
+                        ),
+                        _candidate(
+                            1,
+                            correct=6,
+                            correct_oos=6,
+                            wrong=0,
+                            empty=4,
+                            top_k=1,
+                            threshold=10.0,
+                        ),
+                    ]
+                }
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     production = (
         project_root
         / "knowledge"
@@ -149,7 +179,7 @@ def test_real_report_builds_non_promotable_hash_bound_decision(
         report.read_bytes()
     ).hexdigest()
     assert payload["selected_config"] is not None
-    assert payload["selection_objective"]["balanced_utility"] > 0.5
+    assert payload["selection_objective"]["balanced_utility"] == 0.7
 
     records = load_records(project_root / "knowledge")
     suites = load_eval_suites(project_root / "knowledge" / "eval_frozen")

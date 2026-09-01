@@ -159,6 +159,10 @@ def test_execute_hashes_adapter_without_legacy_registry(
         "enterprise_memory_mlx.acquisition_training.platform.system",
         lambda: "Darwin",
     )
+    monkeypatch.setattr(
+        "enterprise_memory_mlx.acquisition_training.importlib.util.find_spec",
+        lambda name: object() if name == "mlx_lm" else None,
+    )
 
     run = run_acquisition(
         root=tmp_path,

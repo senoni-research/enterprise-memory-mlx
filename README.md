@@ -139,6 +139,12 @@ mean score, gains at least four fully-correct cases, and has more paired wins
 than losses. Regardless of that result, promotion, judge certification, and
 headline accuracy remain blocked.
 
+A completed blinded **model-review advisory** (not human labels) for this
+benchmark is summarized with full hash bindings in
+[`docs/results/2026-09-01-smoke-advisory.md`](docs/results/2026-09-01-smoke-advisory.md).
+Its advisory outcome was `stop_parametric_research`; the operative status
+remains `human_review_pending`.
+
 ## Current scientific foundation
 
 Implemented:

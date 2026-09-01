@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "status": "no_feasible_operating_point",
+  "approval_status": "owner_approved",
+  "approved_by": "Philippe Dagher",
+  "approved_at": "2026-08-31T17:46:00+00:00",
+  "exploratory": true,
+  "selected_config": null,
+  "owner_decision": "accept_no_feasible_operating_point",
+  "validation_dataset_hash": "8532de5110dce79be3349e05fa9668757757dcb4cdeb17dee9bd999c24dd3c19",
+  "source_snapshot_hash": "56ace4cdba527ff63f2b9bfbb9ec1cb09aaf97f287daaa6ad2d74c48cb071dae",
+  "index_payload_hash": "2e501893f6bd18522693db45bba07dcd46ec1e07f11f5cb97e03ecce02466e9c",
+  "calibration_report_hash": "0fb12a977445687d99f238e9f80da3e50ede387e821cce8af07c1c39190928bd",
+  "selector_version": "select_retrieval_operating_point/v1-deterministic-grid",
+  "constraints": {
+    "minimum_correct_record_rate": 0.95,
+    "maximum_wrong_record_rate": 0.01,
+    "maximum_answerable_empty_retrieval_rate": 0.05,
+    "maximum_oos_false_load_rate": 0.01
+  }
+}

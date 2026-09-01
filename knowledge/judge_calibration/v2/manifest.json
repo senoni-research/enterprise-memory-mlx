@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "dataset_version": "v2",
+  "created_at": "2026-08-31T20:16:05.687581+00:00",
+  "status": "candidate_requires_human_labels",
+  "author": {
+    "kind": "model",
+    "identity": "Cursor Grok 4.6 High Fast",
+    "model_version": "cursor-grok-4.6-high-fast",
+    "prompt_hash": "d4171016b678c73947f77a7f4be77290290a243f8c42bb2fd4278e19e0fcd960",
+    "prompt_path": "dev/judge-calibration-v2-author.md"
+  },
+  "source_snapshot_hash": "56ace4cdba527ff63f2b9bfbb9ec1cb09aaf97f287daaa6ad2d74c48cb071dae",
+  "source_snapshot": {
+    "algorithm": "sha256 of canonical JSON over SOURCE_FIELDS for eligible records",
+    "eligible_record_ids": [
+      "ENG-INC-002",
+      "ENG-REL-001",
+      "FIN-CARD-003",
+      "FIN-EXP-001",
+      "FIN-INV-002",
+      "HR-LEAVE-001",
+      "HR-REMOTE-002",
+      "IT-ACCESS-001",
+      "LEG-CONF-001",
+      "PROC-VEND-001",
+      "SUP-SLA-001"
+    ],
+    "includes_holdout_records": true,
+    "questions_stripped": true
+  },
+  "files": {
+    "cases.jsonl": "8062c95fdd3bb5966d53051279c45189aa4b3cde24bd148c83b9141d700d8795"
+  },
+  "counts": {
+    "cases": 180,
+    "families": 60,
+    "proposed_semantic_score": {
+      "1.0": 60,
+      "0.5": 60,
+      "0.0": 60
+    },
+    "domain": {
+      "finance": 36,
+      "hr": 24,
+      "engineering": 24,
+      "support": 12,
+      "procurement": 12,
+      "it": 12,
+      "legal": 12,
+      "none": 48
+    },
+    "record": {
+      "FIN-EXP-001": 12,
+      "FIN-INV-002": 12,
+      "FIN-CARD-003": 12,
+      "HR-LEAVE-001": 12,
+      "HR-REMOTE-002": 12,
+      "ENG-REL-001": 12,
+      "ENG-INC-002": 12,
+      "SUP-SLA-001": 12,
+      "PROC-VEND-001": 12,
+      "IT-ACCESS-001": 12,
+      "LEG-CONF-001": 12,
+      "NONE": 48
+    },
+    "error_category": {
+      "none": 60,
+      "wrong_currency_amount": 6,
+      "reversed_comparator": 8,
+      "negation_reversal": 10,
+      "incomplete_multipart": 53,
+      "wrong_unit": 6,
+      "date_time_error": 10,
+      "wrong_record_cited": 7,
+      "unsupported_exception": 11,
+      "refusal_of_answerable": 6,
+      "wrong_number": 8,
+      "false_retrieval_claim": 7,
+      "invented_citation": 6,
+      "answered_instead_of_refusal": 16
+    },
+    "task_type": {
+      "recall": 36,
+      "application": 33,
+      "paraphrase": 27,
+      "composition": 15,
+      "counterfactual": 21,
+      "oos": 24,
+      "live_source": 24
+    },
+    "critical_slot_expected_outcome": {
+      "pass": 80,
+      "hard_fail": 24,
+      "review_required": 20,
+      "no_slots": 56
+    },
+    "provenance_expected_outcome": {
+      "pass": 19,
+      "not_applicable": 142,
+      "hard_fail": 19
+    },
+    "certification_stratum": {
+      "judge_eligible": 141,
+      "deterministic_audit": 39
+    },
+    "judge_eligible_by_proposed_score": {
+      "1.0": 60,
+      "0.5": 60,
+      "0.0": 21
+    },
+    "deterministic_audit_by_proposed_score": {
+      "0.0": 39
+    }
+  },
+  "class_separability_diagnostics": {
+    "length_words_by_proposed_score": {
+      "1.0": {
+        "n": 60,
+        "min": 9,
+        "median": 16.0,
+        "max": 35,
+        "mean": 16.97
+      },
+      "0.5": {
+        "n": 60,
+        "min": 5,
+        "median": 13.5,
+        "max": 23,
+        "mean": 14.47
+      },
+      "0.0": {
+        "n": 60,
+        "min": 7,
+        "median": 12.0,
+        "max": 24,
+        "mean": 12.97
+      }
+    },
+    "citation_cue_counts_by_score": {
+      "1.0": 11,
+      "0.5": 8,
+      "0.0": 13
+    },
+    "refusal_cue_counts_by_score": {
+      "1.0": 14,
+      "0.5": 15,
+      "0.0": 6
+    },
+    "note": "These are cue-overlap checks, not a claim that classes are inseparable in every feature. Human reviewers must still inspect residuals."
+  },
+  "headline_judge_certification": {
+    "include_stratum": "judge_eligible",
+    "exclude_stratum": "deterministic_audit",
+    "note": "Any strict or provenance hard-fail is deterministic_audit and must be excluded from headline judge-certification metrics."
+  },
+  "highest_sensitivity": "internal_shared",
+  "human_labels": {
+    "populated": false,
+    "approved": false,
+    "note": "Model-proposed labels are not human-approved and cannot certify a judge."
+  },
+  "prohibitions": [
+    "Do not use this dataset to train the acquired / adapted model.",
+    "Do not treat proposed_semantic_score as a gold or human label.",
+    "Do not certify a production judge from this candidate file.",
+    "Do not run calibration until every row has a human-approved gold label.",
+    "Do not include deterministic_audit rows in headline judge-certification metrics.",
+    "Do not overwrite knowledge/judge_calibration/v1/."
+  ],
+  "subtle_failure_cases": 120,
+  "v1_preserved": {
+    "cases.jsonl": "fe990bc17e1d482d864470d3726bf3c1bb3aeae3ee84887ec9890d632a27c4bc",
+    "manifest.json": "50cbcd29c663728d1ef911a8a2d301496427b1ac8e0df0134d3e4af4de7aa450"
+  }
+}

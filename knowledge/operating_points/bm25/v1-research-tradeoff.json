@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "status": "experimental_non_promotable",
+  "approval_status": "owner_approved",
+  "approved_by": "Philippe Dagher",
+  "approved_at": "2026-09-01T09:56:42.979982+00:00",
+  "exploratory": true,
+  "deployment_eligible": false,
+  "selected_config": {
+    "b": 0.75,
+    "k1": 1.2,
+    "score_threshold": 9.247403160697797,
+    "top_k": 1
+  },
+  "validation_dataset_hash": "8532de5110dce79be3349e05fa9668757757dcb4cdeb17dee9bd999c24dd3c19",
+  "source_snapshot_hash": "56ace4cdba527ff63f2b9bfbb9ec1cb09aaf97f287daaa6ad2d74c48cb071dae",
+  "index_payload_hash": "2e501893f6bd18522693db45bba07dcd46ec1e07f11f5cb97e03ecce02466e9c",
+  "calibration_report_hash": "0fb12a977445687d99f238e9f80da3e50ede387e821cce8af07c1c39190928bd",
+  "selector_version": "balanced-retrieval-utility/v1",
+  "selection_objective": {
+    "primary": "maximize 0.5 * (correct_record_rate + correct_oos_rejection_rate)",
+    "tie_breaks": [
+      "lower_oos_false_load_rate",
+      "lower_wrong_record_rate",
+      "lower_answerable_empty_retrieval_rate",
+      "fewer_distractor_records",
+      "lower_mean_retrieved_record_count",
+      "smaller_top_k",
+      "higher_score_threshold",
+      "lower_candidate_ordinal"
+    ],
+    "balanced_utility": 0.5272727272727272
+  },
+  "validation_metrics": {
+    "answerable_empty_retrieval": {
+      "confidence_high_95": 0.38301871281765865,
+      "confidence_low_95": 0.15812114773072913,
+      "count": 14,
+      "rate": 0.2545454545454545,
+      "total": 55
+    },
+    "answerable_query_count": 55,
+    "correct_oos_rejection": {
+      "confidence_high_95": 0.4402859015753592,
+      "confidence_low_95": 0.20282287885116462,
+      "count": 17,
+      "rate": 0.3090909090909091,
+      "total": 55
+    },
+    "correct_record": {
+      "confidence_high_95": 0.8418788522692708,
+      "confidence_low_95": 0.6169812871823414,
+      "count": 41,
+      "rate": 0.7454545454545455,
+      "total": 55
+    },
+    "distractor_record_count": 0,
+    "mean_retrieved_record_count": 0.7181818181818181,
+    "oos_false_load": {
+      "confidence_high_95": 0.7971771211488353,
+      "confidence_low_95": 0.5597140984246408,
+      "count": 38,
+      "rate": 0.6909090909090909,
+      "total": 55
+    },
+    "oos_query_count": 55,
+    "retrieved_record_count": 79,
+    "validation_query_count": 110,
+    "wrong_record": {
+      "confidence_high_95": 0.06528490111708637,
+      "confidence_low_95": 0.0,
+      "count": 0,
+      "rate": 0.0,
+      "total": 55
+    }
+  },
+  "production_decision": {
+    "status": "no_feasible_operating_point",
+    "path": "knowledge/operating_points/bm25/v1-no-feasible.json",
+    "sha256": "8a13e821094f9f20f6acd70ce87e93f15057a08b9fc9e3da257b2d9a7b7451d8"
+  },
+  "constraints": {
+    "promotion": "failed",
+    "usage": "research_comparison_only"
+  },
+  "warning": "This operating point failed production feasibility constraints. It may be used only to measure a research RAG control and cannot be promoted or used as a deployment default."
+}

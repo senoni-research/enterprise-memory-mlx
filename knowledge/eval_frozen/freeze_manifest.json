@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-08-31T12:01:56.808878+00:00",
+  "authored_by": "cursor-claude-fable-5 (prompt a8d727cc)",
+  "files": {
+    "acquisition.jsonl": "92a7acd92719bce1ffd16861795be0a75c7837707564c7013053279ee275900a",
+    "holdout_records.jsonl": "43501ebcb7ee29dd7e618d1b4f27a20a99e7eeb6bfa1583fcb2152ef7883740c",
+    "supersession.jsonl": "d8da958327b5ce3567267e7babe8875bc23d24478e914044d2b9d827b1ddaf9d",
+    "supersession_scenarios.jsonl": "1af881b58d93f780721e696210051dc951a048dd1a4f375acad52acd0847127e",
+    "unknown_oos.jsonl": "98dc6fe34baea220663d44ddc03a16a6cf5738c3648b30651fe1f24b5eecb378",
+    "unseen_record.jsonl": "3c997219b8314c6bcebd94db9d2ccde33b42a162eaaef5b666620fdc1f6f0b58"
+  },
+  "combined_hash": "dfed40a365f3bfc738504f9f44ddc91085040470a6b489a602804208683fd3ee"
+}

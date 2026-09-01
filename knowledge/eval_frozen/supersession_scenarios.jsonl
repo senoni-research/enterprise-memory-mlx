@@ -1,0 +1,2 @@
+{"scenario_id": "SUP-SC-001", "fact_id": "FIN-EXP-001", "changed_field": "travel approval threshold", "old_value": "£500", "new_value": "£750", "old_valid_to": "2026-08-31", "new_valid_from": "2026-09-01"}
+{"scenario_id": "SUP-SC-002", "fact_id": "SUP-SLA-001", "changed_field": "priority-two first-response target", "old_value": "two business hours", "new_value": "four business hours", "old_valid_to": "2026-09-30", "new_valid_from": "2026-10-01"}

@@ -1,0 +1,20 @@
+{"instruction": "Return the number after 17 in words.", "response": "Eighteen.", "keywords": ["eighteen"]}
+{"instruction": "Rewrite 'The meeting was cancelled because of snow' in the active voice.", "response": "Snow caused the organisers to cancel the meeting.", "keywords": ["snow", "cancel"]}
+{"instruction": "List the three primary colours used in traditional painting.", "response": "Red, yellow, and blue.", "keywords": ["red", "yellow", "blue"]}
+{"instruction": "What is 12 multiplied by 9?", "response": "108.", "keywords": ["108"]}
+{"instruction": "Give the opposite of 'scarce'.", "response": "Abundant.", "keywords": ["abundant"]}
+{"instruction": "Sort these numbers in ascending order: 8, 3, 5.", "response": "3, 5, 8.", "keywords": ["3", "5", "8"]}
+{"instruction": "Translate 'thank you' into French.", "response": "Merci.", "keywords": ["merci"]}
+{"instruction": "Name the process by which plants use light to make food.", "response": "Photosynthesis.", "keywords": ["photosynthesis"]}
+{"instruction": "Condense this to four words: 'The application completed successfully without any errors.'", "response": "Application completed without errors.", "keywords": ["completed", "without errors"]}
+{"instruction": "What day comes immediately after Monday?", "response": "Tuesday.", "keywords": ["tuesday"]}
+{"instruction": "Convert 2.5 hours to minutes.", "response": "150 minutes.", "keywords": ["150"]}
+{"instruction": "Identify the verb in: 'The engineer reviewed the report.'", "response": "Reviewed.", "keywords": ["reviewed"]}
+{"instruction": "Give one sentence explaining why evidence matters in an audit.", "response": "Evidence allows an auditor to verify that a claimed control or action actually occurred.", "keywords": ["verify", "occurred"]}
+{"instruction": "What is the capital of Italy?", "response": "Rome.", "keywords": ["rome"]}
+{"instruction": "Calculate 100 minus 37.", "response": "63.", "keywords": ["63"]}
+{"instruction": "Put these words in alphabetical order: pear, apple, orange.", "response": "Apple, orange, pear.", "keywords": ["apple", "orange", "pear"]}
+{"instruction": "State the chemical symbol for oxygen.", "response": "O.", "keywords": ["o"]}
+{"instruction": "Give a polite alternative to 'Send it now'.", "response": "Could you please send it now?", "keywords": ["please"]}
+{"instruction": "What is half of 84?", "response": "42.", "keywords": ["42"]}
+{"instruction": "Name the largest ocean on Earth.", "response": "The Pacific Ocean.", "keywords": ["pacific"]}

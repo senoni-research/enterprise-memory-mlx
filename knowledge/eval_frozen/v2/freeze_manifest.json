@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-01T09:51:19.699913+00:00",
+  "authored_by": "Enterprise Memory temporal-v2 implementation",
+  "files": {
+    "supersession.jsonl": "d2308d537fd7ed7aaed8c0c6b5c0d2d4eed1066c4a7d7367f5f7fe434f250d3f",
+    "supersession_current_records.jsonl": "e5f6a9ff18e8d730c5f57ebb6fe0c212f9f3faae3027d4e87aefb0f3e1ff1775",
+    "supersession_scenarios.jsonl": "3d29b13b212b7581f97e64f2e3d06e335767ea4717f5900181f2b2ab6f1b1b91"
+  },
+  "combined_hash": "69e117a1c894613c5c8360463f1715808da589dcd51696c623062d8ca6f3acf5"
+}

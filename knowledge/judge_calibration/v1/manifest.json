@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "dataset_version": "v1",
+  "created_at": "2026-08-31T20:01:09.233201+00:00",
+  "status": "candidate_requires_human_labels",
+  "author": {
+    "kind": "model",
+    "identity": "Cursor Grok 4.6 High Fast",
+    "model_version": "cursor-grok-4.6-high-fast",
+    "prompt_hash": "0c380cc2d4f9a739ec341d6f57e49a6aadb842b071ccd8ce337af344b480ed12"
+  },
+  "source_snapshot_hash": "ccef33075760184b8df9e108bb3e80a6fa53d3d7508d63150c9c7b5e88023add",
+  "files": {
+    "cases.jsonl": "fe990bc17e1d482d864470d3726bf3c1bb3aeae3ee84887ec9890d632a27c4bc"
+  },
+  "counts": {
+    "cases": 180,
+    "families": 60,
+    "proposed_semantic_score": {
+      "1.0": 60,
+      "0.5": 60,
+      "0.0": 60
+    },
+    "domain": {
+      "finance": 36,
+      "hr": 36,
+      "engineering": 36,
+      "support": 18,
+      "procurement": 18,
+      "none": 36
+    },
+    "record": {
+      "FIN-EXP-001": 18,
+      "FIN-INV-002": 18,
+      "HR-LEAVE-001": 18,
+      "HR-REMOTE-002": 18,
+      "ENG-REL-001": 18,
+      "ENG-INC-002": 18,
+      "SUP-SLA-001": 18,
+      "PROC-VEND-001": 18,
+      "NONE": 36
+    },
+    "error_category": {
+      "none": 63,
+      "incomplete_multipart": 60,
+      "wrong_number": 12,
+      "wrong_currency_amount": 1,
+      "superseded_value_confusion": 1,
+      "negation_reversal": 13,
+      "unsupported_exception": 16,
+      "wrong_record_cited": 4,
+      "invented_citation": 4,
+      "false_retrieval_claim": 5,
+      "wrong_unit": 4,
+      "date_time_error": 8,
+      "refusal_of_answerable": 1,
+      "reversed_comparator": 4,
+      "answered_instead_of_refusal": 12
+    },
+    "task_type": {
+      "recall": 39,
+      "paraphrase": 24,
+      "application": 33,
+      "counterfactual": 24,
+      "composition": 24,
+      "oos": 18,
+      "live_source": 18
+    },
+    "critical_slot_expected_outcome": {
+      "pass": 83,
+      "hard_fail": 43,
+      "review_required": 17,
+      "no_slots": 37
+    },
+    "provenance_expected_outcome": {
+      "not_applicable": 120,
+      "pass": 31,
+      "human_or_semantic_review": 13,
+      "hard_fail": 16
+    }
+  },
+  "class_separability_diagnostics": {
+    "length_words_by_proposed_score": {
+      "1.0": {
+        "n": 60,
+        "min": 5,
+        "median": 17,
+        "max": 28,
+        "mean": 16.72
+      },
+      "0.5": {
+        "n": 60,
+        "min": 4,
+        "median": 14,
+        "max": 26,
+        "mean": 14.22
+      },
+      "0.0": {
+        "n": 60,
+        "min": 7,
+        "median": 15,
+        "max": 27,
+        "mean": 14.57
+      }
+    },
+    "citation_cue_counts_by_score": {
+      "1.0": 16,
+      "0.5": 13,
+      "0.0": 9
+    },
+    "refusal_cue_counts_by_score": {
+      "1.0": 12,
+      "0.5": 9,
+      "0.0": 4
+    },
+    "note": "These are cue-overlap checks, not a claim that classes are inseparable in every feature. Human reviewers must still inspect residuals."
+  },
+  "highest_sensitivity": "internal_shared",
+  "human_labels": {
+    "populated": false,
+    "approved": false,
+    "note": "Model-proposed labels are not human-approved and cannot certify a judge."
+  },
+  "prohibitions": [
+    "Do not use this dataset to train the acquired / adapted model.",
+    "Do not treat proposed_semantic_score as a gold or human label.",
+    "Do not certify a production judge from this candidate file.",
+    "Do not run calibration until every row has a human-approved gold label."
+  ],
+  "subtle_failure_cases": 117
+}

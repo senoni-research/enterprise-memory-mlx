@@ -1,0 +1,34 @@
+.DS_Store
+.venv/
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Generated datasets, adapters, manifests and evaluation output.
+artifacts/*
+!artifacts/.gitkeep
+
+# Never commit private knowledge or downloaded models.
+knowledge/private/
+models/
+*.safetensors
+*.gguf
+*.bin
+*.mlx
+
+# Local overrides and credentials.
+.env
+.env.*
+*.local.yaml
+wandb/
+swanlog/
+
+# Local planning and junior-agent dispatch notes.
+dev/
+.specstory/

@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "dataset_version": "v3",
+  "created_at": "2026-08-31T20:39:17.203504+00:00",
+  "status": "candidate_requires_human_labels",
+  "author": {
+    "kind": "model",
+    "identity": "Cursor Grok 4.6 High Fast",
+    "model_version": "cursor-grok-4.6-high-fast",
+    "prompt_hash": "2da7e6c4dd656dfb29381a197f877da0c6842f1dbe9a4e4abbea07f800c1e810",
+    "prompt_path": "dev/judge-calibration-v3-author.md"
+  },
+  "source_snapshot_hash": "56ace4cdba527ff63f2b9bfbb9ec1cb09aaf97f287daaa6ad2d74c48cb071dae",
+  "source_snapshot": {
+    "algorithm": "sha256 of canonical JSON over SOURCE_FIELDS for eligible records",
+    "eligible_record_ids": [
+      "ENG-INC-002",
+      "ENG-REL-001",
+      "FIN-CARD-003",
+      "FIN-EXP-001",
+      "FIN-INV-002",
+      "HR-LEAVE-001",
+      "HR-REMOTE-002",
+      "IT-ACCESS-001",
+      "LEG-CONF-001",
+      "PROC-VEND-001",
+      "SUP-SLA-001"
+    ],
+    "includes_holdout_records": true,
+    "questions_stripped": true
+  },
+  "grader_source_hashes": {
+    "strict_grading.py": "3ddbf963a772d492cebe92f26b2116245191692ad6e20888439a90080b9e591e",
+    "provenance_grading.py": "66af87008f84dc16364acf45f3cbf5f34e6498fc8ffc9d3a494e80280d967418",
+    "algorithm": "sha256 of file bytes"
+  },
+  "observed_outcomes": {
+    "note": "critical_slot_observed_outcome, provenance_observed_outcome, and certification_stratum are derived by running shipped grade_critical_slots and grade_provenance on each candidate. Author-declared outcomes are not used.",
+    "critical_slot_observed_outcome": {
+      "pass": 151,
+      "hard_fail": 39,
+      "review_required": 16,
+      "no_slots": 97
+    },
+    "provenance_observed_outcome": {
+      "pass": 221,
+      "hard_fail": 18,
+      "human_or_semantic_review": 64
+    },
+    "certification_stratum": {
+      "judge_eligible": 250,
+      "deterministic_audit": 53
+    }
+  },
+  "files": {
+    "cases.jsonl": "f06b3665a429bb21c0208b331d5c3668ccaedf3595c3fb08b5d6781f2e419eea"
+  },
+  "counts": {
+    "cases": 303,
+    "families": 81,
+    "proposed_semantic_score": {
+      "1.0": 81,
+      "0.5": 81,
+      "0.0": 141
+    },
+    "domain": {
+      "finance": 60,
+      "hr": 41,
+      "engineering": 41,
+      "support": 22,
+      "procurement": 22,
+      "it": 19,
+      "legal": 22,
+      "none": 76
+    },
+    "record": {
+      "FIN-EXP-001": 19,
+      "FIN-INV-002": 22,
+      "FIN-CARD-003": 19,
+      "HR-LEAVE-001": 22,
+      "HR-REMOTE-002": 19,
+      "ENG-REL-001": 19,
+      "ENG-INC-002": 22,
+      "SUP-SLA-001": 22,
+      "PROC-VEND-001": 22,
+      "IT-ACCESS-001": 19,
+      "LEG-CONF-001": 22,
+      "NONE": 76
+    },
+    "error_category": {
+      "none": 81,
+      "incomplete_multipart": 85,
+      "unsupported_exception": 50,
+      "wrong_currency_amount": 3,
+      "reversed_comparator": 4,
+      "negation_reversal": 12,
+      "wrong_unit": 5,
+      "date_time_error": 5,
+      "wrong_record_cited": 4,
+      "causal_scope_error": 12,
+      "wrong_number": 8,
+      "false_retrieval_claim": 9,
+      "overgeneralization": 7,
+      "refusal_of_answerable": 9,
+      "invented_citation": 11,
+      "answered_instead_of_refusal": 36
+    },
+    "task_type": {
+      "recall": 96,
+      "application": 51,
+      "composition": 20,
+      "paraphrase": 41,
+      "counterfactual": 19,
+      "oos": 38,
+      "live_source": 38
+    },
+    "critical_slot_observed_outcome": {
+      "pass": 151,
+      "hard_fail": 39,
+      "review_required": 16,
+      "no_slots": 97
+    },
+    "provenance_observed_outcome": {
+      "pass": 221,
+      "hard_fail": 18,
+      "human_or_semantic_review": 64
+    },
+    "certification_stratum": {
+      "judge_eligible": 250,
+      "deterministic_audit": 53
+    },
+    "judge_eligible_by_proposed_score": {
+      "1.0": 81,
+      "0.5": 81,
+      "0.0": 88
+    },
+    "deterministic_audit_by_proposed_score": {
+      "0.0": 53
+    },
+    "judge_eligible_zero_error_categories": {
+      "unsupported_exception": 45,
+      "causal_scope_error": 12,
+      "overgeneralization": 7,
+      "refusal_of_answerable": 5,
+      "answered_instead_of_refusal": 24,
+      "false_retrieval_claim": 4,
+      "incomplete_multipart": 1
+    }
+  },
+  "class_separability_diagnostics": {
+    "length_words_by_proposed_score": {
+      "1.0": {
+        "n": 81,
+        "min": 6,
+        "median": 16.0,
+        "max": 35,
+        "mean": 16.09
+      },
+      "0.5": {
+        "n": 81,
+        "min": 5,
+        "median": 15.0,
+        "max": 31,
+        "mean": 15.52
+      },
+      "0.0": {
+        "n": 141,
+        "min": 5,
+        "median": 14.0,
+        "max": 39,
+        "mean": 15.24
+      }
+    },
+    "citation_cue_counts_by_score": {
+      "1.0": 11,
+      "0.5": 2,
+      "0.0": 15
+    },
+    "refusal_cue_counts_by_score": {
+      "1.0": 18,
+      "0.5": 19,
+      "0.0": 9
+    },
+    "note": "These are cue-overlap checks, not a claim that classes are inseparable in every feature. Human reviewers must still inspect residuals."
+  },
+  "headline_judge_certification": {
+    "include_stratum": "judge_eligible",
+    "exclude_stratum": "deterministic_audit",
+    "incorrect_to_pass_note": "Sixty judge-eligible incorrect cases provide exploratory point-rate resolution only. They do not establish a 2% population bound on incorrect-to-pass.",
+    "note": "Any observed strict or provenance hard-fail is deterministic_audit and must be excluded from headline judge-certification metrics."
+  },
+  "replaced_v2_families": {
+    "JC2-HR-REMOTE-COVER": "JC3-HR-REMOTE-COVERAGE",
+    "JC2-PROC-BANK": "JC3-PROC-BANK-SIGNER",
+    "JC2-LEG-NDA-TERM": "JC3-LEG-NDA-FOURYEAR"
+  },
+  "highest_sensitivity": "internal_shared",
+  "human_labels": {
+    "populated": false,
+    "approved": false,
+    "note": "Model-proposed labels are not human-approved and cannot certify a judge."
+  },
+  "prohibitions": [
+    "Do not use this dataset to train the acquired / adapted model.",
+    "Do not treat proposed_semantic_score as a gold or human label.",
+    "Do not certify a production judge from this candidate file.",
+    "Do not run calibration until every row has a human-approved gold label.",
+    "Do not include deterministic_audit rows in headline judge-certification metrics.",
+    "Do not overwrite knowledge/judge_calibration/v1/ or knowledge/judge_calibration/v2/.",
+    "Do not treat 60 judge-eligible 0.0 cases as a 2% population bound."
+  ],
+  "subtle_failure_cases": 222,
+  "v1_preserved": {
+    "cases.jsonl": "fe990bc17e1d482d864470d3726bf3c1bb3aeae3ee84887ec9890d632a27c4bc",
+    "manifest.json": "50cbcd29c663728d1ef911a8a2d301496427b1ac8e0df0134d3e4af4de7aa450"
+  },
+  "v2_preserved": {
+    "cases.jsonl": "8062c95fdd3bb5966d53051279c45189aa4b3cde24bd148c83b9141d700d8795",
+    "manifest.json": "e0bba61eb575c5322d4cd4c0a337e744712afbb4f3e5d662f8e6e447a4810f01"
+  }
+}

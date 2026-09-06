@@ -92,6 +92,12 @@ from .specialization_qualification import (
     score_qualification_advisory,
 )
 from .specialization_real_work import validate_real_work_seed
+from .specialization_remedy_experiment import (
+    load_remedy_experiment_assets,
+    prepare_remedy_review,
+    run_remedy_experiment,
+    score_remedy_review,
+)
 from .split_contract import load_eval_suites, verify_frozen_assets
 from .task_specialization import (
     load_specialization_assets,
@@ -485,6 +491,39 @@ def build_parser() -> argparse.ArgumentParser:
     qualification_score_parser.add_argument(
         "--output-root",
         default="artifacts/company-task-specialization/v2/decisions",
+    )
+    specialization_actions.add_parser(
+        "validate-remedy-v3",
+        help="Verify the frozen remedy-logic experiment and fresh cases",
+    )
+    remedy_run_parser = specialization_actions.add_parser(
+        "run-remedy-v3",
+        help="Run the two-arm single-call Qwen27 remedy-logic experiment",
+    )
+    remedy_run_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v3-remedy-logic",
+    )
+    remedy_review_parser = specialization_actions.add_parser(
+        "prepare-remedy-review",
+        help="Blind remedy-logic outputs for arm-label-blinded GPT review",
+    )
+    remedy_review_parser.add_argument("--comparison", required=True)
+    remedy_review_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v3-remedy-logic/reviews",
+    )
+    remedy_score_parser = specialization_actions.add_parser(
+        "score-remedy-review",
+        help="Apply the frozen remedy-logic gate to completed GPT labels",
+    )
+    remedy_score_parser.add_argument("--comparison", required=True)
+    remedy_score_parser.add_argument("--packet", required=True)
+    remedy_score_parser.add_argument("--mapping", required=True)
+    remedy_score_parser.add_argument("--advisory", required=True)
+    remedy_score_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v3-remedy-logic/decisions",
     )
     specialization_pilot_parser = specialization_actions.add_parser(
         "pilot",
@@ -1197,6 +1236,58 @@ def _specialization(root: Path, args: argparse.Namespace) -> None:
         console.print(
             "[bold yellow]Model-advisory-only decision; "
             "training and stronger-teacher work remain blocked.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "validate-remedy-v3":
+        assets = load_remedy_experiment_assets(root)
+        console.print(
+            f"[green]Remedy-logic v3 contract verified:[/green] {len(assets.cases)} fresh cases"
+        )
+        console.print(
+            "[bold yellow]Synthetic model-advisory experiment; "
+            "training remains blocked.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "run-remedy-v3":
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        artifacts = run_remedy_experiment(
+            root=root,
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Remedy-logic comparison:[/green] {artifacts.report_path}")
+        console.print(
+            "[bold yellow]Awaiting arm-label-blinded GPT review; "
+            "training remains blocked.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "prepare-remedy-review":
+        artifacts = prepare_remedy_review(
+            root=root,
+            comparison_path=_rooted_path(root, args.comparison),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Remedy review packet:[/green] {artifacts.packet_path}")
+        console.print(f"Private mapping: {artifacts.mapping_path}")
+        console.print(f"Model-advisory template: {artifacts.template_path}")
+        console.print(
+            "[bold yellow]Share only the packet. The schemas may reveal treatment, "
+            "so only arm-label blindness is claimed.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "score-remedy-review":
+        artifacts = score_remedy_review(
+            root=root,
+            comparison_path=_rooted_path(root, args.comparison),
+            packet_path=_rooted_path(root, args.packet),
+            mapping_path=_rooted_path(root, args.mapping),
+            advisory_path=_rooted_path(root, args.advisory),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Remedy-logic decision:[/green] {artifacts.markdown_path}")
+        console.print(
+            "[bold yellow]Passing may designate a bounded advisory configuration, "
+            "but does not authorize training.[/bold yellow]"
         )
         return
     if args.specialization_action == "pilot":

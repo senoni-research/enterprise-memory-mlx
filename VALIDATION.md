@@ -172,6 +172,20 @@ failed the frozen `0.90` teacher threshold. Consequently:
 - every candidate records `training_eligible: false`;
 - no model training or autonomous corpus admission is authorized.
 
+The v1 pass count is not an expert-judged material-error count.
+`structured-policy-assessment/v1` used free-text substring omission as a hard
+failure and skipped Gemma on those rows. Correct paraphrases could therefore
+fail, while a polarity-reversed sentence containing the required phrases could
+reach semantic review. Historical scores and admission decisions remain
+preserved.
+
+Draft evaluator `structured-policy-assessment/v2-obligation-review` makes only
+parse/schema and permitted-evidence membership failures authoritative for the
+legacy-shaped answers. Free-text obligation completeness, polarity, equivalent
+deadlines, and decision equivalence become `semantic_review_required`. It
+cannot produce a passing semantic grade until calibrated against the blinded
+human audit and private real-work seed.
+
 The synthetic Northstar cases validate pipeline mechanics only. A future
 specialization claim requires approved real work and a separately frozen,
 untouched test. A future closed-book acquisition claim must use unseen

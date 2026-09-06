@@ -74,15 +74,24 @@ The corrected advisory result was:
 - advisory-accepted repairs: zero;
 - training-eligible repairs: zero.
 
-The teacher omitted material actions on several cases and did not satisfy the
-pre-registered referral requirements. It is therefore not qualified to create
-training data under this contract.
+It is therefore not qualified to create training data under this contract.
+Subsequent review found that the deterministic evaluator made free-text
+substring omissions authoritative hard failures. This result establishes
+failure of the frozen implementation's gate, not that an expert would judge
+seven teacher answers materially wrong.
 
 ## Consequences
 
 No student training, GRPO, gisting, continuous admission, or deployment is
-authorized. The next useful input is approved real work and human task labels,
-not another automated repair pass over these synthetic cases.
+authorized. The existing answers require a blinded obligation-level human
+audit. The next useful input is approved real work and human task labels, not
+another automated repair pass over these synthetic cases.
+
+Evaluator v2 must retain hard checks for syntax, permitted evidence identity,
+and independently validated typed constraints while routing free-text
+obligation completeness, polarity, equivalent deadlines, and multipart
+conclusions to calibrated semantic or human review. It must not replace the
+stopped pilot's historical scores.
 
 Research continuation and deployment eligibility remain separate decisions.
 Even a later successful evidence-assisted specialist would not establish

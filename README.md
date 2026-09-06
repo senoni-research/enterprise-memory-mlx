@@ -272,7 +272,10 @@ contract and synthetic development cases are under
 
 ```bash
 emmlx specialization validate-contract
+emmlx specialization validate-evaluator-v2
 emmlx specialization pilot
+emmlx specialization prepare-audit \
+  --pilot artifacts/company-task-specialization/v1/pilot-0276f15bf32ef4a4/specialization-pilot.json
 ```
 
 The pilot runs the untrained 4B baseline, the Qwen27 teacher/repairer candidate,
@@ -286,12 +289,33 @@ decision and field semantics. The corrected
 - Qwen27 repairs: 5/8 deterministic passes, mean `0.562`;
 - zero advisory-accepted or training-eligible repairs.
 
-The Qwen27 candidate therefore failed teacher qualification. No SFT, GRPO,
-gisting, autonomous admission, or deployment is authorized. These cases and
-labels are synthetic/model-advisory evidence only; approved real work and a
-human-calibrated task evaluator are required before training can be considered.
+The Qwen27 candidate therefore failed the frozen implementation's teacher
+qualification. Review subsequently found that free-text substring omissions
+were treated as hard failures, so the result is not an expert-judged teacher
+error rate. No SFT, GRPO, gisting, autonomous admission, or deployment is
+authorized. A blinded audit, approved real work, and a human-calibrated
+obligation-level evaluator are required before training can be considered.
 The shareable, hash-bound summary is
 [`docs/results/2026-09-06-company-task-specialization-v1-advisory.md`](docs/results/2026-09-06-company-task-specialization-v1-advisory.md).
+The draft evaluator-v2 and private real-work schema are under
+`knowledge/company_task_specialization/evaluator_v2/`. Real case content must
+remain under the ignored `knowledge/private/` boundary.
+
+The audit command writes a shareable ZIP, a private unblinding map, and a
+review template under `artifacts/company-task-specialization/human-audit/`.
+Send only the ZIP to a reviewer. After they return a completed template:
+
+```bash
+emmlx specialization validate-audit \
+  --packet <specialization-output-audit.zip> \
+  --mapping <private-review-id-map.json> \
+  --overlay <completed-review.jsonl> \
+  --output <audit-report.json>
+
+emmlx specialization validate-real-seed \
+  --input knowledge/private/company-task-specialization/real-work.jsonl \
+  --output artifacts/company-task-specialization/real-work-seed-manifest.json
+```
 
 ## Latest acquisition smoke
 

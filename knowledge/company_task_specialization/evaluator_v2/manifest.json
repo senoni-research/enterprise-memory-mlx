@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/evaluator-v2",
+  "status": "draft_awaiting_human_validation",
+  "files": {
+    "protocol.json": "dab898ac29ab7e37b10b7053d7f050769114216fd025258cca93f4a1aa457c6b",
+    "real_work_seed.schema.json": "10ec5a7625a70e3d118473f7c3a009cbc87ee5454c1830c74b8e2a44e445d67b"
+  },
+  "historical_pilot_scores_replaced": false,
+  "human_audit_complete": false,
+  "real_work_seed_present": false,
+  "teacher_requalification_authorized": false,
+  "student_training_authorized": false
+}

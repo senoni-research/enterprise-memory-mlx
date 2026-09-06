@@ -156,11 +156,18 @@ deterministic passes and a `0.500` advisory governed mean. Five of eight repairs
 passed deterministic checks, but no repair was admitted because the teacher
 qualification gate failed.
 
-The next milestone is not training. It requires approved real requests and
-accepted outcomes, human task labels for evaluator calibration, and a newly
-frozen untouched test. Only then may a bounded SFT comparison of equal-budget
-random examples versus failure-focused repairs be proposed. GRPO and gisting
-remain deferred.
+Review then identified a measurement limitation: free-text substring omissions
+were authoritative hard failures. The pass rate therefore measures the frozen
+implementation, not an expert-adjudicated material-error rate. The stopped
+pilot and all admission decisions remain unchanged.
+
+The next milestone is not training. First, audit all 14 teacher and eight repair
+answers blindly. Then collect approximately 25 approved, anonymized cases from
+one real workflow, with accepted outcomes and human-defined obligations.
+Evaluator v2 routes free-text completeness and polarity to calibrated review
+while retaining syntax and provenance hard checks. Only after that validation
+may fresh teacher cases and bounded prompt/orchestration comparisons be frozen.
+A stronger teacher, SFT, GRPO, and gisting remain deferred.
 
 ## Later milestones
 

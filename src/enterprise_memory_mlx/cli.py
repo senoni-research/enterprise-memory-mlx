@@ -80,6 +80,12 @@ from .semantic_neighbors import (
     DEFAULT_SEMANTIC_MODEL_REVISION,
     MLXEmbeddingBackend,
 )
+from .specialization_audit import (
+    prepare_specialization_audit,
+    validate_specialization_audit_overlay,
+)
+from .specialization_evaluator import verify_evaluator_v2_contract
+from .specialization_real_work import validate_real_work_seed
 from .split_contract import load_eval_suites, verify_frozen_assets
 from .task_specialization import (
     load_specialization_assets,
@@ -437,6 +443,10 @@ def build_parser() -> argparse.ArgumentParser:
         "validate-contract",
         help="Verify the frozen task, split, source, and development-case hashes",
     )
+    specialization_actions.add_parser(
+        "validate-evaluator-v2",
+        help="Verify the draft obligation-review evaluator contract and seed schema",
+    )
     specialization_pilot_parser = specialization_actions.add_parser(
         "pilot",
         help="Run the bounded 4B baseline, Qwen27 repair, and Gemma advisory batch",
@@ -445,6 +455,29 @@ def build_parser() -> argparse.ArgumentParser:
         "--output-root",
         default="artifacts/company-task-specialization/v1",
     )
+    specialization_audit_parser = specialization_actions.add_parser(
+        "prepare-audit",
+        help="Blind the stopped pilot's teacher and repair outputs for human audit",
+    )
+    specialization_audit_parser.add_argument("--pilot", required=True)
+    specialization_audit_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/human-audit",
+    )
+    specialization_validate_audit = specialization_actions.add_parser(
+        "validate-audit",
+        help="Validate a completed human specialization audit overlay",
+    )
+    specialization_validate_audit.add_argument("--packet", required=True)
+    specialization_validate_audit.add_argument("--mapping", required=True)
+    specialization_validate_audit.add_argument("--overlay", required=True)
+    specialization_validate_audit.add_argument("--output", required=True)
+    specialization_real_seed = specialization_actions.add_parser(
+        "validate-real-seed",
+        help="Validate a private human-reviewed one-workflow real-work seed",
+    )
+    specialization_real_seed.add_argument("--input", required=True)
+    specialization_real_seed.add_argument("--output", required=True)
 
     grade_parser = subparsers.add_parser(
         "grade",
@@ -1066,6 +1099,17 @@ def _specialization(root: Path, args: argparse.Namespace) -> None:
             "[/bold yellow]"
         )
         return
+    if args.specialization_action == "validate-evaluator-v2":
+        manifest = verify_evaluator_v2_contract(root)
+        console.print(
+            f"[green]Evaluator-v2 contract verified:[/green] "
+            f"{manifest['status']}"
+        )
+        console.print(
+            "[bold yellow]Awaiting human validation; teacher requalification "
+            "and student training remain blocked.[/bold yellow]"
+        )
+        return
     if args.specialization_action == "pilot":
         os.environ["HF_HUB_OFFLINE"] = "1"
         os.environ["TRANSFORMERS_OFFLINE"] = "1"
@@ -1080,6 +1124,42 @@ def _specialization(root: Path, args: argparse.Namespace) -> None:
             "[bold yellow]Synthetic, model-reviewed development evidence only; "
             "not training or deployment eligible.[/bold yellow]"
         )
+        return
+    if args.specialization_action == "prepare-audit":
+        artifacts = prepare_specialization_audit(
+            root=root,
+            pilot_path=_rooted_path(root, args.pilot),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Blinded audit packet:[/green] {artifacts.packet_path}")
+        console.print(f"Private mapping: {artifacts.mapping_path}")
+        console.print(f"Review template: {artifacts.template_path}")
+        console.print(
+            "[bold yellow]Share the packet, not the private mapping. "
+            "Human review does not replace the stopped pilot's scores.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "validate-audit":
+        report = validate_specialization_audit_overlay(
+            packet_path=_rooted_path(root, args.packet),
+            mapping_path=_rooted_path(root, args.mapping),
+            overlay_path=_rooted_path(root, args.overlay),
+            output_path=_rooted_path(root, args.output),
+        )
+        console.print(f"[green]Human audit validated:[/green] {report}")
+        console.print(
+            "[bold yellow]Single-review development evidence; "
+            "second review and adjudication remain required.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "validate-real-seed":
+        report = validate_real_work_seed(
+            root=root,
+            seed_path=_rooted_path(root, args.input),
+            output_path=_rooted_path(root, args.output),
+        )
+        console.print(f"[green]Private real-work seed manifest:[/green] {report}")
+        console.print("Case content remains under the ignored knowledge/private boundary.")
         return
     raise ValueError(f"Unsupported specialization action: {args.specialization_action}")
 

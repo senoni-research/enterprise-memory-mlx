@@ -64,9 +64,9 @@ new run.
 - Qwen27 repair of eight selected 4B failures: 5 of 8 deterministic passes,
   governed advisory mean `0.562`, four fully correct, zero generation failures.
 
-The Qwen27 teacher failed the pre-registered requirements of at least `0.90`
-deterministic pass rate and at least `0.90` Gemma advisory mean, including
-complete referral behaviour.
+The Qwen27 teacher failed the frozen implementation's requirements of at least
+`0.90` deterministic pass rate and at least `0.90` Gemma advisory mean,
+including complete referral behaviour.
 
 Consequently:
 
@@ -76,25 +76,61 @@ Consequently:
 - zero examples are training-eligible;
 - no SFT, GRPO, gisting, or autonomous admission is authorized.
 
-## Observed failure pattern
+## Measurement limitation discovered in review
 
-The teacher generally emitted valid JSON and often selected the correct broad
-decision. Failures were mostly incomplete task execution: omitted continuing
-actions, omitted exact deadlines, incomplete multipart conclusions, or a
-referral decision without an explicit referral action. The repair pass improved
-some selected failures but did not overcome the failed teacher-level gate.
+The v1 deterministic evaluator treated a missing required substring in a
+free-text field as an authoritative hard failure. Those answers received zero
+and were not sent to Gemma. Phrase presence is not a dependable semantic test:
+an equivalent paraphrase can miss the substring, while a polarity-reversed
+instruction can contain every required phrase.
+
+The result therefore establishes that Qwen27 failed the frozen
+implementation's qualification gate. It does **not** establish that an expert
+would judge seven of fourteen answers materially wrong. The existing answers
+require a blinded obligation-level human audit to separate genuine task errors,
+evaluator false failures, reference ambiguity, and output-contract problems.
+
+Zero accepted repairs also reflects the global teacher gate. It does not mean
+that every repair failed its own checks: five of eight passed the deterministic
+stage and four received a fully-correct governed score. They remain rejected
+under this experiment. The repair mean must not be compared directly with the
+teacher mean because repairs cover a selected subset of 4B failures rather than
+the same case distribution.
 
 ## Interpretation
 
 This result does not show that task distillation is ineffective. It shows that
-this local Qwen27 candidate is not yet qualified to produce training examples
-for this task under the frozen requirements. Training the 4B student on these
-repairs would convert unverified teacher omissions into supervision.
+the current Qwen27 configuration was not qualified by the frozen measurement.
+Training the 4B student on these repairs would convert unresolved evaluator and
+teacher behaviour into supervision.
 
-The next justified input is approved, anonymized real work plus human task
-labels for evaluator and teacher calibration. A stronger teacher can then be
-tested under a newly frozen development qualification. The gate should not be
-relaxed retrospectively.
+The next justified input is a blinded audit of the existing answers plus
+approved, anonymized real work and human task labels. Those labels should
+validate a separately versioned obligation-level evaluator and clarify one
+coherent workflow before Qwen is reassessed. Prompt and orchestration
+improvements should be tested before a stronger teacher. The old gate and
+scores must not be changed retrospectively.
+
+## Measurement follow-up
+
+The repository now includes the draft, separately versioned
+`company-task-specialization/evaluator-v2` contract. For legacy-shaped answers
+it retains hard failures for parse/schema defects and unauthorized evidence
+IDs, while routing free-text obligation completeness, polarity, equivalent
+deadlines, decision equivalence, and multipart conclusions to
+`semantic_review_required`.
+
+The follow-up also adds:
+
+- a blinded packet builder for all 14 teacher and eight repair answers;
+- a structured human overlay requiring obligation-by-obligation satisfaction,
+  unsafe claims, next-step usefulness, and failure classification;
+- a validator that writes a separate audit report without replacing the pilot;
+- a private, hash-manifested real-work seed schema targeting approximately 25
+  approved cases from one workflow.
+
+Evaluator v2 remains `draft_awaiting_human_validation`. Teacher
+requalification and student training remain blocked.
 
 ## Integrity bindings
 
@@ -106,6 +142,10 @@ relaxed retrospectively.
   `0e4f4690ca4a164dd19182e4ed996d7c7751cf75b2115f28ae43046a2706580c`
 - Candidate repair batch SHA-256:
   `ba1e6115e5ecba7f74251c6e4005baa94d231345d7424a04d0c9af8c1ce643cd`
+- Draft evaluator-v2 protocol SHA-256:
+  `dab898ac29ab7e37b10b7053d7f050769114216fd025258cca93f4a1aa457c6b`
+- Private real-work seed schema SHA-256:
+  `10ec5a7625a70e3d118473f7c3a009cbc87ee5454c1830c74b8e2a44e445d67b`
 
 Raw local generation and verifier artifacts remain excluded from Git because
 they contain detailed model outputs and runtime metadata. The frozen contract,

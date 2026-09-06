@@ -162,8 +162,11 @@ implementation, not an expert-adjudicated material-error rate. The stopped
 pilot and all admission decisions remain unchanged.
 
 The next milestone is not training. First, audit all 14 teacher and eight repair
-answers blindly. Then collect approximately 25 approved, anonymized cases from
-one real workflow, with accepted outcomes and human-defined obligations.
+answers blindly. Reviewers judge obligations, satisfaction, safety, next-step
+usefulness, and ambiguity; evaluator/reference diagnosis occurs only after
+their labels are frozen and privately compared with historical results. Then
+collect approximately 25 approved, anonymized cases from one real workflow,
+with accepted outcomes and human-defined obligations.
 Evaluator v2 routes free-text completeness and polarity to calibrated review
 while retaining syntax and provenance hard checks. Only after that validation
 may fresh teacher cases and bounded prompt/orchestration comparisons be frozen.

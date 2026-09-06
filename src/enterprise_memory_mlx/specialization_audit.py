@@ -16,38 +16,57 @@ from typing import Any
 from .compiler import load_records
 from .utils import atomic_write_text, read_jsonl, sha256_json
 
-AUDIT_SCHEMA_ID = "company-task-specialization-output-audit/v1"
+AUDIT_SCHEMA_ID = "company-task-specialization-output-audit/v2-two-phase"
 OVERALL_OUTCOMES = frozenset({"acceptable", "minor_revision", "unacceptable", "cannot_assess"})
-FAILURE_CLASSIFICATIONS = frozenset(
-    {
-        "no_failure",
-        "genuine_task_error",
-        "evaluator_false_failure",
-        "reference_ambiguity",
-        "output_contract_problem",
-        "serialization_issue",
-    }
-)
 SATISFACTION_VALUES = frozenset({"yes", "no", "unclear"})
 INSTRUCTIONS = """\
-# Blinded company-task specialization output audit
+# Blinded company-task specialization output audit — Phase A
 
 Review the candidate using only the operational request and supplied authorized
 evidence. Model identity, prior deterministic results, Gemma labels, case IDs,
 and reference answers are deliberately hidden.
 
-For every answer:
+Judge the answer independently. Do not guess what a hidden reference said,
+whether the old evaluator passed or failed the answer, or why its result may
+have disagreed with yours. Accept semantically equivalent wording.
 
-1. list each required obligation implied by the request and evidence;
-2. mark whether the candidate satisfies each obligation;
-3. record every unsafe or unsupported claim;
-4. decide whether the answer supports the next operational step;
-5. classify any problem as a genuine task error, evaluator false failure,
-   reference ambiguity, output-contract problem, or serialization issue.
+For every answer, list each material obligation, record whether it is satisfied,
+identify unsafe or unsupported claims, decide whether the answer supports the
+next operational step, and describe any ambiguity in the request, supplied
+evidence, or candidate output.
 
 Review acceptable answers as carefully as rejected answers. A single review is
 development evidence, not independent agreement or production validation.
 These labels must not replace the stopped pilot's scores.
+
+After Phase A labels are complete and frozen, the maintainer—not the blinded
+reviewer—uses the private mapping to compare human outcomes with historical
+results. That Phase B diagnosis is written to a separate report.
+"""
+SCHEMA_GUIDE = """\
+# Review template schema
+
+Complete one JSON object per line in `review_template.jsonl`. Preserve each
+`review_id` and fill every other field.
+
+- `reviewer_id`: the actual human reviewer's identifier.
+- `reviewed_at`: an ISO-8601 timestamp such as `2026-09-06T18:00:00+00:00`.
+- `human_attested`: `true`, entered by the actual human reviewer.
+- `overall_outcome`: exactly one of `acceptable`, `minor_revision`,
+  `unacceptable`, or `cannot_assess`.
+- `required_obligations`: a JSON list. Each entry has exactly:
+  - `description`: a specific obligation stated as text;
+  - `material`: Boolean `true` or `false`;
+  - `satisfied`: exactly `yes`, `no`, or `unclear`.
+- `unsafe_claims`: a JSON list of specific unsafe or unsupported claims, or
+  `[]` when there are none.
+- `supports_next_step`: exactly `yes`, `no`, or `unclear`.
+- `ambiguities`: a JSON list describing ambiguity in the request, evidence, or
+  candidate output, or `[]` when there is none.
+- `notes`: optional free-text review notes; use an empty string when unneeded.
+
+Do not add evaluator-failure or reference-error diagnoses. Those require hidden
+historical information and belong to the maintainer's Phase B comparison.
 """
 
 
@@ -78,7 +97,7 @@ def prepare_specialization_audit(
     if len(teacher) != 14 or len(repairs) != 8:
         raise ValueError("Audit requires the complete 14-teacher/8-repair corrected pilot")
     pilot_hash = hashlib.sha256(pilot_bytes).hexdigest()
-    output_dir = output_root.resolve() / f"audit-{pilot_hash[:16]}"
+    output_dir = output_root.resolve() / f"audit-v2-two-phase-{pilot_hash[:16]}"
     if output_dir.exists():
         raise FileExistsError(f"Refusing to overwrite specialization audit: {output_dir}")
 
@@ -143,8 +162,9 @@ def prepare_specialization_audit(
     sources_bytes = _jsonl_bytes(sources)
     template_bytes = _jsonl_bytes(template_rows)
     instructions_bytes = INSTRUCTIONS.encode("utf-8")
+    schema_guide_bytes = SCHEMA_GUIDE.encode("utf-8")
     mapping = {
-        "schema_version": 1,
+        "schema_version": 2,
         "audit_schema_id": AUDIT_SCHEMA_ID,
         "source_pilot_sha256": pilot_hash,
         "blinding_salt": salt,
@@ -153,14 +173,19 @@ def prepare_specialization_audit(
     mapping_bytes = (json.dumps(mapping, indent=2, sort_keys=True) + "\n").encode()
     members = {
         "AUDIT_INSTRUCTIONS.md": instructions_bytes,
+        "REVIEW_SCHEMA.md": schema_guide_bytes,
         "review_cases.jsonl": cases_bytes,
         "source_records.jsonl": sources_bytes,
         "review_template.jsonl": template_bytes,
     }
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "audit_schema_id": AUDIT_SCHEMA_ID,
-        "status": "awaiting_human_review",
+        "supersedes_audit_schema_id": "company-task-specialization-output-audit/v1",
+        "supersession_reason": (
+            "Blinded reviewers cannot diagnose hidden evaluator or reference failures"
+        ),
+        "status": "awaiting_blinded_phase_a_human_review",
         "case_count": len(blinded),
         "teacher_answer_count": len(teacher),
         "repair_answer_count": len(repairs),
@@ -176,14 +201,16 @@ def prepare_specialization_audit(
             "Gemma label",
             "governed score",
         ],
+        "phase_a_excludes_causal_diagnosis": True,
+        "phase_b_requires_frozen_labels_and_private_mapping": True,
         "human_approved": False,
         "replaces_historical_scores": False,
     }
     manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()
     output_dir.mkdir(parents=True)
-    packet_path = output_dir / "specialization-output-audit.zip"
-    mapping_path = output_dir / "private-review-id-map.json"
-    template_path = output_dir / "review-template.jsonl"
+    packet_path = output_dir / "specialization-output-audit-v2.zip"
+    mapping_path = output_dir / "private-review-id-map-v2.json"
+    template_path = output_dir / "review-template-v2.jsonl"
     with zipfile.ZipFile(packet_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for name, content in members.items():
             archive.writestr(f"audit/{name}", content)
@@ -218,6 +245,7 @@ def validate_specialization_audit_overlay(
     mapping = json.loads(mapping_bytes)
     if (
         not isinstance(mapping, dict)
+        or mapping.get("audit_schema_id") != manifest.get("audit_schema_id")
         or mapping.get("source_pilot_sha256") != manifest["source_pilot_sha256"]
     ):
         raise ValueError("Private mapping belongs to another pilot")
@@ -240,22 +268,41 @@ def validate_specialization_audit_overlay(
     if set(overlay_by_review) != expected_ids:
         raise ValueError("Audit overlay is incomplete or contains unknown review IDs")
 
-    classifications = Counter(
-        classification for row in overlay_rows for classification in row["failure_classifications"]
-    )
     outcomes = Counter(str(row["overall_outcome"]) for row in overlay_rows)
     role_summary: dict[str, Counter[str]] = {
         "teacher": Counter(),
         "repair": Counter(),
     }
+    diagnosis_summary: Counter[str] = Counter()
+    diagnosed_cases: list[dict[str, Any]] = []
     for review_id, row in overlay_by_review.items():
-        role = str(mapping_by_review[review_id]["role"])
+        mapping_row = mapping_by_review[review_id]
+        role = str(mapping_row["role"])
         role_summary.setdefault(role, Counter())[str(row["overall_outcome"])] += 1
+        historical = mapping_row.get("historical_deterministic")
+        historical_status = (
+            str(historical.get("status")) if isinstance(historical, Mapping) else "missing"
+        )
+        diagnosis = diagnose_phase_b_disagreement(
+            human_outcome=str(row["overall_outcome"]),
+            historical_status=historical_status,
+        )
+        diagnosis_summary[diagnosis] += 1
+        diagnosed_cases.append(
+            {
+                "review_id": review_id,
+                "case_id": mapping_row.get("case_id"),
+                "hidden_role": role,
+                "human_outcome": row["overall_outcome"],
+                "historical_deterministic_status": historical_status,
+                "phase_b_diagnosis": diagnosis,
+            }
+        )
     reviewers = sorted({str(row["reviewer_id"]) for row in overlay_rows})
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
         "audit_schema_id": AUDIT_SCHEMA_ID,
-        "status": "single_human_audit_complete_not_adjudicated",
+        "status": "phase_b_comparison_complete_not_adjudicated",
         "created_at": datetime.now(UTC).isoformat(),
         "source_pilot_sha256": manifest["source_pilot_sha256"],
         "source_packet_sha256": hashlib.sha256(packet_path.read_bytes()).hexdigest(),
@@ -263,15 +310,20 @@ def validate_specialization_audit_overlay(
         "case_count": len(overlay_rows),
         "reviewers": reviewers,
         "independent_reviewer_count": len(reviewers),
+        "labels_per_case": 1,
+        "independent_agreement_available": False,
         "overall_outcomes": dict(sorted(outcomes.items())),
-        "failure_classifications": dict(sorted(classifications.items())),
         "by_hidden_role": {
             role: dict(sorted(counts.items())) for role, counts in role_summary.items()
         },
         "supports_next_step": dict(
             sorted(Counter(str(row["supports_next_step"]) for row in overlay_rows).items())
         ),
+        "ambiguity_case_count": sum(bool(row["ambiguities"]) for row in overlay_rows),
         "unsafe_claim_case_count": sum(bool(row["unsafe_claims"]) for row in overlay_rows),
+        "phase_b_diagnoses": dict(sorted(diagnosis_summary.items())),
+        "diagnosed_cases": sorted(diagnosed_cases, key=lambda row: str(row["review_id"])),
+        "diagnoses_are_investigation_categories_not_replacement_scores": True,
         "replaces_historical_scores": False,
         "human_approved": False,
         "requires_second_review_and_adjudication": True,
@@ -281,6 +333,39 @@ def validate_specialization_audit_overlay(
         json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
     )
     return output_path
+
+
+def diagnose_phase_b_disagreement(
+    *,
+    human_outcome: str,
+    historical_status: str,
+) -> str:
+    """Map frozen human and historical outcomes to an investigation category."""
+    historical_passed = historical_status == "pass"
+    historical_failed = historical_status == "hard_fail"
+    if not historical_passed and not historical_failed:
+        return "historical_status_requires_investigation"
+    if human_outcome == "acceptable":
+        return (
+            "human_machine_agreement_acceptable"
+            if historical_passed
+            else "possible_evaluator_false_failure"
+        )
+    if human_outcome == "unacceptable":
+        return (
+            "possible_evaluator_false_acceptance"
+            if historical_passed
+            else "supported_model_failure"
+        )
+    if human_outcome == "cannot_assess":
+        return "request_evidence_reference_or_contract_ambiguity"
+    if human_outcome == "minor_revision":
+        return (
+            "human_minor_issue_historical_pass"
+            if historical_passed
+            else "possible_materiality_or_representation_disagreement"
+        )
+    raise ValueError(f"Unknown human outcome: {human_outcome}")
 
 
 def _load_packet(packet_path: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -308,10 +393,10 @@ def _validate_audit_row(row: Mapping[str, Any]) -> None:
         "reviewed_at",
         "human_attested",
         "overall_outcome",
-        "failure_classifications",
         "required_obligations",
         "unsafe_claims",
         "supports_next_step",
+        "ambiguities",
         "notes",
     }
     if set(row) != required:
@@ -325,14 +410,6 @@ def _validate_audit_row(row: Mapping[str, Any]) -> None:
         raise ValueError("Audit reviewer identity, timestamp, and attestation are required")
     if row["overall_outcome"] not in OVERALL_OUTCOMES:
         raise ValueError("Audit overall outcome is invalid")
-    classifications = row["failure_classifications"]
-    if (
-        not isinstance(classifications, list)
-        or not classifications
-        or any(value not in FAILURE_CLASSIFICATIONS for value in classifications)
-        or ("no_failure" in classifications and len(classifications) != 1)
-    ):
-        raise ValueError("Audit failure classifications are invalid")
     obligations = row["required_obligations"]
     if not isinstance(obligations, list):
         raise ValueError("Audit required obligations must be an array")
@@ -353,6 +430,11 @@ def _validate_audit_row(row: Mapping[str, Any]) -> None:
         raise ValueError("Audit unsafe claims are invalid")
     if row["supports_next_step"] not in SATISFACTION_VALUES:
         raise ValueError("Audit next-step assessment is invalid")
+    ambiguities = row["ambiguities"]
+    if not isinstance(ambiguities, list) or any(
+        not isinstance(value, str) or not value.strip() for value in ambiguities
+    ):
+        raise ValueError("Audit ambiguities are invalid")
     if not isinstance(row["notes"], str):
         raise ValueError("Audit notes must be a string")
 
@@ -364,10 +446,10 @@ def _empty_review_row(review_id: str) -> dict[str, Any]:
         "reviewed_at": "",
         "human_attested": False,
         "overall_outcome": None,
-        "failure_classifications": [],
         "required_obligations": [],
         "unsafe_claims": [],
         "supports_next_step": None,
+        "ambiguities": [],
         "notes": "",
     }
 

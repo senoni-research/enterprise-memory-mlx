@@ -186,6 +186,12 @@ deadlines, and decision equivalence become `semantic_review_required`. It
 cannot produce a passing semantic grade until calibrated against the blinded
 human audit and private real-work seed.
 
+Audit packet v2 separates measurement from diagnosis. Blinded Phase A reviewers
+record obligations, satisfaction, unsafe claims, next-step usefulness, and
+ambiguity without seeing or diagnosing historical results. Only after those
+labels are frozen does the maintainer use the private mapping for a Phase B
+disagreement report. Neither phase replaces the historical pilot scores.
+
 The synthetic Northstar cases validate pipeline mechanics only. A future
 specialization claim requires approved real work and a separately frozen,
 untouched test. A future closed-book acquisition claim must use unseen

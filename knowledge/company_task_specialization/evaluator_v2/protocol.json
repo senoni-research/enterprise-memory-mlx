@@ -38,6 +38,7 @@
     "evidence": "Permitted record IDs and supported claims."
   },
   "human_audit": {
+    "packet_schema_id": "company-task-specialization-output-audit/v2-two-phase",
     "existing_teacher_answers": 14,
     "existing_repair_answers": 8,
     "blinded_to": [
@@ -49,14 +50,23 @@
       "Gemma label",
       "governed score"
     ],
-    "classifications": [
-      "no_failure",
-      "genuine_task_error",
-      "evaluator_false_failure",
-      "reference_ambiguity",
-      "output_contract_problem",
-      "serialization_issue"
-    ],
+    "phase_a": {
+      "performed_blind": true,
+      "records": [
+        "material obligations",
+        "obligation satisfaction",
+        "unsafe or unsupported claims",
+        "next-step usefulness",
+        "request, evidence, or output ambiguity"
+      ],
+      "causal_diagnosis": false
+    },
+    "phase_b": {
+      "performed_by_maintainer_after_phase_a_labels_are_frozen": true,
+      "uses_private_mapping": true,
+      "compares_human_outcome_with_historical_deterministic_status": true,
+      "diagnoses_are_investigation_categories_not_replacement_scores": true
+    },
     "does_not_replace_old_scores": true
   },
   "real_work_seed": {

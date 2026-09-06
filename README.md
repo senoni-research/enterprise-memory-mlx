@@ -303,12 +303,16 @@ remain under the ignored `knowledge/private/` boundary.
 
 The audit command writes a shareable ZIP, a private unblinding map, and a
 review template under `artifacts/company-task-specialization/human-audit/`.
-Send only the ZIP to a reviewer. After they return a completed template:
+Send only the versioned ZIP to a reviewer. Phase A records obligations,
+satisfaction, unsafe claims, next-step usefulness, and ambiguity without asking
+the reviewer to diagnose a hidden evaluator or reference. After the completed
+labels are frozen, validation uses the private map to write the separate Phase B
+disagreement diagnosis:
 
 ```bash
 emmlx specialization validate-audit \
-  --packet <specialization-output-audit.zip> \
-  --mapping <private-review-id-map.json> \
+  --packet <specialization-output-audit-v2.zip> \
+  --mapping <private-review-id-map-v2.json> \
   --overlay <completed-review.jsonl> \
   --output <audit-report.json>
 

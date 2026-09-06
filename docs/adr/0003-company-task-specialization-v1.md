@@ -87,6 +87,12 @@ authorized. The existing answers require a blinded obligation-level human
 audit. The next useful input is approved real work and human task labels, not
 another automated repair pass over these synthetic cases.
 
+The audit uses two phases. Reviewers first judge outputs using only the request
+and supplied evidence; they do not diagnose a hidden evaluator or reference.
+After those judgments are frozen, the maintainer privately compares them with
+the preserved historical results and reports possible evaluator false failures,
+false acceptances, supported model failures, or ambiguity for investigation.
+
 Evaluator v2 must retain hard checks for syntax, permitted evidence identity,
 and independently validated typed constraints while routing free-text
 obligation completeness, polarity, equivalent deadlines, and multipart

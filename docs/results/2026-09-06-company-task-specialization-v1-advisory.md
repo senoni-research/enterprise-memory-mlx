@@ -123,9 +123,10 @@ deadlines, decision equivalence, and multipart conclusions to
 The follow-up also adds:
 
 - a blinded packet builder for all 14 teacher and eight repair answers;
-- a structured human overlay requiring obligation-by-obligation satisfaction,
-  unsafe claims, next-step usefulness, and failure classification;
-- a validator that writes a separate audit report without replacing the pilot;
+- a structured Phase A human overlay requiring obligation-by-obligation
+  satisfaction, unsafe claims, next-step usefulness, and observed ambiguity;
+- a validator that freezes those labels before privately comparing them with
+  historical results in a separate Phase B report;
 - a private, hash-manifested real-work seed schema targeting approximately 25
   approved cases from one workflow.
 
@@ -143,7 +144,7 @@ requalification and student training remain blocked.
 - Candidate repair batch SHA-256:
   `ba1e6115e5ecba7f74251c6e4005baa94d231345d7424a04d0c9af8c1ce643cd`
 - Draft evaluator-v2 protocol SHA-256:
-  `dab898ac29ab7e37b10b7053d7f050769114216fd025258cca93f4a1aa457c6b`
+  `c6408ed7790e3e63c16d2e664ce9e91866a96b23b758ad4530573f9243a0cc47`
 - Private real-work seed schema SHA-256:
   `10ec5a7625a70e3d118473f7c3a009cbc87ee5454c1830c74b8e2a44e445d67b`
 

@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from enterprise_memory_mlx.specialization_audit import (
+    diagnose_phase_b_disagreement,
     prepare_specialization_audit,
     validate_specialization_audit_overlay,
 )
@@ -23,6 +24,33 @@ from enterprise_memory_mlx.task_specialization import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.parametrize(
+    ("human_outcome", "historical_status", "diagnosis"),
+    [
+        ("acceptable", "hard_fail", "possible_evaluator_false_failure"),
+        ("unacceptable", "pass", "possible_evaluator_false_acceptance"),
+        ("unacceptable", "hard_fail", "supported_model_failure"),
+        (
+            "cannot_assess",
+            "pass",
+            "request_evidence_reference_or_contract_ambiguity",
+        ),
+    ],
+)
+def test_phase_b_diagnosis_occurs_only_after_outcomes_are_available(
+    human_outcome: str,
+    historical_status: str,
+    diagnosis: str,
+) -> None:
+    assert (
+        diagnose_phase_b_disagreement(
+            human_outcome=human_outcome,
+            historical_status=historical_status,
+        )
+        == diagnosis
+    )
 
 
 def test_evaluator_v2_contract_is_hash_bound_and_keeps_training_blocked() -> None:
@@ -145,6 +173,7 @@ def test_blinded_audit_packet_and_complete_overlay_validation(tmp_path: Path) ->
         "teacher_attempts": [_attempt(f"TEACH-{index:02d}") for index in range(14)],
         "repair_attempts": [_attempt(f"REPAIR-{index:02d}") for index in range(8)],
     }
+    pilot["teacher_attempts"][0]["deterministic"]["status"] = "hard_fail"
     pilot_path = tmp_path / "pilot.json"
     pilot_path.write_text(json.dumps(pilot), encoding="utf-8")
 
@@ -156,10 +185,19 @@ def test_blinded_audit_packet_and_complete_overlay_validation(tmp_path: Path) ->
 
     with zipfile.ZipFile(artifacts.packet_path) as archive:
         cases_text = archive.read("audit/review_cases.jsonl").decode("utf-8")
+        instructions = archive.read("audit/AUDIT_INSTRUCTIONS.md").decode("utf-8")
+        schema_guide = archive.read("audit/REVIEW_SCHEMA.md").decode("utf-8")
+        manifest = json.loads(archive.read("audit/packet_manifest.json"))
     assert '"role"' not in cases_text
     assert "TEACH-00" not in cases_text
     assert "governed_score" not in cases_text
     assert "PROC-VEND-001" in cases_text
+    assert "Do not guess" in instructions
+    assert "failure_classifications" not in schema_guide
+    assert "acceptable" in schema_guide
+    assert "satisfied" in schema_guide
+    assert manifest["audit_schema_id"].endswith("/v2-two-phase")
+    assert manifest["phase_a_excludes_causal_diagnosis"] is True
 
     rows = [
         json.loads(line)
@@ -172,7 +210,6 @@ def test_blinded_audit_packet_and_complete_overlay_validation(tmp_path: Path) ->
                 "reviewed_at": "2026-09-06T17:00:00+00:00",
                 "human_attested": True,
                 "overall_outcome": "acceptable",
-                "failure_classifications": ["no_failure"],
                 "required_obligations": [
                     {
                         "description": "Confirm all controls.",
@@ -182,6 +219,7 @@ def test_blinded_audit_packet_and_complete_overlay_validation(tmp_path: Path) ->
                 ],
                 "unsafe_claims": [],
                 "supports_next_step": "yes",
+                "ambiguities": [],
                 "notes": "",
             }
         )
@@ -202,6 +240,8 @@ def test_blinded_audit_packet_and_complete_overlay_validation(tmp_path: Path) ->
     report = json.loads(report_path.read_text(encoding="utf-8"))
     assert report["case_count"] == 22
     assert report["overall_outcomes"] == {"acceptable": 22}
+    assert report["phase_b_diagnoses"]["possible_evaluator_false_failure"] == 1
+    assert report["independent_agreement_available"] is False
     assert report["replaces_historical_scores"] is False
 
 

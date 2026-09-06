@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/v4-fact-state",
+  "status": "frozen_before_model_generation",
+  "approval": "explicit_user_direction_in_session",
+  "preserved_v3": {
+    "decision": "no_arm_passes_substantive_gate",
+    "targeted_finding": "Structured remedies produced five paired alternative-preservation wins, zero losses, and preserved alternatives in all thirteen applicable challenger cases.",
+    "report_path": "docs/results/2026-09-06-remedy-logic-v3-final.md",
+    "report_sha256": "90ad3f398885b5897b34e1ee96de637fe6ef4bf92bf4da8afc9f21800c83e7fa",
+    "modified": false
+  },
+  "claim_boundary": {
+    "synthetic": true,
+    "reviewer_kind": "model_advisory",
+    "human_evidence": false,
+    "production_evidence": false,
+    "parametric_acquisition_evidence": false,
+    "passing_does_not_authorize_training": true
+  },
+  "fresh_comparison": {
+    "cases_path": "knowledge/company_task_specialization/v4_fact_state/contrast_cases.jsonl",
+    "policy_records_path": "knowledge/company_task_specialization/v4_fact_state/policy_records.jsonl",
+    "split": "fresh_fact_state_contrast",
+    "contrast_pair_count": 8,
+    "case_count": 16,
+    "arm_count": 2,
+    "output_count": 32,
+    "frozen_before_generation": true,
+    "known_v3_failures_excluded": [
+      "CTS3-QUAL-006",
+      "CTS3-QUAL-023"
+    ],
+    "known_v3_failures_are_development_regressions": true,
+    "paired_variants_are_not_independent_population_evidence": true
+  },
+  "state_authority_contract": {
+    "generator_visible": true,
+    "evaluator_only_answer_state": false,
+    "authorized_workflow_record": "Authenticated workflow state; preserve it unless an unsuperseded authorized record conflicts.",
+    "workflow_status_observation": "An authenticated empty status is unresolved rather than complete or incomplete.",
+    "requester_claim": "Unverified and not equivalent to authenticated state unless policy permits self-attestation.",
+    "document_observation": "Establishes document presence or absence only.",
+    "supersession": "An explicit supersedes_state_id resolves the older state for this bounded contract."
+  },
+  "fact_state_amendment": {
+    "scope": "Short prompt-only amendment to the retained v3 structured-remedy contract.",
+    "requirements": [
+      "Apply policy to supplied operational state.",
+      "Preserve established authorized workflow facts.",
+      "Do not turn absent documentation into unknown completion unless policy requires documentation or verification.",
+      "Treat all-other-controls-complete statements as covering their explicit workflow or policy scope.",
+      "Do not invent proceeding conditions.",
+      "Tie every blocker to a policy requirement and an unmet fact.",
+      "Request information only for genuinely unresolved state.",
+      "Surface unresolved authorized-record conflicts and honor explicit supersession.",
+      "Keep no-blocker conclusions scoped to supplied policy and evidence."
+    ],
+    "extra_output_fields": false,
+    "extra_model_calls": false
+  },
+  "generator": {
+    "model_id": "mlx-community/Qwen3.8-27B-4bit",
+    "revision": "3e6447f082e89cc7f0bc6e5441afd38dfce760ff",
+    "thinking": false,
+    "temperature": 0.0,
+    "max_output_tokens": 1024,
+    "conversation_state_reset_per_attempt": true
+  },
+  "arms": {
+    "v3_structured_control": {
+      "generation_calls_per_case": 1,
+      "prompt_version": "operational-assessment-remedy-logic/v1",
+      "output_schema": "operational-assessment-remedy-logic/v1"
+    },
+    "fact_state_amendment": {
+      "generation_calls_per_case": 1,
+      "prompt_version": "operational-assessment-remedy-logic/v1+fact-state-v1",
+      "output_schema": "operational-assessment-remedy-logic/v1"
+    }
+  },
+  "contrast_coverage": [
+    "recorded completion with absent attachment under completion-only policy",
+    "unknown completion with absent attachment",
+    "explicitly incomplete completion with an attached document",
+    "explicit attachment requirement",
+    "one incomplete control with all other controls complete",
+    "one unknown control with all other controls complete",
+    "unresolved conflicting authorized records",
+    "explicit record supersession",
+    "requester claim versus authorized workflow state",
+    "document presence without completion state",
+    "collective completion versus partial completion",
+    "explicit verification requirement"
+  ],
+  "machine_authority": [
+    "recursive remedy node validity",
+    "operator vocabulary",
+    "request-item coverage",
+    "source-record-ID membership",
+    "generation failure",
+    "truncation"
+  ],
+  "semantic_review_required": [
+    "policy-to-fact application",
+    "state-authority handling",
+    "documentation scope",
+    "unknown versus unmet classification",
+    "collective-completion scope",
+    "unsupported requirements",
+    "unsafe waivers",
+    "remedy logic preservation"
+  ],
+  "review": {
+    "arm_label_blinded": true,
+    "same_output_schema": true,
+    "hidden_fields": [
+      "arm",
+      "case and contrast-pair IDs",
+      "reference and expected state",
+      "machine result",
+      "timing and token cost"
+    ],
+    "paired_by_scenario_after_labels_are_frozen": true
+  },
+  "targeted_learning_rule": {
+    "frozen_before_generation": true,
+    "fact_state_paired_wins_must_exceed_losses": true,
+    "invented_requirement_wins_must_not_be_fewer_than_losses": true,
+    "maximum_remedy_logic_losses": 0,
+    "maximum_unsafe_waiver_losses": 0,
+    "report_even_when_substantive_gate_fails": true
+  },
+  "substantive_gate": {
+    "frozen_before_generation": true,
+    "minimum_cases_per_arm": 16,
+    "minimum_acceptable_rate": 0.9,
+    "maximum_unacceptable_count": 0,
+    "maximum_unsafe_or_unsupported_claim_cases": 0,
+    "all_contrast_cases_acceptable": true,
+    "maximum_generation_failures": 0,
+    "maximum_truncations": 0,
+    "maximum_invalid_structures": 0
+  },
+  "conditional_regression": {
+    "authorized_only_if": "The amendment improves under the targeted-learning rule and passes the fresh substantive gate.",
+    "cases_path": "knowledge/company_task_specialization/v3_remedy_logic/qualification_cases.jsonl",
+    "cases_sha256": "85db86bcfb4d0221f6db807acc3aa6b4c08157422895477ecbabc6c15ca6ba06",
+    "case_count": 24,
+    "arm": "fact_state_amendment",
+    "generation_calls_per_case": 1,
+    "purpose": "Verify no loss of v3 alternative-remedy and multipart gains.",
+    "historical_scores_modified": false
+  },
+  "stop_boundary": {
+    "fresh_fact_state_comparisons": 1,
+    "conditional_v3_regression_passes": 1,
+    "if_fresh_success": "Run the one amended-prompt v3 regression pass, then stop.",
+    "if_same_defect_persists": "Stop synthetic prompt iteration and inspect the real-work seed and evidence contract.",
+    "if_passes_regression": "Require a separately approved bounded example-admission protocol; do not start another prompt tournament."
+  },
+  "cost_accounting": {
+    "end_to_end_wall_time": true,
+    "prompt_tokens": true,
+    "completion_tokens": true,
+    "rendering_and_validation_time": true,
+    "extra_explanation_model_call": false
+  },
+  "blocked": [
+    "student training",
+    "automatic example admission",
+    "stronger-model campaign",
+    "generic revision pass",
+    "deployment",
+    "human-validation claim"
+  ]
+}

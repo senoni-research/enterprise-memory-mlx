@@ -85,6 +85,13 @@ from .specialization_audit import (
     validate_specialization_audit_overlay,
 )
 from .specialization_evaluator import verify_evaluator_v2_contract
+from .specialization_fact_state_experiment import (
+    load_fact_state_assets,
+    prepare_fact_state_review,
+    run_fact_state_comparison,
+    run_fact_state_regression,
+    score_fact_state_review,
+)
 from .specialization_qualification import (
     load_qualification_assets,
     prepare_qualification_review,
@@ -524,6 +531,48 @@ def build_parser() -> argparse.ArgumentParser:
     remedy_score_parser.add_argument(
         "--output-root",
         default="artifacts/company-task-specialization/v3-remedy-logic/decisions",
+    )
+    specialization_actions.add_parser(
+        "validate-fact-state-v4",
+        help="Verify the frozen fact-state contrast experiment",
+    )
+    fact_state_run_parser = specialization_actions.add_parser(
+        "run-fact-state-v4",
+        help="Run the two-arm single-call Qwen27 fact-state comparison",
+    )
+    fact_state_run_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v4-fact-state",
+    )
+    fact_state_review_parser = specialization_actions.add_parser(
+        "prepare-fact-state-review",
+        help="Blind fact-state outputs for arm-label-blinded GPT review",
+    )
+    fact_state_review_parser.add_argument("--comparison", required=True)
+    fact_state_review_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v4-fact-state/reviews",
+    )
+    fact_state_score_parser = specialization_actions.add_parser(
+        "score-fact-state-review",
+        help="Apply frozen learning and qualification rules to GPT labels",
+    )
+    fact_state_score_parser.add_argument("--comparison", required=True)
+    fact_state_score_parser.add_argument("--packet", required=True)
+    fact_state_score_parser.add_argument("--mapping", required=True)
+    fact_state_score_parser.add_argument("--advisory", required=True)
+    fact_state_score_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v4-fact-state/decisions",
+    )
+    fact_state_regression_parser = specialization_actions.add_parser(
+        "run-fact-state-regression-v4",
+        help="Run the sole v3 regression pass after a successful fresh decision",
+    )
+    fact_state_regression_parser.add_argument("--fresh-decision", required=True)
+    fact_state_regression_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v4-fact-state/regression",
     )
     specialization_pilot_parser = specialization_actions.add_parser(
         "pilot",
@@ -1288,6 +1337,69 @@ def _specialization(root: Path, args: argparse.Namespace) -> None:
         console.print(
             "[bold yellow]Passing may designate a bounded advisory configuration, "
             "but does not authorize training.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "validate-fact-state-v4":
+        assets = load_fact_state_assets(root)
+        console.print(
+            "[green]Fact-state v4 contract verified:[/green] "
+            f"{len(assets.cases)} cases in 8 contrast pairs"
+        )
+        console.print(
+            "[bold yellow]One fresh comparison is allowed; training remains blocked.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "run-fact-state-v4":
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        artifacts = run_fact_state_comparison(
+            root=root,
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Fact-state comparison:[/green] {artifacts.report_path}")
+        console.print(
+            "[bold yellow]Awaiting arm-label-blinded GPT review; no regression "
+            "or training is yet authorized.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "prepare-fact-state-review":
+        artifacts = prepare_fact_state_review(
+            root=root,
+            comparison_path=_rooted_path(root, args.comparison),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Fact-state review packet:[/green] {artifacts.packet_path}")
+        console.print(f"Private mapping: {artifacts.mapping_path}")
+        console.print(f"Model-advisory template: {artifacts.template_path}")
+        console.print("[bold yellow]Share only the blinded packet.[/bold yellow]")
+        return
+    if args.specialization_action == "score-fact-state-review":
+        artifacts = score_fact_state_review(
+            root=root,
+            comparison_path=_rooted_path(root, args.comparison),
+            packet_path=_rooted_path(root, args.packet),
+            mapping_path=_rooted_path(root, args.mapping),
+            advisory_path=_rooted_path(root, args.advisory),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Fact-state decision:[/green] {artifacts.markdown_path}")
+        console.print(
+            "[bold yellow]Only a fresh success may authorize one v3 regression "
+            "pass; training remains blocked.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "run-fact-state-regression-v4":
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        artifacts = run_fact_state_regression(
+            root=root,
+            fresh_decision_path=_rooted_path(root, args.fresh_decision),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Fact-state v3 regression:[/green] {artifacts.report_path}")
+        console.print(
+            "[bold yellow]This is the sole conditional regression pass; "
+            "training remains blocked.[/bold yellow]"
         )
         return
     if args.specialization_action == "pilot":

@@ -183,6 +183,21 @@ to correct multipart decisions, alternatives, unknown-versus-unmet states, and
 unsupported consequences before retesting the existing Qwen system. Training
 and stronger-teacher work remain blocked.
 
+### Supplier-workflow model-advisory qualification
+
+`company-task-specialization/v2-model-advisory` freezes 14 fresh synthetic
+cases from one supplier-onboarding and first-invoice workflow. It compares the
+same pinned Qwen27 with a baseline single pass, an explicit
+obligation-by-obligation prompt, and one completeness revision pass. The
+revision arm reuses the obligation output as its draft and reports the combined
+latency and token cost.
+
+The 42 generations completed without failure or truncation and all parsed under
+the multipart schema. A blinded packet containing every output is awaiting the
+same external GPT advisory process. Until those labels are returned, no arm is
+qualified. This experiment cannot authorize student training, a stronger
+teacher, or production use.
+
 ## Later milestones
 
 ### Recovery

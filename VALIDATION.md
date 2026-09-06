@@ -199,6 +199,20 @@ including possible false failures and false acceptances. It authorizes only a
 fresh model-advisory task-contract experiment; teacher promotion, student
 training, and production claims remain blocked.
 
+Qualification v2 is frozen separately under
+`company-task-specialization/v2-model-advisory`. Its 14 cases cover one
+synthetic supplier-onboarding and first-invoice workflow, including multipart
+decisions, alternative remedies, known-unmet versus unknown conditions, and
+unsupported-consequence traps. The case, protocol, source, and protected
+evaluation hashes are verified before generation.
+
+The pinned Qwen27 comparison completed all 42 generations across three arms.
+Every output parsed under the multipart schema, with zero generation failures
+and zero truncations. Five rows repeated an authorized record ID for distinct
+claims and retain the frozen machine warning; all rows remain in the blinded
+semantic review packet. Prompt-arm qualification is not scored until that GPT
+review returns.
+
 The synthetic Northstar cases validate pipeline mechanics only. A future
 specialization claim requires approved real work and a separately frozen,
 untouched test. A future closed-book acquisition claim must use unseen

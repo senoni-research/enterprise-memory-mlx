@@ -273,6 +273,7 @@ contract and synthetic development cases are under
 ```bash
 emmlx specialization validate-contract
 emmlx specialization validate-evaluator-v2
+emmlx specialization validate-qualification-v2
 emmlx specialization pilot
 emmlx specialization prepare-audit \
   --pilot artifacts/company-task-specialization/v1/pilot-0276f15bf32ef4a4/specialization-pilot.json
@@ -324,6 +325,24 @@ emmlx specialization validate-real-seed \
   --input knowledge/private/company-task-specialization/real-work.jsonl \
   --output artifacts/company-task-specialization/real-work-seed-manifest.json
 ```
+
+The owner elected to continue the next exploratory cycle with GPT labels only.
+`company-task-specialization/v2-model-advisory` therefore makes no human or
+production claim. It freezes 14 fresh synthetic supplier-workflow cases and
+compares the same pinned Qwen27 under a baseline prompt, an obligation-focused
+prompt, and one bounded revision pass:
+
+```bash
+emmlx specialization run-qualification-v2
+emmlx specialization prepare-qualification-review \
+  --comparison artifacts/company-task-specialization/v2/<run>/qualification-comparison.json
+```
+
+The completed generation artifact has 42/42 structured outputs and no
+generation failures or truncation. Semantic qualification remains pending the
+blinded GPT review. No student training or stronger-teacher run is authorized.
+The hash-bound generation summary is
+[`docs/results/2026-09-06-supplier-qualification-v2-pending-advisory.md`](docs/results/2026-09-06-supplier-qualification-v2-pending-advisory.md).
 
 ## Latest acquisition smoke
 

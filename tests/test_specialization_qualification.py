@@ -14,6 +14,7 @@ from enterprise_memory_mlx.specialization_qualification import (
     machine_grade_qualification,
     prepare_qualification_review,
     run_qualification_comparison,
+    score_qualification_advisory,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -140,3 +141,47 @@ def test_qualification_runs_three_bounded_arms_and_blinds_review(
         "obligation_single_pass",
         "obligation_revision_pass",
     }
+
+    advisory_rows = [
+        json.loads(line) for line in review.template_path.read_text(encoding="utf-8").splitlines()
+    ]
+    for row in advisory_rows:
+        row.update(
+            {
+                "reviewer_id": "Test model advisory",
+                "reviewed_at": "2026-09-06T20:00:00+00:00",
+                "overall_outcome": "acceptable",
+                "required_obligations": [
+                    {
+                        "description": "Give the grounded operational decision.",
+                        "material": True,
+                        "satisfied": "yes",
+                    }
+                ],
+                "unsafe_claims": [],
+                "supports_next_step": "yes",
+                "ambiguities": [],
+                "notes": "Grounded and complete.",
+            }
+        )
+    advisory_path = tmp_path / "advisory.jsonl"
+    advisory_path.write_text(
+        "".join(json.dumps(row) + "\n" for row in advisory_rows),
+        encoding="utf-8",
+    )
+    decision = score_qualification_advisory(
+        root=ROOT,
+        comparison_path=artifacts.report_path,
+        packet_path=review.packet_path,
+        mapping_path=review.mapping_path,
+        advisory_path=advisory_path,
+        output_root=tmp_path / "decisions",
+    )
+    decision_report = json.loads(decision.report_path.read_text(encoding="utf-8"))
+    assert decision_report["decision"] == "one_or_more_arms_qualified_model_advisory_only"
+    assert set(decision_report["qualified_arms"]) == {
+        "baseline_single_pass",
+        "obligation_single_pass",
+        "obligation_revision_pass",
+    }
+    assert decision_report["training_authorized"] is False

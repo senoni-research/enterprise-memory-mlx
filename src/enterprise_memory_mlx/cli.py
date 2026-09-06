@@ -89,6 +89,7 @@ from .specialization_qualification import (
     load_qualification_assets,
     prepare_qualification_review,
     run_qualification_comparison,
+    score_qualification_advisory,
 )
 from .specialization_real_work import validate_real_work_seed
 from .split_contract import load_eval_suites, verify_frozen_assets
@@ -472,6 +473,18 @@ def build_parser() -> argparse.ArgumentParser:
     qualification_review_parser.add_argument(
         "--output-root",
         default="artifacts/company-task-specialization/v2/reviews",
+    )
+    qualification_score_parser = specialization_actions.add_parser(
+        "score-qualification-review",
+        help="Unblind GPT qualification labels and apply the frozen gate",
+    )
+    qualification_score_parser.add_argument("--comparison", required=True)
+    qualification_score_parser.add_argument("--packet", required=True)
+    qualification_score_parser.add_argument("--mapping", required=True)
+    qualification_score_parser.add_argument("--advisory", required=True)
+    qualification_score_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v2/decisions",
     )
     specialization_pilot_parser = specialization_actions.add_parser(
         "pilot",
@@ -1169,6 +1182,21 @@ def _specialization(root: Path, args: argparse.Namespace) -> None:
         console.print(
             "[bold yellow]Share only the packet. Prompt arms and references "
             "remain private.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "score-qualification-review":
+        artifacts = score_qualification_advisory(
+            root=root,
+            comparison_path=_rooted_path(root, args.comparison),
+            packet_path=_rooted_path(root, args.packet),
+            mapping_path=_rooted_path(root, args.mapping),
+            advisory_path=_rooted_path(root, args.advisory),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Qualification decision:[/green] {artifacts.markdown_path}")
+        console.print(
+            "[bold yellow]Model-advisory-only decision; "
+            "training and stronger-teacher work remain blocked.[/bold yellow]"
         )
         return
     if args.specialization_action == "pilot":

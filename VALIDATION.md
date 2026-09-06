@@ -210,8 +210,14 @@ The pinned Qwen27 comparison completed all 42 generations across three arms.
 Every output parsed under the multipart schema, with zero generation failures
 and zero truncations. Five rows repeated an authorized record ID for distinct
 claims and retain the frozen machine warning; all rows remain in the blinded
-semantic review packet. Prompt-arm qualification is not scored until that GPT
-review returns.
+semantic review packet.
+
+The completed GPT review rated each arm 13/14 acceptable and one minor revision,
+with no unacceptable output and all answers supporting the next step. The same
+alternative-remedy case produced the minor issue in every arm. Each arm passed
+the acceptable-rate threshold but failed the frozen zero-unsafe and
+targeted-case requirements. The final decision is `no_arm_qualified`; the
+historical results and training stop remain unchanged.
 
 The synthetic Northstar cases validate pipeline mechanics only. A future
 specialization claim requires approved real work and a separately frozen,

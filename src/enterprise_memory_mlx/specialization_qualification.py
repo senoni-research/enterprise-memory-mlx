@@ -26,6 +26,17 @@ OBLIGATION_PROMPT_VERSION = "operational-assessment-multipart/obligation-v1"
 REVISION_PROMPT_VERSION = "operational-assessment-multipart/revision-v1"
 REVIEW_PACKET_SCHEMA_ID = "company-task-specialization-qualification-review/v1"
 ARMS = ("baseline_single_pass", "obligation_single_pass", "obligation_revision_pass")
+ADVISORY_OUTCOMES = frozenset({"acceptable", "minor_revision", "unacceptable", "cannot_assess"})
+SATISFACTION_VALUES = frozenset({"yes", "no", "unclear"})
+TARGETED_GATE_TAGS = frozenset(
+    {
+        "multipart_decision",
+        "unverified_condition",
+        "unknown_not_unmet",
+        "known_unmet",
+        "alternative_remedies",
+    }
+)
 
 _SCHEMA = """\
 {
@@ -163,6 +174,13 @@ class QualificationReviewArtifacts:
     packet_path: Path
     mapping_path: Path
     template_path: Path
+
+
+@dataclass(frozen=True)
+class QualificationDecisionArtifacts:
+    directory: Path
+    report_path: Path
+    markdown_path: Path
 
 
 def load_qualification_assets(root: Path) -> QualificationAssets:
@@ -525,6 +543,350 @@ def prepare_qualification_review(
     )
 
 
+def score_qualification_advisory(
+    *,
+    root: Path,
+    comparison_path: Path,
+    packet_path: Path,
+    mapping_path: Path,
+    advisory_path: Path,
+    output_root: Path,
+) -> QualificationDecisionArtifacts:
+    """Unblind frozen GPT labels and apply the pre-registered gate per arm."""
+    assets = load_qualification_assets(root)
+    comparison_path = comparison_path.resolve()
+    packet_path = packet_path.resolve()
+    mapping_path = mapping_path.resolve()
+    advisory_path = advisory_path.resolve()
+    comparison_bytes = comparison_path.read_bytes()
+    comparison_hash = hashlib.sha256(comparison_bytes).hexdigest()
+    comparison = json.loads(comparison_bytes)
+    if (
+        not isinstance(comparison, dict)
+        or comparison.get("protocol_id") != PROTOCOL_ID
+        or comparison.get("artifact_chain", {}).get("protocol_sha256") != assets.protocol_hash
+        or comparison.get("artifact_chain", {}).get("qualification_cases_sha256")
+        != assets.cases_hash
+    ):
+        raise ValueError("Qualification comparison does not match frozen assets")
+
+    with zipfile.ZipFile(packet_path) as archive:
+        packet_manifest = json.loads(archive.read("review/packet_manifest.json"))
+        if (
+            not isinstance(packet_manifest, dict)
+            or packet_manifest.get("review_schema_id") != REVIEW_PACKET_SCHEMA_ID
+            or packet_manifest.get("source_comparison_sha256") != comparison_hash
+        ):
+            raise ValueError("Qualification review packet does not match comparison")
+        packet_files = packet_manifest.get("files")
+        if not isinstance(packet_files, dict):
+            raise ValueError("Qualification review packet has no file hashes")
+        for name, expected_hash in packet_files.items():
+            content = archive.read(f"review/{name}")
+            if hashlib.sha256(content).hexdigest() != expected_hash:
+                raise ValueError(f"Qualification review member hash mismatch: {name}")
+        packet_cases = _read_jsonl_bytes(archive.read("review/review_cases.jsonl"))
+
+    mapping_bytes = mapping_path.read_bytes()
+    if hashlib.sha256(mapping_bytes).hexdigest() != packet_manifest["private_mapping_sha256"]:
+        raise ValueError("Qualification private mapping hash mismatch")
+    mapping = json.loads(mapping_bytes)
+    if (
+        not isinstance(mapping, dict)
+        or mapping.get("review_schema_id") != REVIEW_PACKET_SCHEMA_ID
+        or mapping.get("source_comparison_sha256") != comparison_hash
+        or not isinstance(mapping.get("mapping"), list)
+    ):
+        raise ValueError("Qualification private mapping is invalid")
+    mapping_by_id = {str(row.get("review_id")): row for row in mapping["mapping"]}
+    packet_ids = {str(row["review_id"]) for row in packet_cases}
+    if set(mapping_by_id) != packet_ids:
+        raise ValueError("Qualification mapping IDs do not match packet")
+
+    advisory_rows = read_jsonl(advisory_path)
+    advisory_by_id: dict[str, dict[str, Any]] = {}
+    for row in advisory_rows:
+        _validate_advisory_row(row)
+        review_id = str(row["review_id"])
+        if review_id in advisory_by_id:
+            raise ValueError(f"Duplicate qualification review ID: {review_id}")
+        advisory_by_id[review_id] = row
+    if set(advisory_by_id) != packet_ids:
+        raise ValueError("Qualification advisory is incomplete or has unknown IDs")
+
+    case_by_id = {str(case["case_id"]): case for case in assets.cases}
+    comparison_attempts = comparison.get("attempts")
+    if not isinstance(comparison_attempts, dict):
+        raise ValueError("Qualification comparison has no attempts")
+    attempt_by_arm_case = {
+        (arm, str(attempt["case_id"])): attempt
+        for arm, attempts in comparison_attempts.items()
+        for attempt in attempts
+    }
+    rows_by_arm: dict[str, list[dict[str, Any]]] = {arm: [] for arm in ARMS}
+    diagnosed_rows: list[dict[str, Any]] = []
+    for review_id, advisory in advisory_by_id.items():
+        mapping_row = mapping_by_id[review_id]
+        arm = str(mapping_row["arm"])
+        case_id = str(mapping_row["case_id"])
+        if arm not in rows_by_arm or case_id not in case_by_id:
+            raise ValueError("Qualification mapping contains an unknown arm or case")
+        if (arm, case_id) not in attempt_by_arm_case:
+            raise ValueError("Qualification mapping does not resolve to an attempt")
+        combined = {
+            "review_id": review_id,
+            "case_id": case_id,
+            "arm": arm,
+            "scenario_family": case_by_id[case_id]["scenario_family"],
+            "evaluation_tags": case_by_id[case_id]["evaluation_tags"],
+            "overall_outcome": advisory["overall_outcome"],
+            "supports_next_step": advisory["supports_next_step"],
+            "unsafe_claim_count": len(advisory["unsafe_claims"]),
+            "advisory_row_sha256": sha256_json(advisory),
+        }
+        rows_by_arm[arm].append(combined)
+        diagnosed_rows.append(combined)
+
+    gate = assets.protocol["continuation_gate"]
+    baseline_acceptable = sum(
+        row["overall_outcome"] == "acceptable" for row in rows_by_arm["baseline_single_pass"]
+    )
+    arm_results = {
+        arm: _score_arm(
+            arm=arm,
+            rows=rows_by_arm[arm],
+            attempts=list(comparison_attempts[arm]),
+            gate=gate,
+            baseline_acceptable=baseline_acceptable,
+        )
+        for arm in ARMS
+    }
+    qualified_arms = [arm for arm, result in arm_results.items() if result["qualified"]]
+    outcome_signatures = {
+        tuple(sorted(result["outcomes"].items())) for result in arm_results.values()
+    }
+    decision = (
+        "one_or_more_arms_qualified_model_advisory_only" if qualified_arms else "no_arm_qualified"
+    )
+    report = {
+        "schema_version": 1,
+        "protocol_id": PROTOCOL_ID,
+        "status": "complete_model_advisory_not_human_validated",
+        "created_at": datetime.now(UTC).isoformat(),
+        "decision": decision,
+        "qualified_arms": qualified_arms,
+        "arm_results": arm_results,
+        "quality_outcome_counts_identical_across_arms": len(outcome_signatures) == 1,
+        "prompt_improvement_observed": any(
+            arm_results[arm]["acceptable_count"] > baseline_acceptable
+            for arm in ARMS
+            if arm != "baseline_single_pass"
+        ),
+        "descriptive_operational_choice": (
+            "baseline_single_pass"
+            if len(outcome_signatures) == 1
+            else "none_pre_registered_gate_controls"
+        ),
+        "descriptive_choice_is_not_qualification": True,
+        "diagnosed_rows": sorted(
+            diagnosed_rows,
+            key=lambda row: (str(row["case_id"]), str(row["arm"])),
+        ),
+        "source_bindings": {
+            "protocol_sha256": assets.protocol_hash,
+            "qualification_cases_sha256": assets.cases_hash,
+            "comparison_sha256": comparison_hash,
+            "packet_sha256": hashlib.sha256(packet_path.read_bytes()).hexdigest(),
+            "mapping_sha256": hashlib.sha256(mapping_bytes).hexdigest(),
+            "advisory_sha256": hashlib.sha256(advisory_path.read_bytes()).hexdigest(),
+        },
+        "reviewer_kind": "model_advisory",
+        "reviewers": sorted({str(row["reviewer_id"]) for row in advisory_rows}),
+        "human_evidence": False,
+        "human_attested": False,
+        "training_authorized": False,
+        "stronger_teacher_authorized": False,
+        "production_evidence": False,
+        "historical_results_replaced": False,
+    }
+    run_identity = sha256_json(report["source_bindings"])[:16]
+    output_dir = output_root.resolve() / f"decision-{run_identity}"
+    if output_dir.exists():
+        raise FileExistsError(f"Refusing to overwrite qualification decision: {output_dir}")
+    output_dir.mkdir(parents=True)
+    report_path = output_dir / "qualification-decision.json"
+    markdown_path = output_dir / "qualification-decision.md"
+    atomic_write_text(
+        report_path,
+        json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+    )
+    atomic_write_text(markdown_path, _render_qualification_decision(report))
+    return QualificationDecisionArtifacts(
+        directory=output_dir,
+        report_path=report_path,
+        markdown_path=markdown_path,
+    )
+
+
+def _score_arm(
+    *,
+    arm: str,
+    rows: Sequence[Mapping[str, Any]],
+    attempts: Sequence[Mapping[str, Any]],
+    gate: Mapping[str, Any],
+    baseline_acceptable: int,
+) -> dict[str, Any]:
+    outcomes = {
+        outcome: sum(row["overall_outcome"] == outcome for row in rows)
+        for outcome in sorted(ADVISORY_OUTCOMES)
+    }
+    acceptable = outcomes["acceptable"]
+    unsafe_cases = sum(int(row["unsafe_claim_count"] > 0) for row in rows)
+    targeted_nonacceptable = sorted(
+        str(row["case_id"])
+        for row in rows
+        if set(row["evaluation_tags"]) & TARGETED_GATE_TAGS
+        and row["overall_outcome"] != "acceptable"
+    )
+    generation_failures = sum(attempt["generation_status"] != "generated" for attempt in attempts)
+    invalid_structured = sum(attempt["structured_parse_status"] != "valid" for attempt in attempts)
+    machine_hard_warnings = sum(
+        attempt["machine_grade"]["status"] == "hard_fail" for attempt in attempts
+    )
+    end_to_end_seconds = sum(
+        float(attempt.get("end_to_end_elapsed_seconds") or attempt.get("elapsed_seconds") or 0.0)
+        for attempt in attempts
+    )
+    end_to_end_tokens = sum(
+        int(attempt.get("end_to_end_completion_tokens") or attempt.get("completion_tokens") or 0)
+        for attempt in attempts
+    )
+    checks = {
+        "minimum_cases": len(rows) >= int(gate["minimum_cases_per_arm"]),
+        "generation_failures": generation_failures <= int(gate["maximum_generation_failures"]),
+        "invalid_structured_outputs": invalid_structured
+        <= int(gate["maximum_invalid_structured_outputs"]),
+        "acceptable_rate": (acceptable / len(rows) if rows else 0.0)
+        >= float(gate["qualified_arm_minimum_acceptable_rate"]),
+        "unacceptable_count": outcomes["unacceptable"]
+        <= int(gate["qualified_arm_maximum_unacceptable_count"]),
+        "unsafe_claim_case_count": unsafe_cases
+        <= int(gate["qualified_arm_maximum_unsafe_claim_case_count"]),
+        "targeted_cases_all_acceptable": not targeted_nonacceptable,
+        "prompt_improvement_noninferior": (
+            True if arm == "baseline_single_pass" else acceptable >= baseline_acceptable
+        ),
+        "revision_latency_reported": (
+            True
+            if arm != "obligation_revision_pass"
+            else all(attempt.get("end_to_end_elapsed_seconds") is not None for attempt in attempts)
+        ),
+    }
+    return {
+        "arm": arm,
+        "case_count": len(rows),
+        "outcomes": outcomes,
+        "acceptable_count": acceptable,
+        "acceptable_rate": acceptable / len(rows) if rows else 0.0,
+        "supports_next_step_yes": sum(row["supports_next_step"] == "yes" for row in rows),
+        "unsafe_claim_case_count": unsafe_cases,
+        "targeted_nonacceptable_case_ids": targeted_nonacceptable,
+        "generation_failures": generation_failures,
+        "invalid_structured_outputs": invalid_structured,
+        "machine_hard_warning_count": machine_hard_warnings,
+        "end_to_end_elapsed_seconds": end_to_end_seconds,
+        "end_to_end_completion_tokens": end_to_end_tokens,
+        "checks": checks,
+        "qualified": all(checks.values()),
+    }
+
+
+def _validate_advisory_row(row: Mapping[str, Any]) -> None:
+    required = {
+        "review_id",
+        "reviewer_kind",
+        "reviewer_id",
+        "reviewed_at",
+        "human_attested",
+        "overall_outcome",
+        "required_obligations",
+        "unsafe_claims",
+        "supports_next_step",
+        "ambiguities",
+        "notes",
+    }
+    if set(row) != required:
+        raise ValueError("Qualification advisory row has an invalid schema")
+    if (
+        row["reviewer_kind"] != "model_advisory"
+        or row["human_attested"] is not False
+        or not str(row["reviewer_id"]).strip()
+        or not str(row["reviewed_at"]).strip()
+        or row["overall_outcome"] not in ADVISORY_OUTCOMES
+        or row["supports_next_step"] not in SATISFACTION_VALUES
+    ):
+        raise ValueError("Qualification advisory identity or outcome is invalid")
+    obligations = row["required_obligations"]
+    if not isinstance(obligations, list):
+        raise ValueError("Qualification advisory obligations must be an array")
+    for obligation in obligations:
+        if (
+            not isinstance(obligation, dict)
+            or set(obligation) != {"description", "material", "satisfied"}
+            or not str(obligation.get("description", "")).strip()
+            or not isinstance(obligation.get("material"), bool)
+            or obligation.get("satisfied") not in SATISFACTION_VALUES
+        ):
+            raise ValueError("Qualification advisory obligation is invalid")
+    for field in ("unsafe_claims", "ambiguities"):
+        values = row[field]
+        if not isinstance(values, list) or any(
+            not isinstance(value, str) or not value.strip() for value in values
+        ):
+            raise ValueError(f"Qualification advisory {field} is invalid")
+    if not isinstance(row["notes"], str):
+        raise ValueError("Qualification advisory notes must be a string")
+
+
+def _render_qualification_decision(report: Mapping[str, Any]) -> str:
+    lines = [
+        "# Supplier-workflow qualification v2 — model-advisory decision",
+        "",
+        "**Model-advisory evidence only. No human validation or training authorization.**",
+        "",
+        f"Decision: **{report['decision']}**",
+        "",
+        "| Arm | Acceptable | Minor | Unacceptable | Unsafe | Time (s) | Tokens | Qualified |",
+        "|---|---:|---:|---:|---:|---:|---:|---|",
+    ]
+    for arm in ARMS:
+        result = report["arm_results"][arm]
+        lines.append(
+            f"| {arm} | {result['acceptable_count']}/{result['case_count']} | "
+            f"{result['outcomes']['minor_revision']} | "
+            f"{result['outcomes']['unacceptable']} | "
+            f"{result['unsafe_claim_case_count']} | "
+            f"{result['end_to_end_elapsed_seconds']:.3f} | "
+            f"{result['end_to_end_completion_tokens']} | "
+            f"{str(result['qualified']).lower()} |"
+        )
+    lines.extend(
+        [
+            "",
+            f"Quality outcome counts identical across arms: "
+            f"**{str(report['quality_outcome_counts_identical_across_arms']).lower()}**",
+            "",
+            f"Prompt improvement observed: "
+            f"**{str(report['prompt_improvement_observed']).lower()}**",
+            "",
+            "The historical pilot remains unchanged. Student training and a stronger "
+            "teacher remain unauthorized.",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def _generate_attempt(
     assets: QualificationAssets,
     *,
@@ -777,6 +1139,17 @@ def _jsonl_bytes(rows: Sequence[Mapping[str, Any]]) -> bytes:
     return "".join(
         json.dumps(row, sort_keys=True, ensure_ascii=False) + "\n" for row in rows
     ).encode("utf-8")
+
+
+def _read_jsonl_bytes(content: bytes) -> list[dict[str, Any]]:
+    rows = []
+    for line in content.decode("utf-8").splitlines():
+        if line.strip():
+            value = json.loads(line)
+            if not isinstance(value, dict):
+                raise ValueError("Qualification review JSONL row must be an object")
+            rows.append(value)
+    return rows
 
 
 def _verify_binding(root: Path, binding: Any, label: str) -> None:

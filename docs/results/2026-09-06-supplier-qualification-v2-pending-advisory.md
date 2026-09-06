@@ -6,6 +6,10 @@ Status: blinded GPT advisory pending
 
 Classification: synthetic, model-advisory development evidence only
 
+Superseded for decision purposes by
+[`2026-09-06-supplier-qualification-v2-final.md`](2026-09-06-supplier-qualification-v2-final.md).
+This file preserves the pre-review generation state.
+
 ## Design
 
 Fourteen fresh cases were frozen for the synthetic

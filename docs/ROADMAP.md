@@ -193,10 +193,16 @@ revision arm reuses the obligation output as its draft and reports the combined
 latency and token cost.
 
 The 42 generations completed without failure or truncation and all parsed under
-the multipart schema. A blinded packet containing every output is awaiting the
-same external GPT advisory process. Until those labels are returned, no arm is
-qualified. This experiment cannot authorize student training, a stronger
-teacher, or production use.
+the multipart schema. The blinded GPT review rated all three arms identically:
+13/14 acceptable, one minor revision, and zero unacceptable. Every arm repeated
+the same overexclusive exception-remedy wording on the same targeted case and
+therefore failed the frozen zero-unsafe and targeted-case gates.
+
+The result is `no_arm_qualified`. The longer obligation prompt and two-pass
+revision produced no quality gain, so neither advances. A future bounded
+development change should represent alternative remedies explicitly rather
+than add more generic prompting or a stronger model. This experiment cannot
+authorize student training, a stronger teacher, or production use.
 
 ## Later milestones
 

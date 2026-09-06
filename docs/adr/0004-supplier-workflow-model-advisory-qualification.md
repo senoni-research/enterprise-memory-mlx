@@ -2,7 +2,7 @@
 
 Date: 6 September 2026
 
-Status: generation complete; blinded model review pending
+Status: complete; no arm qualified
 
 ## Context
 
@@ -47,11 +47,18 @@ All 42 expected generations completed:
 
 There were no truncations. Five outputs repeated the same authorized source ID
 for distinct claims and retain the frozen duplicate-citation machine warning.
-Because semantic review is still pending, no arm is qualified.
+
+The blinded GPT review rated each arm 13/14 acceptable, one minor revision, and
+zero unacceptable. All 42 answers supported the next step. The same targeted
+invoice case failed the zero-unsafe and all-targeted-cases-acceptable checks in
+every arm because its action made a recorded Procurement exception sound
+compulsory while omitting the approved-purchase-order alternative. Therefore,
+the frozen decision is `no_arm_qualified`.
 
 ## Consequences
 
 The review packet hides prompt arm, case ID, reference answer, machine result,
-and latency. The private mapping is retained locally. Student training,
-stronger-teacher comparison, GRPO, gisting, autonomous admission, and
-deployment remain blocked.
+and latency. The private mapping is retained locally. The obligation prompt and
+revision pass produced no advisory improvement over baseline while increasing
+cost. Student training, stronger-teacher comparison, GRPO, gisting, autonomous
+admission, and deployment remain blocked.

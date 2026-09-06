@@ -336,13 +336,23 @@ prompt, and one bounded revision pass:
 emmlx specialization run-qualification-v2
 emmlx specialization prepare-qualification-review \
   --comparison artifacts/company-task-specialization/v2/<run>/qualification-comparison.json
+emmlx specialization score-qualification-review \
+  --comparison <qualification-comparison.json> \
+  --packet <qualification-model-advisory.zip> \
+  --mapping <private-review-map.json> \
+  --advisory <qualification-model-advisory.jsonl>
 ```
 
 The completed generation artifact has 42/42 structured outputs and no
-generation failures or truncation. Semantic qualification remains pending the
-blinded GPT review. No student training or stronger-teacher run is authorized.
-The hash-bound generation summary is
+generation failures or truncation. The blinded GPT review rated every arm
+13/14 acceptable with one minor alternative-remedy wording defect and no
+unacceptable answers. Because every arm failed the frozen zero-unsafe and
+targeted-case gates, no arm qualified. The obligation prompt and revision pass
+provided no quality improvement over the faster baseline. No student training
+or stronger-teacher run is authorized. The generation summary is
 [`docs/results/2026-09-06-supplier-qualification-v2-pending-advisory.md`](docs/results/2026-09-06-supplier-qualification-v2-pending-advisory.md).
+The final decision is
+[`docs/results/2026-09-06-supplier-qualification-v2-final.md`](docs/results/2026-09-06-supplier-qualification-v2-final.md).
 
 ## Latest acquisition smoke
 

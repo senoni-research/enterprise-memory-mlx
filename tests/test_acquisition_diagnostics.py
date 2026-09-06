@@ -53,6 +53,8 @@ def test_general_diagnostic_is_explicitly_non_promotable(
     adapter_dir.mkdir()
     adapter = VerifiedAcquisitionAdapter(
         run_manifest_path=tmp_path / "run.json",
+        run_identity="run--fixture",
+        profile="fixture",
         model_id="fake/model",
         model_revision="revision",
         adapter_path=adapter_dir,

@@ -5,12 +5,13 @@ from __future__ import annotations
 import hashlib
 import json
 from collections import Counter
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
+from .benchmark import parse_final_answer
 from .gates import (
     DEFAULT_PROMOTION_GATES,
     GateObservation,
@@ -122,8 +123,7 @@ def grade_benchmark_artifact(
     freeze_problems = verify_frozen_assets(eval_dir)
     if freeze_problems:
         raise ValueError(
-            "Frozen evaluation assets failed verification:\n"
-            + "\n".join(freeze_problems)
+            "Frozen evaluation assets failed verification:\n" + "\n".join(freeze_problems)
         )
     raw_bytes = raw_artifact_path.read_bytes()
     try:
@@ -133,9 +133,7 @@ def grade_benchmark_artifact(
     if not isinstance(artifact, dict) or artifact.get("graded") is not False:
         raise ValueError("Expected an ungraded benchmark artifact")
 
-    fixture_manifest = json.loads(
-        (eval_dir / "freeze_manifest.json").read_text(encoding="utf-8")
-    )
+    fixture_manifest = json.loads((eval_dir / "freeze_manifest.json").read_text(encoding="utf-8"))
     fixture_hash = str(fixture_manifest.get("combined_hash", ""))
     if artifact.get("fixture_hash") != fixture_hash:
         raise ValueError("Benchmark fixture hash does not match frozen evaluation assets")
@@ -147,10 +145,7 @@ def grade_benchmark_artifact(
     _validate_result_matrix(artifact, artifact_rows, questions)
 
     configured_parametric = tuple(
-        str(item)
-        for item in artifact.get("config", {}).get(
-            "parametric_source_record_ids", []
-        )
+        str(item) for item in artifact.get("config", {}).get("parametric_source_record_ids", [])
     )
     allowed_parametric = tuple(allowed_parametric_record_ids) or configured_parametric
     rows = tuple(
@@ -201,6 +196,66 @@ class SemanticJudgingOutcome:
             "score_source": self.score_source,
             "dual": self.dual.to_dict() if self.dual is not None else None,
         }
+
+
+@dataclass(frozen=True)
+class SingleJudgeAdvisoryOutcome:
+    """Non-promotable single-model score after authoritative deterministic checks."""
+
+    final_score: float | None
+    all_attempted_score: float
+    score_source: str
+    verification_status: str = "single_local_judge_advisory"
+    reviewer_kind: str = "model"
+    human_approved: bool = False
+    promotion_eligible: bool = False
+    usable_for_judge_certification: bool = False
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "final_score": self.final_score,
+            "all_attempted_score": self.all_attempted_score,
+            "score_source": self.score_source,
+            "verification_status": self.verification_status,
+            "reviewer_kind": self.reviewer_kind,
+            "human_approved": self.human_approved,
+            "promotion_eligible": self.promotion_eligible,
+            "usable_for_judge_certification": self.usable_for_judge_certification,
+        }
+
+
+def apply_single_model_advisory(
+    deterministic_row: DeterministicGradeRow,
+    model_label: Mapping[str, Any] | None,
+) -> SingleJudgeAdvisoryOutcome:
+    """Clamp hard failures and retain invalid model output in the denominator."""
+    if deterministic_row.generation_status != "generated":
+        return SingleJudgeAdvisoryOutcome(
+            final_score=None,
+            all_attempted_score=0.0,
+            score_source="unscored_generation_failure",
+        )
+    if deterministic_row.status == "deterministic_hard_fail":
+        return SingleJudgeAdvisoryOutcome(
+            final_score=0.0,
+            all_attempted_score=0.0,
+            score_source="deterministic_hard_fail",
+        )
+    if model_label is None or model_label.get("valid") is not True:
+        return SingleJudgeAdvisoryOutcome(
+            final_score=None,
+            all_attempted_score=0.0,
+            score_source="verifier_parse_failure",
+        )
+    score = model_label.get("score")
+    if isinstance(score, bool) or score not in {0, 0.5, 1}:
+        raise ValueError("Single-model advisory emitted an illegal score")
+    numeric = float(score)
+    return SingleJudgeAdvisoryOutcome(
+        final_score=numeric,
+        all_attempted_score=numeric,
+        score_source="single_local_judge_advisory",
+    )
 
 
 def judge_benchmark_artifact(
@@ -312,6 +367,33 @@ def _grade_row(
 ) -> DeterministicGradeRow:
     generation_status = str(raw.get("generation_status", ""))
     retrieval_label = str(raw.get("retrieval_label", "not_applicable"))
+    parsed_output = None
+    parse_failure = None
+    if generation_status == "generated":
+        raw_output = raw.get("raw_output", raw.get("output"))
+        parsed_output, reparsed_status = parse_final_answer(
+            raw_output,
+            finish_reason=raw.get("finish_reason"),
+            thinking_enabled=False,
+        )
+        if parsed_output is None:
+            generation_status = "failed"
+            parse_failure = reparsed_status
+        else:
+            stored_output = raw.get("output")
+            stored_status = raw.get("parse_status")
+            if stored_output != parsed_output:
+                raise ValueError(
+                    f"Stored final answer does not match raw output: {question.question_id}"
+                )
+            if stored_status is not None and stored_status != reparsed_status:
+                raise ValueError(
+                    f"Stored parse status does not match raw output: {question.question_id}"
+                )
+            if raw.get("truncated") not in {None, False}:
+                raise ValueError(
+                    f"Generated row contradicts its truncation flag: {question.question_id}"
+                )
     if generation_status != "generated":
         return DeterministicGradeRow(
             question_id=question.question_id,
@@ -327,10 +409,12 @@ def _grade_row(
             deterministic_score=None,
             strict=None,
             provenance=None,
-            reasons=(str(raw.get("generation_error") or "answer was not generated"),),
+            reasons=(
+                str(parse_failure or raw.get("generation_error") or "answer was not generated"),
+            ),
         )
 
-    output = str(raw.get("output", ""))
+    output = str(parsed_output)
     strict = grade_critical_slots(output, question.critical_slots)
     arm = str(raw.get("arm", ""))
     provenance = grade_provenance(
@@ -339,12 +423,8 @@ def _grade_row(
             arm=arm,
             suite=question.suite,
             probe_kind=question.probe_kind,
-            supplied_record_ids=tuple(
-                str(item) for item in raw.get("selected_record_ids", [])
-            ),
-            supplied_source_uris=tuple(
-                str(item) for item in raw.get("source_uris", [])
-            ),
+            supplied_record_ids=tuple(str(item) for item in raw.get("selected_record_ids", [])),
+            supplied_source_uris=tuple(str(item) for item in raw.get("source_uris", [])),
             gold_record_id=question.record_id,
             out_of_scope=question.suite == "unknown_oos",
             live_source=question.probe_kind == "live_source",
@@ -355,9 +435,8 @@ def _grade_row(
         )
     )
     hard_fail = strict.status == "hard_fail" or provenance.status == "hard_fail"
-    reasons = (
-        tuple(f"strict:{reason}" for reason in strict.reasons)
-        + tuple(f"provenance:{reason}" for reason in provenance.reasons)
+    reasons = tuple(f"strict:{reason}" for reason in strict.reasons) + tuple(
+        f"provenance:{reason}" for reason in provenance.reasons
     )
     return DeterministicGradeRow(
         question_id=question.question_id,
@@ -369,9 +448,7 @@ def _grade_row(
         as_of_date=question.as_of_date,
         generation_status=generation_status,
         retrieval_label=retrieval_label,
-        status=(
-            "deterministic_hard_fail" if hard_fail else "semantic_review_required"
-        ),
+        status=("deterministic_hard_fail" if hard_fail else "semantic_review_required"),
         deterministic_score=0.0 if hard_fail else None,
         strict=strict,
         provenance=provenance,
@@ -398,15 +475,9 @@ def _validate_result_matrix(
     suites = tuple(str(item) for item in config.get("suites", []))
     arms = tuple(str(item) for item in config.get("arms", []))
     selected_question_ids = {
-        question_id
-        for question_id, question in questions.items()
-        if question.suite in suites
+        question_id for question_id, question in questions.items() if question.suite in suites
     }
-    expected_pairs = {
-        (question_id, arm)
-        for question_id in selected_question_ids
-        for arm in arms
-    }
+    expected_pairs = {(question_id, arm) for question_id in selected_question_ids for arm in arms}
     actual_pairs: list[tuple[str, str]] = []
     for row in rows:
         if not isinstance(row, dict):
@@ -437,9 +508,7 @@ def _aggregate(
     aggregates = []
     for (arm, suite), items in sorted(grouped.items()):
         statuses = Counter(item.status for item in items)
-        strict_statuses = Counter(
-            item.strict.status for item in items if item.strict is not None
-        )
+        strict_statuses = Counter(item.strict.status for item in items if item.strict is not None)
         provenance_statuses = Counter(
             item.provenance.status for item in items if item.provenance is not None
         )
@@ -493,9 +562,7 @@ def _gate_observations(
         if row.generation_status != "generated":
             continue
         cluster_id = (
-            row.scenario_id
-            if spec.cluster_key == "scenario_id"
-            else row.question_family_id
+            row.scenario_id if spec.cluster_key == "scenario_id" else row.question_family_id
         )
         if not cluster_id:
             continue
@@ -529,9 +596,7 @@ def _gate_observations(
                 observations.append(
                     GateObservation(
                         cluster_id=cluster_id,
-                        passed=not any(
-                            result.forbidden_present for result in relevant
-                        ),
+                        passed=not any(result.forbidden_present for result in relevant),
                     )
                 )
     return observations

@@ -131,6 +131,12 @@ class ModelReviewAdvisoryPaths:
     apparent_rule_result: DecisionStatus
 
 
+@dataclass(frozen=True)
+class ModelRegradingBridgePaths:
+    json_path: Path
+    markdown_path: Path
+
+
 def prepare_benchmark_review(
     *,
     benchmark_path: Path,
@@ -143,8 +149,7 @@ def prepare_benchmark_review(
     freeze_problems = verify_frozen_assets(eval_dir)
     if freeze_problems:
         raise BenchmarkReviewError(
-            "Frozen evaluation assets failed verification:\n"
-            + "\n".join(freeze_problems)
+            "Frozen evaluation assets failed verification:\n" + "\n".join(freeze_problems)
         )
     benchmark_bytes = benchmark_path.read_bytes()
     grading_bytes = deterministic_grading_path.read_bytes()
@@ -215,8 +220,7 @@ def prepare_benchmark_review(
         "mapping": mapping_rows,
     }
     mapping_content = (
-        json.dumps(mapping_payload, indent=2, ensure_ascii=False, sort_keys=True)
-        + "\n"
+        json.dumps(mapping_payload, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
     )
     atomic_write_text(mapping_path, mapping_content)
     mapping_hash = _sha256_text(mapping_content)
@@ -257,22 +261,16 @@ def prepare_benchmark_review(
             "model_proposed_labels_excluded": True,
             "private_mapping_in_zip": False,
         },
-        "files": {
-            name: _sha256_bytes(content)
-            for name, content in sorted(members.items())
-        },
+        "files": {name: _sha256_bytes(content) for name, content in sorted(members.items())},
     }
     manifest_bytes = (
-        json.dumps(packet_manifest, indent=2, ensure_ascii=False, sort_keys=True)
-        + "\n"
+        json.dumps(packet_manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
     ).encode("utf-8")
     packet_path.parent.mkdir(parents=True, exist_ok=True)
     temporary = packet_path.with_suffix(".tmp.zip")
     if temporary.exists():
         temporary.unlink()
-    with zipfile.ZipFile(
-        temporary, "w", compression=zipfile.ZIP_DEFLATED
-    ) as archive:
+    with zipfile.ZipFile(temporary, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         prefix = f"{package_name}/"
         for name, content in sorted(members.items()):
             archive.writestr(prefix + name, content)
@@ -365,9 +363,7 @@ def build_benchmark_review_report(
     if mapping.get("source_artifact_sha256") != benchmark_hash:
         raise BenchmarkReviewError("private mapping belongs to another benchmark")
     if mapping.get("deterministic_grading_sha256") != grading_hash:
-        raise BenchmarkReviewError(
-            "private mapping belongs to another deterministic report"
-        )
+        raise BenchmarkReviewError("private mapping belongs to another deterministic report")
 
     mapping_rows = _mapping_rows(mapping, packet_review_ids)
     overlay_rows = _verified_overlay(
@@ -380,27 +376,18 @@ def build_benchmark_review_report(
     raw_rows = _keyed_rows(benchmark.get("results"), "benchmark")
     deterministic_rows = _keyed_rows(grading.get("rows"), "deterministic grading")
     if set(raw_rows) != set(deterministic_rows):
-        raise BenchmarkReviewError(
-            "benchmark and deterministic report row identities differ"
-        )
+        raise BenchmarkReviewError("benchmark and deterministic report row identities differ")
     if grading.get("raw_artifact_hash") != benchmark_hash:
         raise BenchmarkReviewError("deterministic report raw-artifact hash mismatch")
-    mapped_keys = {
-        (str(row["question_id"]), str(row["arm"]))
-        for row in mapping_rows.values()
-    }
+    mapped_keys = {(str(row["question_id"]), str(row["arm"])) for row in mapping_rows.values()}
     if mapped_keys != set(raw_rows):
-        raise BenchmarkReviewError(
-            "private mapping does not cover the complete benchmark matrix"
-        )
+        raise BenchmarkReviewError("private mapping does not cover the complete benchmark matrix")
 
     scored_rows: list[dict[str, Any]] = []
     for review_id, private in mapping_rows.items():
         key = (str(private["question_id"]), str(private["arm"]))
         if key not in raw_rows or key not in deterministic_rows:
-            raise BenchmarkReviewError(
-                f"private mapping contains an unknown benchmark row: {key}"
-            )
+            raise BenchmarkReviewError(f"private mapping contains an unknown benchmark row: {key}")
         human = overlay_rows[str(private["case_id"])]
         direct_score = _human_score(human.get("human_semantic_score"))
         deterministic = deterministic_rows[key]
@@ -422,17 +409,13 @@ def build_benchmark_review_report(
                 "question_id": key[0],
                 "arm": key[1],
                 "suite": str(private["suite"]),
-                "question_family_id": str(
-                    deterministic.get("question_family_id", "")
-                ),
+                "question_family_id": str(deterministic.get("question_family_id", "")),
                 "deterministic_status": status,
                 "direct_human_score": direct_score,
                 "governed_final_score": governed_score,
                 "score_source": score_source,
                 "confidence": str(human.get("confidence", "")),
-                "needs_human_attention": (
-                    human.get("needs_human_attention") is True
-                ),
+                "needs_human_attention": (human.get("needs_human_attention") is True),
             }
         )
     if len(scored_rows) != int(packet_manifest.get("case_count", -1)):
@@ -443,9 +426,7 @@ def build_benchmark_review_report(
     continuation_rule = packet_manifest.get("continuation_rule")
     if continuation_rule != CONTINUATION_RULE:
         raise BenchmarkReviewError("packet continuation rule is not recognized")
-    if packet_manifest.get("continuation_rule_sha256") != sha256_json(
-        continuation_rule
-    ):
+    if packet_manifest.get("continuation_rule_sha256") != sha256_json(continuation_rule):
         raise BenchmarkReviewError("packet continuation-rule hash mismatch")
     decision, criteria = _continuation_assessment(aggregates, paired)
     return {
@@ -464,9 +445,7 @@ def build_benchmark_review_report(
             "human_approved": False,
             "adjudicated": False,
             "reviewer_id": str(overlay_manifest.get("reviewer_id", "")),
-            "identity_verification": str(
-                overlay_manifest.get("identity_verification", "")
-            ),
+            "identity_verification": str(overlay_manifest.get("identity_verification", "")),
             "os_users": list(overlay_manifest.get("os_users", [])),
             "usable_for_judge_certification": False,
             "headline_accuracy_claims_allowed": False,
@@ -483,9 +462,7 @@ def build_benchmark_review_report(
             "packet_sha256": _sha256_file(packet_path),
             "private_mapping_sha256": mapping_hash,
             "human_overlay_sha256": _sha256_bytes(overlay_bytes),
-            "human_overlay_manifest_sha256": _sha256_bytes(
-                overlay_manifest_bytes
-            ),
+            "human_overlay_manifest_sha256": _sha256_bytes(overlay_manifest_bytes),
         },
         "by_arm": aggregates,
         "paired_parametric_vs_base": paired,
@@ -528,9 +505,7 @@ def write_model_review_advisory(
     if source_artifacts.get("benchmark_sha256") != benchmark_hash:
         raise BenchmarkReviewError("packet belongs to another benchmark")
     if source_artifacts.get("deterministic_grading_sha256") != grading_hash:
-        raise BenchmarkReviewError(
-            "packet belongs to another deterministic report"
-        )
+        raise BenchmarkReviewError("packet belongs to another deterministic report")
     mapping_hash = _sha256_bytes(mapping_bytes)
     if packet_manifest.get("private_mapping_sha256") != mapping_hash:
         raise BenchmarkReviewError("private mapping hash does not match packet")
@@ -538,17 +513,10 @@ def write_model_review_advisory(
     raw_rows = _keyed_rows(benchmark.get("results"), "benchmark")
     deterministic_rows = _keyed_rows(grading.get("rows"), "deterministic grading")
     if set(raw_rows) != set(deterministic_rows):
-        raise BenchmarkReviewError(
-            "benchmark and deterministic report row identities differ"
-        )
-    mapped_keys = {
-        (str(row["question_id"]), str(row["arm"]))
-        for row in mapping_rows.values()
-    }
+        raise BenchmarkReviewError("benchmark and deterministic report row identities differ")
+    mapped_keys = {(str(row["question_id"]), str(row["arm"])) for row in mapping_rows.values()}
     if mapped_keys != set(raw_rows):
-        raise BenchmarkReviewError(
-            "private mapping does not cover the complete benchmark matrix"
-        )
+        raise BenchmarkReviewError("private mapping does not cover the complete benchmark matrix")
 
     labels: dict[str, dict[str, Any]] = {}
     batch_hashes: dict[str, str] = {}
@@ -558,9 +526,7 @@ def write_model_review_advisory(
         for row in _parse_jsonl(data, str(path)):
             review_id = str(row.get("review_id", "")).strip()
             if not review_id or review_id in labels:
-                raise BenchmarkReviewError(
-                    "model labels contain missing or duplicate review IDs"
-                )
+                raise BenchmarkReviewError("model labels contain missing or duplicate review IDs")
             if set(row) != {
                 "review_id",
                 "reviewer_kind",
@@ -570,31 +536,21 @@ def write_model_review_advisory(
                 "confidence",
                 "needs_human_attention",
             }:
-                raise BenchmarkReviewError(
-                    f"model label {review_id} has an invalid schema"
-                )
+                raise BenchmarkReviewError(f"model label {review_id} has an invalid schema")
             if row.get("reviewer_kind") != "model":
-                raise BenchmarkReviewError(
-                    "model review cannot contain a human label"
-                )
+                raise BenchmarkReviewError("model review cannot contain a human label")
             if not str(row.get("reviewer_identity", "")).strip():
                 raise BenchmarkReviewError("model reviewer identity is required")
             if not str(row.get("reason", "")).strip():
                 raise BenchmarkReviewError("model review reason is required")
             if row.get("confidence") not in {"high", "medium", "low"}:
-                raise BenchmarkReviewError(
-                    "model confidence must be high, medium, or low"
-                )
+                raise BenchmarkReviewError("model confidence must be high, medium, or low")
             if not isinstance(row.get("needs_human_attention"), bool):
-                raise BenchmarkReviewError(
-                    "needs_human_attention must be boolean"
-                )
+                raise BenchmarkReviewError("needs_human_attention must be boolean")
             _human_score(row.get("score"))
             labels[review_id] = row
     if set(labels) != packet_review_ids:
-        raise BenchmarkReviewError(
-            "model labels do not cover every blinded benchmark row"
-        )
+        raise BenchmarkReviewError("model labels do not cover every blinded benchmark row")
 
     scored_rows: list[dict[str, Any]] = []
     for review_id, private in mapping_rows.items():
@@ -620,9 +576,7 @@ def write_model_review_advisory(
                 "question_id": key[0],
                 "arm": key[1],
                 "suite": str(private["suite"]),
-                "question_family_id": str(
-                    deterministic.get("question_family_id", "")
-                ),
+                "question_family_id": str(deterministic.get("question_family_id", "")),
                 "deterministic_status": status,
                 "direct_human_score": direct_score,
                 "governed_final_score": governed_score,
@@ -653,9 +607,7 @@ def write_model_review_advisory(
         "created_at": datetime.now(UTC).isoformat(),
         "status": "model_triage_complete_human_review_pending",
         "reviewer_kind": "model",
-        "reviewer_identities": sorted(
-            {str(row["reviewer_identity"]) for row in merged_rows}
-        ),
+        "reviewer_identities": sorted({str(row["reviewer_identity"]) for row in merged_rows}),
         "case_count": len(merged_rows),
         "human_approved": False,
         "human_review_satisfied": False,
@@ -674,11 +626,7 @@ def write_model_review_advisory(
     )
     report_rows = [
         {
-            **{
-                key: value
-                for key, value in row.items()
-                if key != "direct_human_score"
-            },
+            **{key: value for key, value in row.items() if key != "direct_human_score"},
             "direct_model_score": row["direct_human_score"],
         }
         for row in scored_rows
@@ -729,6 +677,198 @@ def write_model_review_advisory(
     )
 
 
+def write_model_regrading_bridge(
+    *,
+    original_model_advisory_path: Path,
+    gemma_advisory_path: Path,
+    output_dir: Path,
+) -> ModelRegradingBridgePaths:
+    """Compare old Cursor-model labels with Gemma labels on identical raw outputs."""
+    original_bytes = original_model_advisory_path.read_bytes()
+    gemma_bytes = gemma_advisory_path.read_bytes()
+    original = _json_object(original_bytes, "original model advisory")
+    gemma = _json_object(gemma_bytes, "Gemma advisory")
+    if original.get("report_type") != "smoke_model_review_advisory":
+        raise BenchmarkReviewError("original report is not the published model advisory")
+    if gemma.get("report_type") != "source_aware_single_gemma_advisory":
+        raise BenchmarkReviewError("new report is not a single-Gemma advisory")
+    if gemma.get("verification_status") != "single_local_judge_advisory":
+        raise BenchmarkReviewError("Gemma verification boundary is missing")
+    if any(
+        gemma.get(field) is not expected
+        for field, expected in (
+            ("human_approved", False),
+            ("promotion_eligible", False),
+            ("usable_for_judge_certification", False),
+        )
+    ):
+        raise BenchmarkReviewError("Gemma report weakens the model-only boundary")
+    original_chain = original.get("artifact_chain")
+    gemma_chain = gemma.get("artifact_chain")
+    if not isinstance(original_chain, dict) or not isinstance(gemma_chain, dict):
+        raise BenchmarkReviewError("Regrading reports are missing artifact chains")
+    original_benchmark_hash = str(original_chain.get("benchmark_sha256", ""))
+    gemma_benchmark_hash = str(gemma_chain.get("benchmark_sha256", ""))
+    if not original_benchmark_hash or original_benchmark_hash != gemma_benchmark_hash:
+        raise BenchmarkReviewError("Historical bridge requires the exact same raw benchmark bytes")
+    old_rows = {(str(row["question_id"]), str(row["arm"])): row for row in original.get("rows", [])}
+    new_rows = {
+        (str(row["question_id"]), str(row["arm"])): row for row in gemma.get("attempts", [])
+    }
+    if not old_rows or set(old_rows) != set(new_rows):
+        raise BenchmarkReviewError("Regrading bridge requires identical original question/arm rows")
+    rows = []
+    by_arm: dict[str, dict[str, int | float]] = defaultdict(
+        lambda: {
+            "agreements": 0,
+            "disagreements": 0,
+            "invalid_gemma": 0,
+            "original_score_sum_on_matched": 0.0,
+            "gemma_score_sum": 0.0,
+            "original_governed_sum_on_matched": 0.0,
+            "gemma_governed_sum": 0.0,
+        }
+    )
+    for key in sorted(old_rows):
+        old = old_rows[key]
+        new = new_rows[key]
+        if old.get("deterministic_status") != new.get("deterministic_status"):
+            raise BenchmarkReviewError(
+                f"Deterministic grading status changed for {key[0]}::{key[1]}"
+            )
+        old_score = float(old["direct_model_score"])
+        old_governed_score = float(old["governed_final_score"])
+        label = new.get("model_label")
+        new_score = (
+            float(label["score"])
+            if isinstance(label, dict)
+            and label.get("valid") is True
+            and label.get("score") is not None
+            else None
+        )
+        arm_counts = by_arm[key[1]]
+        if new_score is None:
+            arm_counts["invalid_gemma"] += 1
+        else:
+            new_governed_score = float(new["governed_final_score"])
+            arm_counts["original_score_sum_on_matched"] += old_score
+            arm_counts["gemma_score_sum"] += new_score
+            arm_counts["original_governed_sum_on_matched"] += old_governed_score
+            arm_counts["gemma_governed_sum"] += new_governed_score
+            if new_score == old_score:
+                arm_counts["agreements"] += 1
+            else:
+                arm_counts["disagreements"] += 1
+        rows.append(
+            {
+                "question_id": key[0],
+                "arm": key[1],
+                "original_cursor_model_score": old_score,
+                "original_cursor_governed_score": old_governed_score,
+                "gemma_model_score": new_score,
+                "gemma_governed_score": new.get("governed_final_score"),
+                "deterministic_status": new.get("deterministic_status"),
+                "agreement": new_score == old_score if new_score is not None else None,
+            }
+        )
+    arm_summaries = []
+    for arm, counts in sorted(by_arm.items()):
+        matched_count = int(counts["agreements"]) + int(counts["disagreements"])
+        original_mean = (
+            float(counts["original_score_sum_on_matched"]) / matched_count
+            if matched_count
+            else None
+        )
+        gemma_mean = float(counts["gemma_score_sum"]) / matched_count if matched_count else None
+        original_governed_mean = (
+            float(counts["original_governed_sum_on_matched"]) / matched_count
+            if matched_count
+            else None
+        )
+        gemma_governed_mean = (
+            float(counts["gemma_governed_sum"]) / matched_count if matched_count else None
+        )
+        arm_summaries.append(
+            {
+                "arm": arm,
+                "agreements": int(counts["agreements"]),
+                "disagreements": int(counts["disagreements"]),
+                "invalid_gemma": int(counts["invalid_gemma"]),
+                "matched_count": matched_count,
+                "original_cursor_mean_on_matched": original_mean,
+                "gemma_mean_on_matched": gemma_mean,
+                "gemma_minus_original_mean": (
+                    gemma_mean - original_mean
+                    if gemma_mean is not None and original_mean is not None
+                    else None
+                ),
+                "original_cursor_governed_mean_on_matched": original_governed_mean,
+                "gemma_governed_mean_on_matched": gemma_governed_mean,
+                "gemma_minus_original_governed_mean": (
+                    gemma_governed_mean - original_governed_mean
+                    if gemma_governed_mean is not None and original_governed_mean is not None
+                    else None
+                ),
+            }
+        )
+    report = {
+        "schema_version": 1,
+        "created_at": datetime.now(UTC).isoformat(),
+        "report_type": "historical_model_regrading_bridge",
+        "status": (
+            "complete"
+            if all(row["gemma_model_score"] is not None for row in rows)
+            else "incomplete_gemma_outputs"
+        ),
+        "same_original_answers": True,
+        "human_approved": False,
+        "promotion_eligible": False,
+        "usable_for_judge_certification": False,
+        "original_reviewer_kind": "cursor_model",
+        "new_verification_status": "single_local_judge_advisory",
+        "artifact_chain": {
+            "original_model_advisory_sha256": _sha256_bytes(original_bytes),
+            "gemma_advisory_sha256": _sha256_bytes(gemma_bytes),
+            "benchmark_sha256": gemma_benchmark_hash,
+            "original_deterministic_grading_sha256": original_chain.get(
+                "deterministic_grading_sha256"
+            ),
+            "gemma_deterministic_payload_sha256": gemma_chain.get("deterministic_grading_sha256"),
+        },
+        "by_arm": arm_summaries,
+        "rows": rows,
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    json_path = output_dir / "historical-cursor-to-gemma-bridge.json"
+    markdown_path = output_dir / "historical-cursor-to-gemma-bridge.md"
+    if json_path.exists() or markdown_path.exists():
+        raise FileExistsError("Refusing to overwrite historical regrading bridge")
+    atomic_write_text(
+        json_path,
+        json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+    )
+    lines = [
+        "# Historical Cursor-model to local-Gemma regrading bridge",
+        "",
+        "**Advisory only. The original generated answers were not regenerated.**",
+        "",
+    ]
+    for row in report["by_arm"]:
+        lines.append(
+            f"- {row['arm']}: {row['agreements']} agreements, "
+            f"{row['disagreements']} disagreements, "
+            f"{row['invalid_gemma']} invalid Gemma outputs; "
+            f"reviewer means Cursor {row['original_cursor_mean_on_matched']:.3f} / "
+            f"Gemma {row['gemma_mean_on_matched']:.3f} "
+            f"({row['gemma_minus_original_mean']:+.3f}); governed means "
+            f"{row['original_cursor_governed_mean_on_matched']:.3f} / "
+            f"{row['gemma_governed_mean_on_matched']:.3f} "
+            f"({row['gemma_minus_original_governed_mean']:+.3f})"
+        )
+    atomic_write_text(markdown_path, "\n".join(lines) + "\n")
+    return ModelRegradingBridgePaths(json_path=json_path, markdown_path=markdown_path)
+
+
 def _validate_source_artifacts(
     *,
     benchmark: Mapping[str, Any],
@@ -759,29 +899,21 @@ def _validate_source_artifacts(
         if not isinstance(value, dict):
             raise BenchmarkReviewError(f"benchmark row {index} is not an object")
         if value.get("generation_status") != "generated":
-            raise BenchmarkReviewError(
-                "all rows must be generated before blinded human review"
-            )
+            raise BenchmarkReviewError("all rows must be generated before blinded human review")
         if not isinstance(value.get("output"), str):
             raise BenchmarkReviewError(f"benchmark row {index} has no output")
         raw_rows.append(value)
     raw_by_key = _keyed_rows(raw_rows, "benchmark")
     grading_by_key = _keyed_rows(grading.get("rows"), "deterministic grading")
     if set(raw_by_key) != set(grading_by_key):
-        raise BenchmarkReviewError(
-            "benchmark and deterministic report row identities differ"
-        )
+        raise BenchmarkReviewError("benchmark and deterministic report row identities differ")
     questions = _questions_by_id(suites)
     for raw in raw_rows:
         question_id = str(raw["question_id"])
         if question_id not in questions:
-            raise BenchmarkReviewError(
-                f"benchmark contains unknown frozen question: {question_id}"
-            )
+            raise BenchmarkReviewError(f"benchmark contains unknown frozen question: {question_id}")
         if str(raw.get("question", "")) != questions[question_id].question:
-            raise BenchmarkReviewError(
-                f"benchmark question text mismatch: {question_id}"
-            )
+            raise BenchmarkReviewError(f"benchmark question text mismatch: {question_id}")
     return raw_rows, grading_by_key, questions
 
 
@@ -789,9 +921,7 @@ def _questions_by_id(suites: EvalSuites) -> dict[str, Any]:
     questions: dict[str, Any] = {}
     for question in suites.all_questions():
         if question.question_id in questions:
-            raise BenchmarkReviewError(
-                f"duplicate frozen question ID: {question.question_id}"
-            )
+            raise BenchmarkReviewError(f"duplicate frozen question ID: {question.question_id}")
         questions[question.question_id] = question
     return questions
 
@@ -809,9 +939,7 @@ def _keyed_rows(
         question_id = str(row.get("question_id", "")).strip()
         arm = str(row.get("arm", "")).strip()
         if not question_id or not arm:
-            raise BenchmarkReviewError(
-                f"{label} row {index} has no question ID or arm"
-            )
+            raise BenchmarkReviewError(f"{label} row {index} has no question ID or arm")
         key = (question_id, arm)
         if key in keyed:
             raise BenchmarkReviewError(f"{label} contains duplicate row {key}")
@@ -833,9 +961,7 @@ def _mapping_rows(
             raise BenchmarkReviewError(f"private mapping row {index} is invalid")
         required = ("review_id", "case_id", "question_id", "arm", "suite")
         if any(not str(row.get(field, "")).strip() for field in required):
-            raise BenchmarkReviewError(
-                f"private mapping row {index} is missing required fields"
-            )
+            raise BenchmarkReviewError(f"private mapping row {index} is missing required fields")
         review_id = str(row["review_id"])
         case_id = str(row["case_id"])
         if review_id in rows or case_id in case_ids:
@@ -848,9 +974,7 @@ def _mapping_rows(
         rows[review_id] = row
         case_ids.add(case_id)
     if set(rows) != packet_review_ids:
-        raise BenchmarkReviewError(
-            "private mapping IDs do not match the blinded packet"
-        )
+        raise BenchmarkReviewError("private mapping IDs do not match the blinded packet")
     return rows
 
 
@@ -864,9 +988,7 @@ def _verified_packet(path: Path) -> tuple[dict[str, Any], set[str]]:
             raise BenchmarkReviewError("packet must contain one manifest")
         manifest_name = manifests[0]
         prefix = manifest_name.removesuffix("packet_manifest.json")
-        manifest = _json_object(
-            archive.read(manifest_name), "packet manifest"
-        )
+        manifest = _json_object(archive.read(manifest_name), "packet manifest")
         files = manifest.get("files")
         if not isinstance(files, dict):
             raise BenchmarkReviewError("packet manifest has no file hashes")
@@ -875,9 +997,7 @@ def _verified_packet(path: Path) -> tuple[dict[str, Any], set[str]]:
             if member not in names:
                 raise BenchmarkReviewError(f"packet member missing: {relative}")
             if _sha256_bytes(archive.read(member)) != expected:
-                raise BenchmarkReviewError(
-                    f"packet member hash mismatch: {relative}"
-                )
+                raise BenchmarkReviewError(f"packet member hash mismatch: {relative}")
         case_bytes = archive.read(prefix + "review_cases.jsonl")
     cases = _parse_jsonl(case_bytes, "review cases")
     if len(cases) != manifest.get("case_count"):
@@ -898,9 +1018,7 @@ def _verified_overlay(
     mapping_path: Path,
     expected_case_ids: set[str],
 ) -> dict[str, dict[str, Any]]:
-    if overlay_manifest.get("status") != (
-        "single_human_review_complete_not_adjudicated"
-    ):
+    if overlay_manifest.get("status") != ("single_human_review_complete_not_adjudicated"):
         raise BenchmarkReviewError("human review is incomplete or invalid")
     if overlay_manifest.get("source_packet_sha256") != _sha256_file(packet_path):
         raise BenchmarkReviewError("overlay belongs to another review packet")
@@ -909,16 +1027,10 @@ def _verified_overlay(
     if overlay_manifest.get("overlay_sha256") != _sha256_bytes(overlay_bytes):
         raise BenchmarkReviewError("overlay byte hash mismatch")
     if overlay_manifest.get("human_approved") is not False:
-        raise BenchmarkReviewError(
-            "single-review diagnostic overlay must remain unapproved"
-        )
+        raise BenchmarkReviewError("single-review diagnostic overlay must remain unapproved")
     if overlay_manifest.get("requires_second_review") is not True:
-        raise BenchmarkReviewError(
-            "single-review diagnostic must remain marked for second review"
-        )
-    if overlay_manifest.get("identity_verification") != (
-        "asserted_only_not_authenticated"
-    ):
+        raise BenchmarkReviewError("single-review diagnostic must remain marked for second review")
+    if overlay_manifest.get("identity_verification") != ("asserted_only_not_authenticated"):
         raise BenchmarkReviewError("overlay reviewer identity boundary is missing")
     rows = _parse_jsonl(overlay_bytes, "human overlay")
     if len(rows) != overlay_manifest.get("case_count"):
@@ -933,15 +1045,11 @@ def _verified_overlay(
         if row.get("reviewer_kind") != "human":
             raise BenchmarkReviewError("human overlay contains a non-human label")
         if row.get("human_approved") is not False:
-            raise BenchmarkReviewError(
-                "single-review overlay must not claim human approval"
-            )
+            raise BenchmarkReviewError("single-review overlay must not claim human approval")
         _human_score(row.get("human_semantic_score"))
         by_id[case_id] = row
     if set(by_id) != expected_case_ids:
-        raise BenchmarkReviewError(
-            "human overlay does not cover every blinded benchmark row"
-        )
+        raise BenchmarkReviewError("human overlay does not cover every blinded benchmark row")
     return by_id
 
 
@@ -954,18 +1062,13 @@ def _aggregate_scores(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]
             "arm": arm,
             "n": len(group),
             "deterministic_hard_fail_count": sum(
-                row["deterministic_status"] == "deterministic_hard_fail"
-                for row in group
+                row["deterministic_status"] == "deterministic_hard_fail" for row in group
             ),
             "needs_human_attention_count": sum(
                 row["needs_human_attention"] is True for row in group
             ),
-            "direct_human": _score_summary(
-                [float(row["direct_human_score"]) for row in group]
-            ),
-            "governed_final": _score_summary(
-                [float(row["governed_final_score"]) for row in group]
-            ),
+            "direct_human": _score_summary([float(row["direct_human_score"]) for row in group]),
+            "governed_final": _score_summary([float(row["governed_final_score"]) for row in group]),
         }
         for arm, group in sorted(grouped.items())
     ]
@@ -999,9 +1102,7 @@ def _paired_parametric_base(
         key = (str(row["question_id"]), str(row["arm"]))
         scores[key] = float(row["governed_final_score"])
     base_ids = {question_id for question_id, arm in scores if arm == "base"}
-    parametric_ids = {
-        question_id for question_id, arm in scores if arm == "parametric"
-    }
+    parametric_ids = {question_id for question_id, arm in scores if arm == "parametric"}
     if base_ids != parametric_ids or not base_ids:
         raise BenchmarkReviewError(
             "paired decision requires matching base and parametric questions"
@@ -1034,23 +1135,16 @@ def _continuation_assessment(
     parametric = by_arm["parametric"]["governed_final"]
     base = by_arm["base"]["governed_final"]
     mean_delta = float(parametric["mean_score"]) - float(base["mean_score"])
-    fully_correct_delta = int(parametric["fully_correct_count"]) - int(
-        base["fully_correct_count"]
-    )
+    fully_correct_delta = int(parametric["fully_correct_count"]) - int(base["fully_correct_count"])
     criteria = {
         "mean_score_delta": {
             "observed": mean_delta,
-            "required_minimum": CONTINUATION_RULE[
-                "mean_score_delta_over_base_min"
-            ],
-            "passed": mean_delta
-            >= float(CONTINUATION_RULE["mean_score_delta_over_base_min"]),
+            "required_minimum": CONTINUATION_RULE["mean_score_delta_over_base_min"],
+            "passed": mean_delta >= float(CONTINUATION_RULE["mean_score_delta_over_base_min"]),
         },
         "fully_correct_count_delta": {
             "observed": fully_correct_delta,
-            "required_minimum": CONTINUATION_RULE[
-                "fully_correct_count_delta_over_base_min"
-            ],
+            "required_minimum": CONTINUATION_RULE["fully_correct_count_delta_over_base_min"],
             "passed": fully_correct_delta
             >= int(CONTINUATION_RULE["fully_correct_count_delta_over_base_min"]),
         },
@@ -1062,9 +1156,7 @@ def _continuation_assessment(
     }
     authorized = all(bool(item["passed"]) for item in criteria.values())
     result: DecisionStatus = (
-        "authorize_one_redesigned_diagnostic"
-        if authorized
-        else "stop_parametric_research"
+        "authorize_one_redesigned_diagnostic" if authorized else "stop_parametric_research"
     )
     return result, criteria
 
@@ -1106,8 +1198,7 @@ def _render_report_markdown(report: Mapping[str, Any]) -> str:
     )
     for name, criterion in report["decision"]["criteria"].items():
         lines.append(
-            f"- {name}: {'pass' if criterion['passed'] else 'fail'} "
-            f"({canonical_json(criterion)})"
+            f"- {name}: {'pass' if criterion['passed'] else 'fail'} ({canonical_json(criterion)})"
         )
     return "\n".join(lines) + "\n"
 
@@ -1157,9 +1248,7 @@ def _render_model_advisory_markdown(report: Mapping[str, Any]) -> str:
 
 
 def _fixture_hash(eval_dir: Path) -> str:
-    manifest = _json_object(
-        (eval_dir / "freeze_manifest.json").read_bytes(), "freeze manifest"
-    )
+    manifest = _json_object((eval_dir / "freeze_manifest.json").read_bytes(), "freeze manifest")
     value = str(manifest.get("combined_hash", "")).strip()
     if not value:
         raise BenchmarkReviewError("freeze manifest has no combined hash")
@@ -1188,21 +1277,16 @@ def _parse_jsonl(data: bytes, label: str) -> list[dict[str, Any]]:
         try:
             value = json.loads(line)
         except json.JSONDecodeError as exc:
-            raise BenchmarkReviewError(
-                f"{label}:{line_number} is invalid JSON"
-            ) from exc
+            raise BenchmarkReviewError(f"{label}:{line_number} is invalid JSON") from exc
         if not isinstance(value, dict):
-            raise BenchmarkReviewError(
-                f"{label}:{line_number} must be an object"
-            )
+            raise BenchmarkReviewError(f"{label}:{line_number} must be an object")
         rows.append(value)
     return rows
 
 
 def _encode_jsonl(rows: Sequence[Mapping[str, Any]]) -> bytes:
     return "".join(
-        json.dumps(dict(row), ensure_ascii=False, sort_keys=True) + "\n"
-        for row in rows
+        json.dumps(dict(row), ensure_ascii=False, sort_keys=True) + "\n" for row in rows
     ).encode("utf-8")
 
 

@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import gc
 import hashlib
 import json
+import re
 import time
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import asdict, dataclass
@@ -26,9 +28,7 @@ from .utils import atomic_write_text, sha256_json, sha256_text
 BenchmarkArm = Literal["base", "full_context", "bm25", "oracle", "parametric"]
 BenchmarkStatus = Literal["generated", "context_too_large", "failed"]
 GenerationStatus = Literal["not_attempted", "generated", "failed"]
-ContextAction = Literal[
-    "use_context", "source_required", "context_too_large", "no_context"
-]
+ContextAction = Literal["use_context", "source_required", "context_too_large", "no_context"]
 RetrievalLabel = Literal[
     "not_applicable",
     "correct_record",
@@ -147,13 +147,19 @@ class TokenizerIdentity:
     loader: str
     tokenizer_class: str
     revision: str
+    chat_template_hash: str | None = None
+    tokenizer_assets_hash: str | None = None
+    quantization_hash: str | None = None
 
-    def to_dict(self) -> dict[str, str]:
+    def to_dict(self) -> dict[str, str | None]:
         return {
             "model_name": self.model_name,
             "loader": self.loader,
             "tokenizer_class": self.tokenizer_class,
             "revision": self.revision,
+            "chat_template_hash": self.chat_template_hash,
+            "tokenizer_assets_hash": self.tokenizer_assets_hash,
+            "quantization_hash": self.quantization_hash,
         }
 
 
@@ -170,6 +176,10 @@ class BenchmarkConfig:
     parametric_adapter_hash: str | None = None
     parametric_source_record_ids: tuple[str, ...] = ()
     parametric_sensitivity: Sensitivity | None = None
+    thinking_enabled: bool = False
+    temperature: float = 0.0
+    generation_policy_version: str = "greedy-non-thinking/v1"
+    experiment_id: str | None = None
 
     def __post_init__(self) -> None:
         unsupported = sorted(set(self.suites) - set(SUPPORTED_SUITES))
@@ -188,6 +198,12 @@ class BenchmarkConfig:
             raise ValueError("max_context_tokens must be positive")
         if self.max_output_tokens <= 0:
             raise ValueError("max_output_tokens must be positive")
+        if self.max_output_tokens > 1024:
+            raise ValueError("max_output_tokens cannot exceed 1024")
+        if self.thinking_enabled:
+            raise ValueError("The current controlled comparison requires thinking disabled")
+        if self.temperature != 0.0:
+            raise ValueError("The current controlled comparison requires temperature=0")
         if "bm25" in self.arms and self.bm25_selection is None:
             raise ValueError(
                 "The bm25 arm requires an explicit hash-bound selection file; "
@@ -197,9 +213,7 @@ class BenchmarkConfig:
             _require_selected_bm25_operating_point(self.bm25_selection)
         if "parametric" in self.arms:
             if not self.parametric_adapter_path or not self.parametric_adapter_hash:
-                raise ValueError(
-                    "The parametric arm requires a verified acquisition run manifest"
-                )
+                raise ValueError("The parametric arm requires a verified acquisition run manifest")
             if not self.parametric_source_record_ids:
                 raise ValueError("Parametric source record IDs cannot be empty")
             if self.parametric_sensitivity is None:
@@ -213,13 +227,15 @@ class BenchmarkConfig:
             "max_context_tokens": self.max_context_tokens,
             "max_output_tokens": self.max_output_tokens,
             "model_name": self.model_name,
-            "bm25_selection": (
-                self.bm25_selection.to_dict() if self.bm25_selection else None
-            ),
+            "bm25_selection": (self.bm25_selection.to_dict() if self.bm25_selection else None),
             "parametric_adapter_path": self.parametric_adapter_path,
             "parametric_adapter_hash": self.parametric_adapter_hash,
             "parametric_source_record_ids": list(self.parametric_source_record_ids),
             "parametric_sensitivity": self.parametric_sensitivity,
+            "thinking_enabled": self.thinking_enabled,
+            "temperature": self.temperature,
+            "generation_policy_version": self.generation_policy_version,
+            "experiment_id": self.experiment_id,
         }
 
 
@@ -280,10 +296,17 @@ class BenchmarkCase:
 
 @dataclass(frozen=True)
 class GeneratedAnswer:
-    output: str
+    output: str | None
     prompt_tokens: int
     completion_tokens: int
     elapsed_seconds: float
+    raw_output: str | None = None
+    parse_status: str = "plain"
+    finish_reason: str | None = None
+    truncated: bool = False
+    peak_memory_gb: float | None = None
+    prompt_hash: str | None = None
+    rendered_template_hash: str | None = None
 
 
 class BenchmarkBackend(Protocol):
@@ -313,11 +336,20 @@ class BenchmarkResult:
             "generation_status": self.generation_status,
             "generation_error": self.generation_error,
             "output": self.answer.output if self.answer else None,
+            "raw_output": (
+                self.answer.raw_output
+                if self.answer and self.answer.raw_output is not None
+                else (self.answer.output if self.answer else None)
+            ),
+            "parse_status": self.answer.parse_status if self.answer else None,
+            "finish_reason": self.answer.finish_reason if self.answer else None,
+            "truncated": self.answer.truncated if self.answer else None,
+            "peak_memory_gb": self.answer.peak_memory_gb if self.answer else None,
+            "prompt_hash": self.answer.prompt_hash if self.answer else None,
+            "rendered_template_hash": (self.answer.rendered_template_hash if self.answer else None),
             "prompt_tokens": self.answer.prompt_tokens if self.answer else None,
             "completion_tokens": self.answer.completion_tokens if self.answer else None,
-            "elapsed_seconds": (
-                round(self.answer.elapsed_seconds, 6) if self.answer else None
-            ),
+            "elapsed_seconds": (round(self.answer.elapsed_seconds, 6) if self.answer else None),
         }
 
 
@@ -440,12 +472,12 @@ def resolve_huggingface_revision(
     local = Path(model_name)
     if local.exists():
         return revision or "local"
+    if revision is not None and re.fullmatch(r"[0-9a-f]{40}", revision):
+        return revision
     try:
         from huggingface_hub import model_info
     except ImportError as exc:
-        raise RuntimeError(
-            'MLX-LM is required. Install with: pip install -e ".[mac]"'
-        ) from exc
+        raise RuntimeError('MLX-LM is required. Install with: pip install -e ".[mac]"') from exc
     info = model_info(model_name, revision=revision)
     sha = getattr(info, "sha", None)
     if not sha:
@@ -474,9 +506,7 @@ def load_benchmark_tokenizer(
         from huggingface_hub import snapshot_download
         from mlx_lm.utils import load_tokenizer
     except ImportError as exc:
-        raise RuntimeError(
-            'MLX-LM is required. Install with: pip install -e ".[mac]"'
-        ) from exc
+        raise RuntimeError('MLX-LM is required. Install with: pip install -e ".[mac]"') from exc
 
     resolved_revision = resolve_huggingface_revision(model_name, revision=revision)
     local = Path(model_name)
@@ -489,6 +519,33 @@ def load_benchmark_tokenizer(
             allow_patterns=list(TOKENIZER_DOWNLOAD_PATTERNS),
         )
     tokenizer = load_tokenizer(tokenizer_source)
+    tokenizer_root = Path(tokenizer_source)
+    template = getattr(tokenizer, "chat_template", None)
+    assets = (
+        [
+            (path.name, file_sha256(path))
+            for path in sorted(tokenizer_root.iterdir())
+            if path.is_file()
+            and (
+                path.name.endswith((".json", ".jinja", ".model", ".txt", ".tiktoken"))
+                or path.name in {"merges.txt", "vocab.json"}
+            )
+        ]
+        if tokenizer_root.is_dir()
+        else []
+    )
+    quantization_hash = None
+    config_path = tokenizer_root / "config.json"
+    if config_path.is_file():
+        config_payload = json.loads(config_path.read_text(encoding="utf-8"))
+        quantization = config_payload.get("quantization")
+        if isinstance(quantization, dict):
+            normalized_quantization = {
+                "bits": int(quantization.get("bits", -1)),
+                "group_size": int(quantization.get("group_size", -1)),
+                "mode": str(quantization.get("mode", "affine")),
+            }
+            quantization_hash = sha256_json(normalized_quantization)
 
     def count_tokens(text: str) -> int:
         encoded = tokenizer.encode(text)
@@ -501,6 +558,9 @@ def load_benchmark_tokenizer(
         loader=TOKENIZER_LOADER,
         tokenizer_class=type(tokenizer).__name__,
         revision=resolved_revision,
+        chat_template_hash=sha256_text(str(template)) if template else None,
+        tokenizer_assets_hash=sha256_json(assets),
+        quantization_hash=quantization_hash,
     )
 
 
@@ -526,9 +586,7 @@ def build_benchmark_plan(
         )
     bm25: BM25Index | None = None
     if "bm25" in selected_config.arms:
-        operating_point = _require_selected_bm25_operating_point(
-            selected_config.bm25_selection
-        )
+        operating_point = _require_selected_bm25_operating_point(selected_config.bm25_selection)
         bm25 = BM25Index(authoritative_records, config=operating_point)
 
     cases: list[BenchmarkCase] = []
@@ -599,9 +657,7 @@ def run_benchmark_plan(
             )
             continue
         try:
-            selected_backend = (
-                parametric_backend if case.arm == "parametric" else backend
-            )
+            selected_backend = parametric_backend if case.arm == "parametric" else backend
             if selected_backend is None:
                 raise ValueError("Parametric benchmark backend is required")
             answer = selected_backend.generate(
@@ -609,6 +665,17 @@ def run_benchmark_plan(
                 question=case.question,
                 max_tokens=max_output_tokens,
             )
+            if answer.output is None:
+                results.append(
+                    BenchmarkResult(
+                        case=case,
+                        status="failed",
+                        generation_status="failed",
+                        answer=answer,
+                        generation_error=("No scorable final answer: " + answer.parse_status),
+                    )
+                )
+                continue
         except Exception as exc:
             results.append(
                 BenchmarkResult(
@@ -642,6 +709,7 @@ def write_benchmark_artifact(
     source_hash: str | None = None,
     index_hash: str | None = None,
     bm25_decision: BM25SelectionBinding | dict[str, Any] | None = None,
+    run_id: str | None = None,
 ) -> Path:
     """Write the ungraded, provenance-rich benchmark artifact."""
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -663,6 +731,10 @@ def write_benchmark_artifact(
         "fixture_hash": fixture_hash,
         "source_snapshot_hash": source_hash,
         "index_payload_hash": index_hash,
+        "bm25_default_decision": decision_payload,
+        "bm25_active_selection": (
+            config_payload.get("bm25_selection") if "bm25" in config.arms else None
+        ),
         "bm25_decision": decision_payload,
         "config": config_payload,
         "config_hash": sha256_json(config_payload),
@@ -671,7 +743,9 @@ def write_benchmark_artifact(
         "results": [result.to_dict() for result in results],
     }
     timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
-    target = output_dir / f"benchmark-{timestamp}.json"
+    target = output_dir / f"benchmark-{run_id or timestamp}.json"
+    if run_id is not None and target.exists():
+        raise FileExistsError(f"Refusing to overwrite immutable benchmark: {target}")
     atomic_write_text(target, json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
     return target
 
@@ -689,21 +763,43 @@ class MLXBenchmarkBackend:
         if not revision:
             raise ValueError("A resolved Hugging Face revision is required to load model weights")
         try:
-            from mlx_lm import generate, load
+            from mlx_lm import load, stream_generate
+            from mlx_lm.models.cache import make_prompt_cache
             from mlx_lm.sample_utils import make_sampler
         except ImportError as exc:
-            raise RuntimeError(
-                'MLX-LM is required. Install with: pip install -e ".[mac]"'
-            ) from exc
+            raise RuntimeError('MLX-LM is required. Install with: pip install -e ".[mac]"') from exc
         self.model_name = model_name
         self.revision = revision
-        self._generate = generate
+        self._stream_generate = stream_generate
+        self._make_prompt_cache = make_prompt_cache
         self._model, self._tokenizer = load(
             model_name,
             revision=revision,
             adapter_path=adapter_path,
         )
         self._sampler = make_sampler(temp=0.0)
+        self._closed = False
+        self._template = getattr(self._tokenizer, "chat_template", None)
+        if not self._template:
+            raise RuntimeError("Pinned tokenizer has no chat template")
+        probe = [
+            {"role": "system", "content": "System."},
+            {"role": "user", "content": "Question?"},
+        ]
+        disabled = self._tokenizer.apply_chat_template(
+            probe,
+            add_generation_prompt=True,
+            tokenize=False,
+            enable_thinking=False,
+        )
+        enabled = self._tokenizer.apply_chat_template(
+            probe,
+            add_generation_prompt=True,
+            tokenize=False,
+            enable_thinking=True,
+        )
+        if model_name == "mlx-community/Qwen3.8-27B-4bit" and disabled == enabled:
+            raise RuntimeError("enable_thinking=False did not affect Qwen3.8 template")
 
     def generate(
         self,
@@ -712,49 +808,110 @@ class MLXBenchmarkBackend:
         question: str,
         max_tokens: int,
     ) -> GeneratedAnswer:
+        if self._closed or self._model is None:
+            raise RuntimeError("Benchmark backend is closed")
+        if not 0 < max_tokens <= 1024:
+            raise ValueError("max_tokens must be in [1, 1024]")
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": question},
         ]
-        try:
-            prompt = self._tokenizer.apply_chat_template(
-                messages,
-                add_generation_prompt=True,
-                tokenize=False,
-            )
-        except TypeError:
-            prompt = self._tokenizer.apply_chat_template(
-                messages, add_generation_prompt=True
-            )
-        prompt_tokens = len(self._tokenizer.encode(prompt))
-        started = time.perf_counter()
-        output = self._generate(
-            self._model,
-            self._tokenizer,
-            prompt=prompt,
-            max_tokens=max_tokens,
-            sampler=self._sampler,
-            verbose=False,
+        prompt = self._tokenizer.apply_chat_template(
+            messages,
+            add_generation_prompt=True,
+            tokenize=False,
+            enable_thinking=False,
         )
+        if prompt.count("<think>") > prompt.count("</think>"):
+            raise RuntimeError("Non-thinking template left an open thinking channel")
+        prompt_tokens = len(self._tokenizer.encode(prompt, add_special_tokens=False))
+        prompt_cache = self._make_prompt_cache(self._model)
+        started = time.perf_counter()
+        fragments = []
+        final_response = None
+        try:
+            for response in self._stream_generate(
+                self._model,
+                self._tokenizer,
+                prompt=prompt,
+                max_tokens=max_tokens,
+                sampler=self._sampler,
+                prompt_cache=prompt_cache,
+            ):
+                fragments.append(response.text)
+                final_response = response
+        finally:
+            prompt_cache = None
         elapsed = time.perf_counter() - started
-        output_text = str(output).strip()
-        completion_tokens = len(self._tokenizer.encode(output_text))
+        if final_response is None:
+            raise RuntimeError("MLX generation returned no response")
+        raw_output = "".join(fragments)
+        output_text, parse_status = parse_final_answer(
+            raw_output,
+            finish_reason=final_response.finish_reason,
+            thinking_enabled=False,
+        )
         return GeneratedAnswer(
             output=output_text,
-            prompt_tokens=prompt_tokens,
-            completion_tokens=completion_tokens,
+            raw_output=raw_output,
+            parse_status=parse_status,
+            prompt_tokens=final_response.prompt_tokens or prompt_tokens,
+            completion_tokens=final_response.generation_tokens,
             elapsed_seconds=elapsed,
+            finish_reason=final_response.finish_reason,
+            truncated=final_response.finish_reason == "length",
+            peak_memory_gb=final_response.peak_memory,
+            prompt_hash=sha256_text(prompt),
+            rendered_template_hash=sha256_text(str(self._template)),
         )
 
     def close(self) -> None:
+        if self._closed:
+            return
+        self._closed = True
         self._model = None
         self._tokenizer = None
+        self._sampler = None
+        self._stream_generate = None
+        self._make_prompt_cache = None
+        gc.collect()
         try:
             import mlx.core as mx
 
+            mx.synchronize()
             mx.clear_cache()
         except (ImportError, AttributeError):
             pass
+
+
+def parse_final_answer(
+    raw_output: str,
+    *,
+    finish_reason: str | None,
+    thinking_enabled: bool,
+) -> tuple[str | None, str]:
+    """Return only the final channel; never score an incomplete thought stream."""
+    if not isinstance(raw_output, str):
+        return None, "non_text"
+    if finish_reason == "length":
+        return None, (
+            "truncated_during_reasoning"
+            if "<think>" in raw_output and "</think>" not in raw_output
+            else "truncated_output"
+        )
+    if "<think>" not in raw_output:
+        final = raw_output.strip()
+        if not final:
+            return None, "missing_final_answer"
+        return final, "plain"
+    if "</think>" not in raw_output:
+        return None, "unclosed_thinking_channel"
+    if not thinking_enabled:
+        return None, "thinking_protocol_violation"
+    final = raw_output.rsplit("</think>", maxsplit=1)[-1].strip()
+    if not final:
+        return None, "missing_final_answer"
+    return final, "thinking_stripped"
 
 
 def _context_for_arm(
@@ -823,9 +980,7 @@ def _case_from_context(
             context_action="no_context",
             selected_record_ids=(),
             source_uris=(),
-            highest_sensitivity=(
-                config.parametric_sensitivity if arm == "parametric" else None
-            ),
+            highest_sensitivity=(config.parametric_sensitivity if arm == "parametric" else None),
             context_bytes=0,
             context_tokens=empty_tokens,
             max_context_bytes=config.max_context_bytes,
@@ -887,8 +1042,7 @@ def _records_for_suite(
         return authoritative_records
     if not suites.supersession_current_records:
         raise ValueError(
-            "Supersession requires date-controlled current-source records; "
-            "use evaluation v2"
+            "Supersession requires date-controlled current-source records; use evaluation v2"
         )
     by_id = {record.id: record for record in authoritative_records}
     for record in suites.supersession_current_records:
@@ -960,9 +1114,7 @@ def _binding_from_payload(
     if not isinstance(constraints, dict) or not constraints:
         raise ValueError("BM25 selection is missing constraints")
     selector_version = str(
-        payload.get("selector_version")
-        or implementation_payload.get("selector_version")
-        or ""
+        payload.get("selector_version") or implementation_payload.get("selector_version") or ""
     ).strip()
     if not selector_version:
         raise ValueError("BM25 selection is missing selector_version")
@@ -976,8 +1128,7 @@ def _binding_from_payload(
         "source_snapshot_hash",
     )
     index_hash = _required_hash(
-        payload.get("index_payload_hash")
-        or index_payload.get("indexed_record_payload_hash"),
+        payload.get("index_payload_hash") or index_payload.get("indexed_record_payload_hash"),
         "index_payload_hash",
     )
     report_hash = payload.get("calibration_report_hash")
@@ -1058,9 +1209,7 @@ def _require_selected_bm25_operating_point(
             "raw top_k/threshold overrides are not accepted"
         )
     if binding.approval_status != "owner_approved":
-        raise ValueError(
-            "BM25 selection is not owner-approved; the bm25 arm cannot run"
-        )
+        raise ValueError("BM25 selection is not owner-approved; the bm25 arm cannot run")
     if not binding.exploratory:
         raise ValueError("BM25 selection must preserve exploratory=true")
     if binding.status == "no_feasible_operating_point":
@@ -1068,13 +1217,8 @@ def _require_selected_bm25_operating_point(
             "BM25 arm rejected: owner accepted no_feasible_operating_point. "
             "Omit the bm25 arm to run base, full-context, and oracle controls."
         )
-    if (
-        binding.status == "experimental_non_promotable"
-        and binding.deployment_eligible
-    ):
-        raise ValueError(
-            "Experimental BM25 research selection cannot be deployment eligible"
-        )
+    if binding.status == "experimental_non_promotable" and binding.deployment_eligible:
+        raise ValueError("Experimental BM25 research selection cannot be deployment eligible")
     if binding.selected_config is None:
         raise ValueError("Owner-approved BM25 selection is missing selected_config")
     return binding.selected_config

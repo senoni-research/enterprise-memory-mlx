@@ -38,6 +38,8 @@ emmlx review --reviewer "Your Name"   # identity is asserted, not authenticated
 emmlx acquire                         # governed compile + dry-run config
 # Explicitly non-promotable synthetic smoke only:
 emmlx acquire --execute
+# Separately versioned, non-promotable model-upgrade experiment:
+emmlx model-upgrade --help
 emmlx grade --benchmark artifacts/benchmark/<raw-result>.json
 pytest
 ruff check .
@@ -142,8 +144,10 @@ headline accuracy remain blocked.
 A completed blinded **model-review advisory** (not human labels) for this
 benchmark is summarized with full hash bindings in
 [`docs/results/2026-09-01-smoke-advisory.md`](docs/results/2026-09-01-smoke-advisory.md).
-Its advisory outcome was `stop_parametric_research`; the operative status
-remains `human_review_pending`.
+Its serialized rule result was `stop_parametric_research`; the operative
+interpretation is to stop that candidate, not to treat model-only labels as a
+general disproof of parametric acquisition. Its status remains
+`human_review_pending`.
 
 ## Current scientific foundation
 
@@ -160,6 +164,7 @@ Implemented:
 - typed factual checks;
 - citation/provenance/OOS checks;
 - a fake-backend semantic-judge calibration harness;
+- a frozen local single-Gemma advisory backend that cannot certify or promote;
 - blinded local human-review tooling.
 
 The BM25 validation experiment produced
@@ -201,11 +206,92 @@ revocable information, and audit evidence must not rely on weights.
 - 40-core integrated Apple GPU.
 - 128 GB unified memory.
 - MLX / MLX-LM, no CUDA or multi-GPU assumptions.
-- Qwen3-4B as the principal experimental model.
-- Full BF16 4B training only after a representative feasibility preflight.
+- Qwen3.8-27B 4-bit as the new exploratory candidate, with a matched
+  Qwen3-4B 4-bit control.
+- Gemma 4 31B 8-bit as a sequentially loaded, frozen advisory verifier.
 
-Legacy and confirmatory training remain blocked. One explicitly
-`smoke_non_promotable` acquisition profile is available for machinery checks.
+Legacy and confirmatory training remain blocked. The historical
+`smoke_non_promotable` profile and the separately versioned
+`model-upgrade-exploratory/v1` profile are non-promotable.
+
+## Model-upgrade exploratory v1
+
+The frozen protocol is
+[`knowledge/model_upgrade_exploratory/v1/protocol.json`](knowledge/model_upgrade_exploratory/v1/protocol.json).
+It compares each 4B/27B adapter with its own base and with direct evidence,
+using the same 24-view-per-record curriculum and 96-exposure budget. Qwen
+generation and Gemma verification run in separate processes with thinking
+disabled, greedy decoding, fresh per-case state, and a 1,024-token cap.
+
+Run stages explicitly:
+
+```bash
+emmlx model-upgrade preflight --model mlx-community/Qwen3-4B-Instruct-2507-4bit
+emmlx model-upgrade preflight --model mlx-community/Qwen3.8-27B-4bit
+emmlx model-upgrade judge-preflight
+emmlx model-upgrade train --model mlx-community/Qwen3-4B-Instruct-2507-4bit
+emmlx model-upgrade train --model mlx-community/Qwen3.8-27B-4bit
+```
+
+The generated curriculum records model authorship and any deterministic
+source-only fallback, but remains `human_approved: false`. Local result
+artifacts are ignored by Git. The experiment is complete only after the
+measured 4B/27B benchmark, local Gemma regrading, historical bridge, general
+diagnostic, and bounded comparison report exist.
+
+The seed-42 experiment is now complete. Its single-Gemma advisory found:
+
+- no generator-quality gain from 27B over 4B on this diagnostic;
+- 27B closed-book adapter uplift of `+0.171875` over its own base, with five
+  additional fully-correct answers and 9 paired wins versus 3 losses;
+- 27B adapter mean `0.265625`, versus `0.84375` with full context, `0.875`
+  with oracle context, and `0.34375` with experimental BM25;
+- unknown/OOS failures worsening from 0 for the 27B base to 14 for its
+  adapter.
+
+The frozen continuation gate therefore ends this experiment without a seed-43
+repeat. These are model-review labels, not human-approved evidence. The local
+comparison and historical judge bridge are under
+`artifacts/model-upgrade/report-runtime-v2/` and
+`artifacts/model-upgrade/historical-bridge-runtime-v2/`; generated artifacts
+remain uncommitted. The first runtime attempt is retained but invalidated
+because the custom low-level trainer had not explicitly seeded MLX and NumPy.
+Execution revision `v2-explicit-seeding-and-output-integrity` reran both
+models from the untouched bases and produced the figures above. The 27B
+preflight covered all 496 expected adapter targets and the actual fixed-dataset
+maximum of 192 tokens. Its separate artificial
+2,048-token padded stress attempt hit MLX Metal's graph resource-count limit,
+which is retained as a disclosed runtime limitation.
+
+## Company task specialization v1
+
+`company-task-specialization/v1` is a separate source-grounded task experiment,
+not a reinterpretation of the closed-book acquisition result. Its frozen
+contract and synthetic development cases are under
+`knowledge/company_task_specialization/v1/`.
+
+```bash
+emmlx specialization validate-contract
+emmlx specialization pilot
+```
+
+The pilot runs the untrained 4B baseline, the Qwen27 teacher/repairer candidate,
+and the Gemma advisory evaluator sequentially. It never trains a model. The
+first development pass was retained and invalidated after exposing ambiguous
+decision and field semantics. The corrected
+`v2-explicit-decision-and-field-semantics` pass found:
+
+- untrained 4B with evidence: 6/14 deterministic passes, mean `0.429`;
+- Qwen27 teacher candidate: 7/14 deterministic passes, mean `0.500`;
+- Qwen27 repairs: 5/8 deterministic passes, mean `0.562`;
+- zero advisory-accepted or training-eligible repairs.
+
+The Qwen27 candidate therefore failed teacher qualification. No SFT, GRPO,
+gisting, autonomous admission, or deployment is authorized. These cases and
+labels are synthetic/model-advisory evidence only; approved real work and a
+human-calibrated task evaluator are required before training can be considered.
+The shareable, hash-bound summary is
+[`docs/results/2026-09-06-company-task-specialization-v1-advisory.md`](docs/results/2026-09-06-company-task-specialization-v1-advisory.md).
 
 ## Latest acquisition smoke
 
@@ -264,6 +350,8 @@ scripts/                    bootstrap and clean source packaging
 ## Documentation
 
 - [`docs/adr/0001-purpose-hardware-and-first-boundary.md`](docs/adr/0001-purpose-hardware-and-first-boundary.md)
+- [`docs/adr/0002-model-upgrade-exploratory-v1.md`](docs/adr/0002-model-upgrade-exploratory-v1.md)
+- [`docs/adr/0003-company-task-specialization-v1.md`](docs/adr/0003-company-task-specialization-v1.md)
 - [`docs/ROADMAP.md`](docs/ROADMAP.md)
 - [`docs/security.md`](docs/security.md)
 - [`docs/data-contract.md`](docs/data-contract.md)

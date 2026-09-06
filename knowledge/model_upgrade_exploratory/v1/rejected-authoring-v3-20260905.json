@@ -1,0 +1,8 @@
+{
+  "status": "rejected_before_compilation",
+  "reason": "Independent diversity review found a 96.99 percent within-record prompt pair; the final contract was tightened to a 90 percent ceiling with source-only fallback.",
+  "views_sha256": "8f40b53bf46d1e434767be42be10e23fa63e0d6e340aec78bf4167d32c67958d",
+  "authoring_attempts_sha256": "c70a440879c600b257c5c3c331f34ab7c37340a67b0d1c53ce128eaf4d59e375",
+  "accepted_for_training": false,
+  "promotion_eligible": false
+}

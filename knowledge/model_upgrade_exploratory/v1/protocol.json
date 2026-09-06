@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "protocol_id": "model-upgrade-exploratory/v1",
+  "status": "frozen_before_corrected_measured_generation",
+  "execution_revision": "v2-explicit-seeding-and-output-integrity",
+  "corrective_freeze": {
+    "reason": "The first local runtime attempt did not explicitly seed MLX and NumPy before LoRA initialization and dataset iteration.",
+    "prior_attempt_status": "invalidated_missing_explicit_runtime_seeding",
+    "prior_artifacts_preserved": true,
+    "measured_settings_changed": false
+  },
+  "classification": "internal_shared",
+  "human_approved": false,
+  "promotion_eligible": false,
+  "historical_experiment_unchanged": true,
+  "historical_status": "human_review_pending",
+  "models": {
+    "main_generator_and_trainable_base": {
+      "model_id": "mlx-community/Qwen3.8-27B-4bit",
+      "upstream_model_id": "Qwen/Qwen3.8-27B",
+      "revision": "3e6447f082e89cc7f0bc6e5441afd38dfce760ff",
+      "license": "apache-2.0",
+      "quantization": {
+        "bits": 4,
+        "group_size": 64,
+        "mode": "affine"
+      }
+    },
+    "small_model_control": {
+      "model_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+      "upstream_model_id": "Qwen/Qwen3-4B-Instruct-2507",
+      "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+      "license": "apache-2.0",
+      "quantization": {
+        "bits": 4,
+        "group_size": 64,
+        "mode": "affine"
+      }
+    },
+    "frozen_semantic_verifier": {
+      "model_id": "mlx-community/gemma-4-31b-it-8bit",
+      "upstream_model_id": "google/gemma-4-31B-it",
+      "revision": "f5f3dc92ab4af76724c36c21eb6bedadb3a851be",
+      "license": "gemma",
+      "quantization": {
+        "bits": 8,
+        "group_size": 64,
+        "mode": "affine"
+      },
+      "verification_status": "single_local_judge_advisory"
+    }
+  },
+  "training": {
+    "method": "4-bit QLoRA",
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05,
+    "targets": "all architecture-appropriate language linear projections",
+    "optimizer": "AdamW",
+    "learning_rate": 0.00005,
+    "weight_decay": 0.01,
+    "batch_size": 1,
+    "gradient_accumulation": 8,
+    "gradient_checkpointing": true,
+    "max_sequence_length": 2048,
+    "seed": 42,
+    "seeded_runtimes": [
+      "python_random",
+      "numpy",
+      "mlx"
+    ],
+    "seeding_applied_before_lora_initialization_and_dataset_iteration": true,
+    "primary_exposures_per_record": 96,
+    "diagnostic_exposures": [
+      24,
+      48,
+      96
+    ],
+    "checkpoint_selection_on_frozen_test": false
+  },
+  "generation": {
+    "thinking": false,
+    "temperature": 0.0,
+    "max_output_tokens": 1024,
+    "fresh_state_per_question": true,
+    "selective_retries": false,
+    "raw_and_final_stored_separately": true
+  },
+  "curriculum": {
+    "eligible_records": 8,
+    "views_per_record": 24,
+    "authoring_inputs": "approved source records only",
+    "model_assisted": true,
+    "human_approved": false,
+    "semantic_leakage_scanner": {
+      "model_id": "mlx-community/all-MiniLM-L6-v2-4bit",
+      "revision": "128ca2da88d925829a17fb5ddfdc86b42eb58fb2"
+    }
+  },
+  "verification": {
+    "thinking": false,
+    "temperature": 0.0,
+    "max_output_tokens": 1024,
+    "structured_json_contract": "strictly parsed JSON; malformed output is a recorded verifier failure without retry",
+    "same_evidence_across_arms": true,
+    "deterministic_failures_authoritative": true,
+    "reviewer_kind": "model",
+    "human_approved": false,
+    "promotion_eligible": false,
+    "usable_for_judge_certification": false
+  },
+  "required_arms": {
+    "both_generator_sizes": [
+      "base",
+      "parametric",
+      "full_context",
+      "oracle"
+    ],
+    "qwen3_8_27b_additional": [
+      "bm25"
+    ]
+  },
+  "continuation_criteria": {
+    "mean_score_delta_over_same_model_base_min": 0.1,
+    "fully_correct_delta_over_same_model_base_min": 4,
+    "paired_wins_must_exceed_losses": true,
+    "unknown_oos_failure_count_must_not_worsen": true,
+    "blocking_runtime_or_verifier_defect_allowed": false,
+    "passing_action": "authorize_one_seed_43_repeat_of_matched_runs"
+  },
+  "practical_screen": {
+    "max_mean_gap_below_full_context": 0.05,
+    "requires_measured_operational_benefit": true,
+    "deployment_authorization": false
+  },
+  "limitations": [
+    "The 32-question historical acquisition suite is previously inspected and diagnostic.",
+    "A single Gemma verifier is not a certified judge and does not produce human evidence.",
+    "One seed cannot isolate parameter count from architecture or post-training.",
+    "Passing authorizes only one seed-43 repeat, not a tuning campaign."
+  ]
+}

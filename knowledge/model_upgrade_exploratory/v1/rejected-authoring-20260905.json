@@ -1,0 +1,8 @@
+{
+  "status": "rejected_before_compilation",
+  "reason": "Four within-record prompt pairs exceeded the frozen 97 percent near-duplicate threshold.",
+  "views_sha256": "7657e3f47922bd53749f967a9f267cff91b48cd4d110755bb3f29a1b2cb31a4c",
+  "authoring_attempts_sha256": "07ca9eef14f37debfddc3f94707daff8bea4543002474d97821764116471b586",
+  "accepted_for_training": false,
+  "promotion_eligible": false
+}

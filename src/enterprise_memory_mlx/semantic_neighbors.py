@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import math
+import re
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol
 
 DEFAULT_SEMANTIC_MODEL = "mlx-community/all-MiniLM-L6-v2-4bit"
+DEFAULT_SEMANTIC_MODEL_REVISION = "128ca2da88d925829a17fb5ddfdc86b42eb58fb2"
 
 
 class EmbeddingBackend(Protocol):
@@ -48,11 +50,11 @@ class MLXEmbeddingBackend:
             from huggingface_hub import model_info, snapshot_download
             from mlx_embeddings import generate, load
         except ImportError as exc:
-            raise RuntimeError(
-                'Semantic scan requires: pip install -e ".[semantic]"'
-            ) from exc
-        info = model_info(model_id, revision=revision)
-        resolved = getattr(info, "sha", None)
+            raise RuntimeError('Semantic scan requires: pip install -e ".[semantic]"') from exc
+        resolved = revision if revision and re.fullmatch(r"[0-9a-f]{40}", revision) else None
+        if resolved is None:
+            info = model_info(model_id, revision=revision)
+            resolved = getattr(info, "sha", None)
         if not resolved:
             raise ValueError(f"Could not resolve semantic model revision: {model_id}")
         self.model_id = model_id
@@ -91,9 +93,7 @@ def nearest_neighbors(
         raise ValueError("Embedding backend returned the wrong number of vectors")
     pairs = []
     for (left_id, left_text), left_vector in zip(left, left_vectors, strict=True):
-        for (right_id, right_text), right_vector in zip(
-            right, right_vectors, strict=True
-        ):
+        for (right_id, right_text), right_vector in zip(right, right_vectors, strict=True):
             score = _cosine(left_vector, right_vector)
             pairs.append(
                 SemanticNeighbor(

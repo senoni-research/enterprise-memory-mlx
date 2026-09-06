@@ -15,6 +15,7 @@ from enterprise_memory_mlx.acquisition_training import (
     run_acquisition,
 )
 from enterprise_memory_mlx.cli import build_parser
+from enterprise_memory_mlx.experiment_profiles import QWEN_4B_REVISION
 
 
 class HashEmbeddingBackend:
@@ -43,7 +44,7 @@ def _compilation(tmp_path: Path, project_root: Path):
 def _config() -> AcquisitionConfig:
     return AcquisitionConfig(
         model_id="mlx-community/Qwen3-4B-Instruct-2507-4bit",
-        model_revision="a" * 40,
+        model_revision=QWEN_4B_REVISION,
         rank=16,
         scale=2.0,
         learning_rate=2e-4,
@@ -110,7 +111,7 @@ def test_dry_run_writes_non_promotable_config_and_manifest(
     manifest = json.loads(run.run_manifest_path.read_text(encoding="utf-8"))
     assert manifest["status"] == "dry_run"
     assert manifest["promotion_eligible"] is False
-    assert manifest["model_revision"] == "a" * 40
+    assert manifest["model_revision"] == QWEN_4B_REVISION
     assert manifest["source_record_ids"] == [
         "ENG-INC-002",
         "ENG-REL-001",
@@ -175,9 +176,7 @@ def test_execute_hashes_adapter_without_legacy_registry(
     assert run.adapter_hash == hashlib.sha256(adapter_bytes).hexdigest()
     manifest = json.loads(run.run_manifest_path.read_text(encoding="utf-8"))
     assert manifest["adapter_hash"] == run.adapter_hash
-    assert manifest["training_log_hash"] == hashlib.sha256(
-        b"synthetic training log\n"
-    ).hexdigest()
+    assert manifest["training_log_hash"] == hashlib.sha256(b"synthetic training log\n").hexdigest()
     assert not (tmp_path / "artifacts" / "registry" / "adapters.json").exists()
 
     verified = load_verified_acquisition_adapter(run.run_manifest_path)
@@ -188,12 +187,9 @@ def test_execute_hashes_adapter_without_legacy_registry(
 
 
 def test_revised_trainer_does_not_import_legacy_training(project_root: Path) -> None:
-    source = (
-        project_root
-        / "src"
-        / "enterprise_memory_mlx"
-        / "acquisition_training.py"
-    ).read_text(encoding="utf-8")
+    source = (project_root / "src" / "enterprise_memory_mlx" / "acquisition_training.py").read_text(
+        encoding="utf-8"
+    )
     assert "from .training" not in source
     assert "from .hardware" not in source
     assert "register_adapter" not in source
@@ -207,5 +203,5 @@ def test_acquire_command_is_dry_run_unless_execute_is_explicit() -> None:
     assert safe.command == "acquire"
     assert safe.execute is False
     assert safe.rank == 16
-    assert safe.target_exposures == 24
+    assert safe.target_exposures is None
     assert executing.execute is True

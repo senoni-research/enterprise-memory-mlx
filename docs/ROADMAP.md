@@ -111,6 +111,57 @@ The confirmatory experiment still requires ranks 8/16/32, exposure checkpoints
 24/96/192, three seeds, independently scheduled confirmation runs, certified
 semantic grading, and full general-capability benchmarks.
 
+## Bounded model-upgrade exploratory run
+
+`model-upgrade-exploratory/v1` is a new non-promotable experiment, not a
+revision of the September 1 candidate. It uses pinned Qwen3.8-27B and
+Qwen3-4B 4-bit checkpoints on the same 24-view curriculum and 96-exposure
+trajectory, followed by one pinned Gemma 4 31B 8-bit advisory verifier.
+
+Its report must keep three outcomes separate:
+
+1. stronger 27B generation versus 4B generation;
+2. adapter uplift versus the same model's base;
+3. competitiveness with full context and the frozen experimental BM25 arm.
+
+Passing the frozen acquisition screen authorizes only one seed-43 repeat.
+Neither a pass nor a single-Gemma label authorizes promotion or changes the
+historical candidate's `human_review_pending` status.
+
+The corrected, explicitly seeded seed-42 cycle is complete. The first runtime
+attempt is retained but invalidated because MLX and NumPy were not explicitly
+seeded before LoRA initialization and dataset iteration. Under execution
+revision `v2-explicit-seeding-and-output-integrity`, the 27B adapter passed the
+three acquisition uplift thresholds (`+0.171875` mean, five additional
+fully-correct answers, 9 paired wins versus 3 losses), but failed the required
+unknown/OOS condition:
+failures increased from 0 for the base to 14 for the adapter. It also remained
+`0.578125` below full context. The decision is therefore
+`end_model_upgrade_exploratory_v1`; no seed-43 repeat or tuning campaign is
+authorized. The result remains a single-local-Gemma advisory rather than
+human-approved evidence.
+
+## Company task specialization
+
+`company-task-specialization/v1` tests a distinct claim: source-grounded task
+specialization through qualified examples and repaired failures. It keeps
+evidence-assisted task competence, replacement value, and closed-book
+parametric access as separate endpoints.
+
+The task/split/evaluation contract was frozen before development generation.
+The initial pass exposed an evaluator-contract defect and was preserved as
+invalid. After explicitly defining decision and field semantics, the corrected
+synthetic pass still failed teacher qualification: Qwen27 achieved 7/14
+deterministic passes and a `0.500` advisory governed mean. Five of eight repairs
+passed deterministic checks, but no repair was admitted because the teacher
+qualification gate failed.
+
+The next milestone is not training. It requires approved real requests and
+accepted outcomes, human task labels for evaluator calibration, and a newly
+frozen untouched test. Only then may a bounded SFT comparison of equal-budget
+random examples versus failure-focused repairs be proposed. GRPO and gisting
+remain deferred.
+
 ## Later milestones
 
 ### Recovery

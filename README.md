@@ -354,6 +354,50 @@ or stronger-teacher run is authorized. The generation summary is
 The final decision is
 [`docs/results/2026-09-06-supplier-qualification-v2-final.md`](docs/results/2026-09-06-supplier-qualification-v2-final.md).
 
+`company-task-specialization/v3-remedy-logic` preserves that result and tests
+the identified representation defect directly. Its 24 frozen fresh cases
+compare only the unchanged single-pass Qwen27 baseline against the same model
+with recursive `any_of`/`all_of` remedy groups. The old 14 cases are bound as a
+separate regression set and are not reused as fresh evidence.
+
+Model-free tests establish the typed OR, AND, and nested behavior and detect
+operator swaps, dropped routes, and unsupported routes before inference.
+Machine checks remain limited to node structure, request coverage, and supplied
+source IDs. Blinded semantic review still decides whether free-text actions,
+operators, alternatives, and mandatory controls match policy.
+
+```bash
+emmlx specialization validate-remedy-v3
+emmlx specialization run-remedy-v3
+emmlx specialization prepare-remedy-review \
+  --comparison artifacts/company-task-specialization/v3-remedy-logic/<run>/remedy-logic-comparison.json
+emmlx specialization score-remedy-review \
+  --comparison <remedy-logic-comparison.json> \
+  --packet <remedy-logic-model-advisory.zip> \
+  --mapping <private-review-map.json> \
+  --advisory <completed-model-advisory.jsonl>
+```
+
+The review hides arm labels, case IDs, references, machine results, and costs.
+Because candidates use visibly different schemas, it is described as
+arm-label blinded rather than perfectly treatment blinded. Passing can support
+only a bounded advisory teacher designation; the student-training block remains
+in force pending a separately approved admission protocol.
+
+The run completed all 48 generations with no failure, truncation, invalid
+structure, or machine hard failure. The GPT advisory review rated the control
+16/24 acceptable with eight unacceptable, and the challenger 22/24 acceptable
+with one minor revision and one unacceptable. The challenger produced five
+paired alternative-preservation wins, zero losses, and no mandatory-condition
+regression, demonstrating that the representation fixed its target defect.
+
+It still failed the frozen gate. Both arms invented an attachment or
+verification requirement after facts established questionnaire completion, and
+the challenger made one additional known-complete control sound unknown. The
+final decision is `no_arm_passes_substantive_gate`; no teacher is designated
+and training stays blocked. See
+[`docs/results/2026-09-06-remedy-logic-v3-final.md`](docs/results/2026-09-06-remedy-logic-v3-final.md).
+
 ## Latest acquisition smoke
 
 The current rank-16 smoke uses Qwen3-4B, all 36 layers, all q/k/v/o and

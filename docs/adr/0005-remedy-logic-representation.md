@@ -2,7 +2,7 @@
 
 Date: 6 September 2026
 
-Status: contract frozen; generation pending
+Status: complete; no arm passed the frozen gate
 
 ## Context
 
@@ -63,8 +63,21 @@ rendering and validation. Do not add an explanation model call.
 
 ## Consequences
 
-A passing and improved challenger may receive a bounded advisory teacher
-designation only after scoring under this frozen rule. It does not authorize
-student training, autonomous admission, deployment, or a human-validation
-claim. A 4B training batch and random-example versus failure-repair comparison
-remain a separately authorized milestone.
+All 48 generations completed without failure, truncation, invalid structure, or
+machine hard failure. The blinded GPT advisory review found:
+
+- control: 16/24 acceptable and eight unacceptable;
+- challenger: 22/24 acceptable, one minor revision, and one unacceptable;
+- five paired alternative-preservation wins and zero losses;
+- seven paired overall-outcome wins and zero losses.
+
+The explicit representation fixed the targeted alternative-remedy behavior, but
+the challenger still failed the zero-unacceptable, zero-unsafe, and
+all-targeted-cases gates. Both arms invented an attachment or verification
+requirement after operational facts established questionnaire completion. The
+challenger also reclassified one known-complete control as unknown.
+
+The final decision is `no_arm_passes_substantive_gate`; no bounded advisory
+teacher is designated. The result is preserved and the next investigation must
+target policy interpretation and fact-state adherence. Student training,
+autonomous admission, deployment, and human-validation claims remain blocked.

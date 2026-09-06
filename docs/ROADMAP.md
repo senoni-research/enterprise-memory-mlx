@@ -204,6 +204,41 @@ development change should represent alternative remedies explicitly rather
 than add more generic prompting or a stronger model. This experiment cannot
 authorize student training, a stronger teacher, or production use.
 
+### Remedy-logic representation
+
+`company-task-specialization/v3-remedy-logic` preserves v2 and isolates that
+single defect. The frozen design compares the unchanged one-call Qwen27
+baseline with a one-call structured-remedy challenger on 24 fresh synthetic
+cases. It adds explicit `any_of`, `all_of`, and nested remedy groups while
+separating known current blockers from future actions.
+
+Typed model-free tests run before inference. Structural and source-membership
+checks are machine-authoritative; policy interpretation remains subject to an
+arm-label-blinded GPT review. The old 14 cases are retained as regression-only
+evidence and are not counted toward the new qualification result.
+
+The prospective gate requires a 90% acceptable rate, no unacceptable or unsafe
+output, every targeted logic and multipart case acceptable, and no generation,
+truncation, or structure failure. Challenger advancement additionally requires
+paired alternative-preservation improvement without a mandatory-condition
+regression. Equal quality selects the simpler control.
+
+Even a passing arm is limited to bounded advisory example generation and needs
+a separately approved admission protocol. Student training, deployment, and
+human-validation claims remain blocked.
+
+The completed review found a real paired benefit but no passing arm. Control
+scored 16/24 acceptable; the structured challenger scored 22/24 acceptable,
+with five alternative-preservation wins and no losses. Both arms nevertheless
+invented an attachment or verification requirement when completion was already
+established. The challenger also downgraded one known-complete control to
+unknown. The preserved decision is `no_arm_passes_substantive_gate`.
+
+The next specialization milestone is therefore a bounded investigation of
+policy interpretation and fact-state adherence, not student training or a new
+model-selection campaign. Any repair run and any advisory-example admission
+protocol require separate approval.
+
 ## Later milestones
 
 ### Recovery

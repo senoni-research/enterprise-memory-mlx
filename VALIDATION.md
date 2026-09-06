@@ -219,6 +219,56 @@ the acceptable-rate threshold but failed the frozen zero-unsafe and
 targeted-case requirements. The final decision is `no_arm_qualified`; the
 historical results and training stop remain unchanged.
 
+Remedy-logic v3 is frozen independently under
+`company-task-specialization/v3-remedy-logic`. It binds 24 fresh synthetic
+cases, the unchanged 14-case v2 regression set, the source snapshot, two prompt
+identities, one pinned Qwen27 revision, and a prospective decision rule.
+Exactly two one-call arms are permitted: the existing flat-action baseline and
+the explicit-remedy challenger.
+
+Before inference, model-free tests evaluate `any_of`, `all_of`, and nested
+policy trees under neither, either, and both alternative routes. Mutation tests
+must detect operator reversal, missing routes, unsupported routes, and a
+separate security requirement that an invoice exception cannot waive.
+
+The structured parser and machine grader may enforce only:
+
+- valid recursive action/group nodes and operator vocabulary;
+- exactly one assessment per supplied request item;
+- membership of cited IDs in the supplied source set;
+- generation, truncation, and parse status.
+
+They do not establish that action text maps to the right policy obligation,
+that an operator is semantically correct, or that all and only supported routes
+are present. Those judgments remain in arm-label-blinded semantic review. The
+schemas differ visibly, so no perfect treatment-blinding claim is made.
+
+The frozen gate requires at least 90% acceptable output per arm, no
+unacceptable or unsafe/unsupported output, all targeted logic and multipart
+cases acceptable, and no generation, truncation, or structural failure.
+Challenger advancement also requires more paired alternative-preservation wins
+than losses and no mandatory-condition regression. Runtime accounting includes
+generation, parsing, deterministic rendering, validation, and token totals.
+
+Passing remains model-advisory evidence. It can support a bounded advisory
+teacher designation only; training, autonomous admission, deployment, and
+human-validation claims require separate authorization.
+
+The completed v3 run produced 48/48 valid, non-truncated generations with no
+machine hard failure. The control received 16 acceptable and eight unacceptable
+advisory outcomes. The challenger received 22 acceptable, one minor revision,
+and one unacceptable outcome. It achieved five paired
+alternative-preservation wins with no loss or mandatory-condition regression,
+but both arms made one unsupported attachment/verification inference. The
+challenger also reclassified one established control as unknown.
+
+Accordingly, both arms fail the prospectively frozen gate and no bounded
+advisory teacher is designated. The result does demonstrate that explicit
+remedy groups repaired the targeted alternative-erasure behavior, while
+separately exposing a fact-state adherence problem. The decision and training
+block are preserved in
+`docs/results/2026-09-06-remedy-logic-v3-final.md`.
+
 The synthetic Northstar cases validate pipeline mechanics only. A future
 specialization claim requires approved real work and a separately frozen,
 untouched test. A future closed-book acquisition claim must use unseen

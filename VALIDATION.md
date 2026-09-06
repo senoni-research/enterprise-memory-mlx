@@ -269,6 +269,38 @@ separately exposing a fact-state adherence problem. The decision and training
 block are preserved in
 `docs/results/2026-09-06-remedy-logic-v3-final.md`.
 
+Fact-state v4 is independently frozen under
+`company-task-specialization/v4-fact-state`. It binds:
+
+- 16 fresh scenarios in 8 two-scenario contrast pairs;
+- a separate synthetic policy snapshot;
+- generator-visible state-authority semantics;
+- the unchanged v3 structured prompt and one compact amendment;
+- separate targeted-learning and substantive-qualification rules;
+- one conditional amended-prompt pass over the 24 v3 cases.
+
+The initial runtime mistakenly excluded supplied operational-state IDs from the
+provenance allowlist. The original artifact is preserved. A model-free
+correction changed all 32 machine grades without changing any generation,
+prompt, case, timing, or token count and without adding a model call. Corrected
+outputs have zero structure, provenance, generation, or truncation failures.
+
+The arm-label-blinded GPT review rated control 8/16 acceptable, three minor, and
+five unacceptable. The amendment received 10 acceptable, four minor, and two
+unacceptable. It produced four paired fact-state wins and one loss, but also
+one remedy-logic and two unsafe-waiver losses.
+
+The amendment therefore fails both the no-regression targeted-learning rule and
+the substantive gate. The final decision is
+`no_success_stop_synthetic_prompt_iteration`. The conditional v3 regression is
+not authorized, historical v3 results are unchanged, and no teacher is
+designated.
+
+Per the frozen boundary, further synthetic prompt iteration stops here.
+Real-work evidence-contract inspection or validated structured workflow state
+requires separate authorization. Student training, automatic admission,
+stronger-model comparison, and deployment remain blocked.
+
 The synthetic Northstar cases validate pipeline mechanics only. A future
 specialization claim requires approved real work and a separately frozen,
 untouched test. A future closed-book acquisition claim must use unseen

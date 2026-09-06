@@ -239,6 +239,25 @@ policy interpretation and fact-state adherence, not student training or a new
 model-selection campaign. Any repair run and any advisory-example admission
 protocol require separate approval.
 
+### Fact-state stop boundary
+
+`company-task-specialization/v4-fact-state` retained structured remedies and
+ran the one authorized fresh fact-state comparison. The 16 scenarios were
+organized as 8 contrast pairs with generator-visible authority metadata.
+
+The amendment improved four matched scenarios and regressed one. It fixed the
+recorded-completion/absent-attachment contrast and improved state-authority
+handling, but failed to eliminate unknown-versus-unmet and collective-completion
+errors. It also introduced one remedy-logic and two unsafe-waiver regressions.
+The candidate scored 10/16 acceptable versus control's 8/16; neither passed the
+substantive gate.
+
+The decision is `no_success_stop_synthetic_prompt_iteration`. The conditional
+v3 regression was not authorized. The next specialization milestone is to
+inspect the evidence contract against an approved real-work seed or validated
+workflow state. Another synthetic prompt tournament, stronger-model campaign,
+student training, and automatic example admission remain blocked.
+
 ## Later milestones
 
 ### Recovery

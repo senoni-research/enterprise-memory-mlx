@@ -180,6 +180,12 @@ class FactStateRegressionArtifacts:
     report_path: Path
 
 
+@dataclass(frozen=True)
+class FactStateCorrectionArtifacts:
+    directory: Path
+    report_path: Path
+
+
 def load_fact_state_assets(root: Path) -> FactStateAssets:
     root = root.resolve()
     asset_root = root / "knowledge" / "company_task_specialization" / "v4_fact_state"
@@ -339,6 +345,92 @@ def run_fact_state_comparison(
     return FactStateArtifacts(output_dir, report_path)
 
 
+def correct_fact_state_machine_grades(
+    *,
+    root: Path,
+    comparison_path: Path,
+    output_root: Path,
+) -> FactStateCorrectionArtifacts:
+    """Correct the supplied-state provenance set without changing generations."""
+    assets = load_fact_state_assets(root)
+    comparison_path = comparison_path.resolve()
+    comparison_bytes = comparison_path.read_bytes()
+    comparison_hash = hashlib.sha256(comparison_bytes).hexdigest()
+    comparison = json.loads(comparison_bytes)
+    _validate_comparison(comparison, assets)
+    case_by_id = {str(case["case_id"]): case for case in assets.cases}
+    corrected_attempts: dict[str, list[dict[str, Any]]] = {}
+    changed = 0
+    for arm in ARMS:
+        rows = comparison["attempts"].get(arm)
+        if not isinstance(rows, list) or len(rows) != len(assets.cases):
+            raise ValueError(f"Fact-state arm is incomplete: {arm}")
+        corrected_rows = []
+        for source_attempt in rows:
+            attempt = dict(source_attempt)
+            case = case_by_id.get(str(attempt.get("case_id")))
+            if case is None:
+                raise ValueError("Fact-state comparison contains an unknown case")
+            assessment, parse_status = parse_remedy_assessment(attempt.get("final_output"))
+            authorized_ids = _authorized_record_ids(case)
+            machine_grade = remedy_machine_grade(
+                assessment=assessment,
+                parse_status=parse_status,
+                expected_request_item_ids=[
+                    str(item["request_item_id"]) for item in case["request_items"]
+                ],
+                supplied_record_ids=authorized_ids,
+            )
+            if machine_grade != attempt.get("machine_grade"):
+                changed += 1
+            attempt["assessment"] = assessment
+            attempt["structured_parse_status"] = parse_status
+            attempt["machine_grade"] = machine_grade
+            attempt["machine_grade_correction"] = {
+                "reason": (
+                    "Operational-state IDs are generator-visible supplied records and "
+                    "belong in the provenance allowlist."
+                ),
+                "authorized_record_ids": authorized_ids,
+                "generation_changed": False,
+            }
+            corrected_rows.append(attempt)
+        corrected_attempts[arm] = corrected_rows
+    corrected = {
+        **comparison,
+        "created_at": datetime.now(UTC).isoformat(),
+        "run_identity": f"{comparison['run_identity']}-machine-grade-v2",
+        "arm_summaries": {arm: _attempt_summary(rows) for arm, rows in corrected_attempts.items()},
+        "attempts": corrected_attempts,
+        "runtime_correction": {
+            "kind": "model_free_provenance_allowlist_correction",
+            "source_comparison_path": str(comparison_path),
+            "source_comparison_sha256": comparison_hash,
+            "attempt_count": sum(len(rows) for rows in corrected_attempts.values()),
+            "changed_machine_grades": changed,
+            "generation_calls_added": 0,
+            "generation_outputs_changed": False,
+            "prompt_or_case_changed": False,
+        },
+    }
+    identity = sha256_json(
+        {
+            "source_comparison": comparison_hash,
+            "correction": corrected["runtime_correction"]["kind"],
+        }
+    )[:16]
+    output_dir = output_root.resolve() / f"comparison-corrected-{identity}"
+    report_path = output_dir / "fact-state-comparison-corrected.json"
+    if output_dir.exists():
+        raise FileExistsError(f"Refusing to overwrite fact-state grade correction: {output_dir}")
+    output_dir.mkdir(parents=True)
+    atomic_write_text(
+        report_path,
+        json.dumps(corrected, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+    )
+    return FactStateCorrectionArtifacts(output_dir, report_path)
+
+
 def prepare_fact_state_review(
     *,
     root: Path,
@@ -373,6 +465,7 @@ def prepare_fact_state_review(
                     or attempt.get("final_output")
                     or attempt.get("raw_output"),
                     "source_record_ids": case["source_record_ids"],
+                    "authorized_record_ids": _authorized_record_ids(case),
                 }
             )
             mapping_rows.append(
@@ -717,7 +810,7 @@ def _generate_attempt(
         assessment=assessment,
         parse_status=parse_status,
         expected_request_item_ids=[str(item["request_item_id"]) for item in case["request_items"]],
-        supplied_record_ids=case["source_record_ids"],
+        supplied_record_ids=_authorized_record_ids(case),
     )
     rendered = _render_assessment(assessment)
     total_elapsed = time.perf_counter() - started
@@ -884,7 +977,10 @@ def _score_arm(
     unsafe = sum(int(row["unsafe_claim_count"] > 0) for row in rows)
     failures = sum(row["generation_status"] != "generated" for row in attempts)
     truncations = sum(row.get("truncated") is True for row in attempts)
-    invalid = sum(row["structured_parse_status"] != "valid" for row in attempts)
+    invalid = sum(
+        row["structured_parse_status"] != "valid" or row["machine_grade"]["status"] == "hard_fail"
+        for row in attempts
+    )
     checks = {
         "minimum_cases": len(rows) >= int(gate["minimum_cases_per_arm"]),
         "acceptable_rate": acceptable / len(rows) >= float(gate["minimum_acceptable_rate"]),
@@ -1411,6 +1507,13 @@ def _knowledge_record_dict(record: Any) -> dict[str, Any]:
         "effective_from": record.effective_from,
         "effective_to": record.effective_to,
     }
+
+
+def _authorized_record_ids(case: Mapping[str, Any]) -> list[str]:
+    return [
+        *[str(value) for value in case["source_record_ids"]],
+        *[str(state["state_id"]) for state in case["operational_state"]],
+    ]
 
 
 def _file_hash(path: Path) -> str:

@@ -86,6 +86,7 @@ from .specialization_audit import (
 )
 from .specialization_evaluator import verify_evaluator_v2_contract
 from .specialization_fact_state_experiment import (
+    correct_fact_state_machine_grades,
     load_fact_state_assets,
     prepare_fact_state_review,
     run_fact_state_comparison,
@@ -543,6 +544,15 @@ def build_parser() -> argparse.ArgumentParser:
     fact_state_run_parser.add_argument(
         "--output-root",
         default="artifacts/company-task-specialization/v4-fact-state",
+    )
+    fact_state_correction_parser = specialization_actions.add_parser(
+        "correct-fact-state-grades-v4",
+        help="Correct supplied-state provenance grades without new generations",
+    )
+    fact_state_correction_parser.add_argument("--comparison", required=True)
+    fact_state_correction_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v4-fact-state/corrections",
     )
     fact_state_review_parser = specialization_actions.add_parser(
         "prepare-fact-state-review",
@@ -1360,6 +1370,18 @@ def _specialization(root: Path, args: argparse.Namespace) -> None:
         console.print(
             "[bold yellow]Awaiting arm-label-blinded GPT review; no regression "
             "or training is yet authorized.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "correct-fact-state-grades-v4":
+        artifacts = correct_fact_state_machine_grades(
+            root=root,
+            comparison_path=_rooted_path(root, args.comparison),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Corrected fact-state comparison:[/green] {artifacts.report_path}")
+        console.print(
+            "[bold yellow]Generation outputs are unchanged; only the supplied-record "
+            "provenance allowlist was corrected.[/bold yellow]"
         )
         return
     if args.specialization_action == "prepare-fact-state-review":

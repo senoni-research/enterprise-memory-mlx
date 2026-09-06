@@ -398,6 +398,37 @@ final decision is `no_arm_passes_substantive_gate`; no teacher is designated
 and training stays blocked. See
 [`docs/results/2026-09-06-remedy-logic-v3-final.md`](docs/results/2026-09-06-remedy-logic-v3-final.md).
 
+`company-task-specialization/v4-fact-state` retained the structured remedy
+schema and compared the unchanged v3 prompt against one compact fact-state
+amendment. Its 16 fresh scenarios form 8 contrast pairs over authenticated
+workflow state, unknown status, requester claims, document availability,
+explicit attachment or verification rules, collective completion, conflicts,
+and supersession:
+
+```bash
+emmlx specialization validate-fact-state-v4
+emmlx specialization run-fact-state-v4
+emmlx specialization prepare-fact-state-review \
+  --comparison <fact-state-comparison.json>
+emmlx specialization score-fact-state-review \
+  --comparison <fact-state-comparison.json> \
+  --packet <fact-state-model-advisory.zip> \
+  --mapping <private-review-map.json> \
+  --advisory <completed-model-advisory.jsonl>
+```
+
+The amendment improved 4 paired scenarios and regressed 1. It fixed the direct
+recorded-completion/absent-attachment contrasts, but still converted unknown
+state into required action, reopened some collectively completed controls, and
+introduced one remedy-logic and two unsafe-waiver regressions. Control scored
+8/16 acceptable; the amendment scored 10/16 acceptable.
+
+The frozen decision is `no_success_stop_synthetic_prompt_iteration`. The
+conditional v3 regression was not authorized or run. The retained next boundary
+is real-work evidence-contract inspection or validated structured workflow
+state—not another prompt tournament, larger model, or student training. See
+[`docs/results/2026-09-06-fact-state-v4-final.md`](docs/results/2026-09-06-fact-state-v4-final.md).
+
 ## Latest acquisition smoke
 
 The current rank-16 smoke uses Qwen3-4B, all 36 layers, all q/k/v/o and

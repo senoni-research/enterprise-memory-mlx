@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import zipfile
+from copy import deepcopy
 from pathlib import Path
 
 from enterprise_memory_mlx.benchmark import GeneratedAnswer
@@ -10,6 +11,7 @@ from enterprise_memory_mlx.specialization_fact_state_experiment import (
     CANDIDATE_ARM,
     CONTROL_ARM,
     FACT_STATE_AMENDMENT,
+    correct_fact_state_machine_grades,
     load_fact_state_assets,
     prepare_fact_state_review,
     run_fact_state_comparison,
@@ -42,7 +44,14 @@ class _FakeGenerator:
         assert system_prompt in {CHALLENGER_SYSTEM_PROMPT, AMENDED_SYSTEM_PROMPT}
         payload = json.loads(question)
         first_state_id = payload["operational_state"][0]["state_id"]
-        output = json.dumps(self.references[first_state_id])
+        value = deepcopy(self.references[first_state_id])
+        value["assessments"][0]["evidence"].append(
+            {
+                "record_id": first_state_id,
+                "claim": "The cited operational state was supplied to the generator.",
+            }
+        )
+        output = json.dumps(value)
         self.calls += 1
         return GeneratedAnswer(
             output=output,
@@ -134,11 +143,33 @@ def test_fact_state_run_review_and_separate_learning_gate(tmp_path: Path) -> Non
     assert all(
         summary["valid_structures"] == 16 for summary in comparison["arm_summaries"].values()
     )
+    assert all(
+        summary["machine_hard_failures"] == 0 for summary in comparison["arm_summaries"].values()
+    )
     assert comparison["v3_regression_authorized"] is False
+
+    comparison["attempts"][CONTROL_ARM][0]["machine_grade"] = {
+        "evaluator_id": "remedy-logic-structure/v1",
+        "status": "hard_fail",
+        "hard_failure_reasons": ["provenance:incorrect test allowlist"],
+        "semantic_review_reasons": [],
+        "semantic_review_eligible": False,
+    }
+    broken_path = tmp_path / "broken-comparison.json"
+    broken_path.write_text(json.dumps(comparison))
+    correction = correct_fact_state_machine_grades(
+        root=ROOT,
+        comparison_path=broken_path,
+        output_root=tmp_path / "corrections",
+    )
+    corrected = json.loads(correction.report_path.read_text())
+    assert corrected["runtime_correction"]["generation_calls_added"] == 0
+    assert corrected["runtime_correction"]["generation_outputs_changed"] is False
+    assert corrected["arm_summaries"][CONTROL_ARM]["machine_hard_failures"] == 0
 
     review = prepare_fact_state_review(
         root=ROOT,
-        comparison_path=run.report_path,
+        comparison_path=correction.report_path,
         output_root=tmp_path / "reviews",
     )
     with zipfile.ZipFile(review.packet_path) as archive:
@@ -200,7 +231,7 @@ def test_fact_state_run_review_and_separate_learning_gate(tmp_path: Path) -> Non
 
     decision = score_fact_state_review(
         root=ROOT,
-        comparison_path=run.report_path,
+        comparison_path=correction.report_path,
         packet_path=review.packet_path,
         mapping_path=review.mapping_path,
         advisory_path=advisory_path,

@@ -2,7 +2,7 @@
 
 Date: 6 September 2026
 
-Status: contract frozen; fresh comparison pending
+Status: complete; stop synthetic prompt iteration
 
 ## Context
 
@@ -74,3 +74,32 @@ not another prompt tournament.
 
 No outcome authorizes student training, automatic admission, a stronger-model
 campaign, deployment, or a human-validation claim.
+
+## Result
+
+All 32 generations completed with valid structures and no truncation or
+generation failure. A model-free runtime correction added the supplied
+operational-state IDs to the provenance allowlist; it changed no output, prompt,
+case, token count, or timing and added no model call.
+
+The blinded GPT advisory review found:
+
+- control: 8/16 acceptable, three minor, five unacceptable;
+- amendment: 10/16 acceptable, four minor, two unacceptable;
+- paired fact-state outcomes: four wins and one loss;
+- remedy-logic losses: one;
+- unsafe-waiver losses: two.
+
+The amendment fixed the primary recorded-completion/absent-attachment contrast
+and improved authority handling, but it still converted unknown state into
+mandatory action, reopened collectively completed controls, and introduced an
+unsafe instruction to record unresolved verification as complete.
+
+The candidate failed the substantive gate and the preregistered no-regression
+learning rule. The decision is
+`no_success_stop_synthetic_prompt_iteration`. The conditional v3 regression is
+not authorized and was not run.
+
+The structured-remedy representation remains retained. The next investigation
+must use the approved real-work seed or validated structured workflow state
+rather than another synthetic prompt iteration.

@@ -297,6 +297,10 @@ authorized. A blinded audit, approved real work, and a human-calibrated
 obligation-level evaluator are required before training can be considered.
 The shareable, hash-bound summary is
 [`docs/results/2026-09-06-company-task-specialization-v1-advisory.md`](docs/results/2026-09-06-company-task-specialization-v1-advisory.md).
+The completed blinded GPT review and private Phase B comparison are summarized
+separately in
+[`docs/results/2026-09-06-company-task-specialization-model-advisory-v2.md`](docs/results/2026-09-06-company-task-specialization-model-advisory-v2.md).
+They are model-advisory development evidence, not human labels.
 The draft evaluator-v2 and private real-work schema are under
 `knowledge/company_task_specialization/evaluator_v2/`. Real case content must
 remain under the ignored `knowledge/private/` boundary.

@@ -172,6 +172,17 @@ while retaining syntax and provenance hard checks. Only after that validation
 may fresh teacher cases and bounded prompt/orchestration comparisons be frozen.
 A stronger teacher, SFT, GRPO, and gisting remain deferred.
 
+The project owner subsequently elected to use a blinded GPT review instead of
+collecting human labels for this exploratory cycle. That review rated 16 of 22
+outputs acceptable, three minor revision, and three unacceptable. Private
+comparison found eight possible evaluator false failures, two possible false
+acceptances, and one supported model failure. This permits a model-advisory-only
+task-contract correction and fresh synthetic Qwen comparison; it does not
+create human evidence or authorize production claims. The next bounded step is
+to correct multipart decisions, alternatives, unknown-versus-unmet states, and
+unsupported consequences before retesting the existing Qwen system. Training
+and stronger-teacher work remain blocked.
+
 ## Later milestones
 
 ### Recovery

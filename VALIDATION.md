@@ -192,6 +192,13 @@ ambiguity without seeing or diagnosing historical results. Only after those
 labels are frozen does the maintainer use the private mapping for a Phase B
 disagreement report. Neither phase replaces the historical pilot scores.
 
+The completed Phase A input is a single GPT model-advisory review, not human
+evidence. It contains 22 valid non-human attestations and is bound by SHA-256.
+The private Phase B comparison found 13 cases requiring investigation,
+including possible false failures and false acceptances. It authorizes only a
+fresh model-advisory task-contract experiment; teacher promotion, student
+training, and production claims remain blocked.
+
 The synthetic Northstar cases validate pipeline mechanics only. A future
 specialization claim requires approved real work and a separately frozen,
 untouched test. A future closed-book acquisition claim must use unseen

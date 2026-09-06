@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/v2-model-advisory",
+  "status": "frozen_before_fresh_qwen_generation",
+  "approval": "explicit_user_direction_to_continue_with_GPT_as_the_sole_advisory_reviewer",
+  "claim_boundary": {
+    "reviewer_kind": "model_advisory",
+    "human_evidence": false,
+    "production_evidence": false,
+    "task": "source-grounded supplier-onboarding and first-invoice assessment",
+    "does_not_establish": [
+      "human-validated correctness",
+      "performance on actual company work",
+      "parametric factual acquisition",
+      "production readiness"
+    ]
+  },
+  "upstream_audit": {
+    "report": "docs/results/2026-09-06-company-task-specialization-model-advisory-v2.md",
+    "advisory_jsonl_sha256": "a18b20a7d791be709353084101480cc06a0dfba3389f763032b9792e4b03d319",
+    "phase_b_report_sha256": "428b61f9bd5dd924c23edb2d1cc28e4bc08c87b0d656653cb0d049f02ed8c2d8",
+    "finding": "The old deterministic gate mixed lexical false failures, possible false acceptances, and genuine task errors."
+  },
+  "case_count": 14,
+  "workflow_count": 1,
+  "workflow": "supplier_onboarding_and_first_invoice",
+  "cases": {
+    "path": "knowledge/company_task_specialization/v2/qualification_cases.jsonl",
+    "split": "fresh_model_advisory_qualification",
+    "synthetic": true,
+    "frozen_before_generation": true,
+    "prior_audit_use": "Failure categories informed scenario coverage; no candidate text or answer was copied into a case.",
+    "protected_existing_evaluation_used_for_authoring": false
+  },
+  "output_contract": {
+    "schema_id": "operational-assessment-multipart/v2",
+    "one_decision_per_request_item": true,
+    "known_unmet_condition": "Use do_not_proceed and identify the necessary action.",
+    "unknown_condition": "Use needs_information and identify the unknown fact.",
+    "alternative_remedies": "Preserve alternatives; do not silently make every remedy mandatory.",
+    "unsupported_consequences": "Do not infer consequences absent from supplied evidence.",
+    "evidence": "Cite only record IDs supplied for that case."
+  },
+  "source_snapshot": {
+    "path": "knowledge/records.jsonl",
+    "sha256": "27da88460ecce895cce6c68453007441b6c2db4ce23af1af5a490eb84702af99",
+    "kind": "synthetic_northstar_fixture",
+    "restricted_records_must_not_be_rendered": true
+  },
+  "generator": {
+    "model_id": "mlx-community/Qwen3.8-27B-4bit",
+    "revision": "3e6447f082e89cc7f0bc6e5441afd38dfce760ff",
+    "thinking": false,
+    "temperature": 0.0,
+    "max_output_tokens": 1024,
+    "conversation_state_reset_per_attempt": true
+  },
+  "prompt_arms": {
+    "baseline_single_pass": "operational-assessment-multipart/baseline-v1",
+    "obligation_single_pass": "operational-assessment-multipart/obligation-v1",
+    "obligation_revision_pass": "operational-assessment-multipart/revision-v1"
+  },
+  "budget_matching": {
+    "same_model_and_evidence": true,
+    "same_output_token_cap": true,
+    "baseline_generation_calls_per_case": 1,
+    "obligation_generation_calls_per_case": 1,
+    "revision_generation_calls_per_case": 2,
+    "revision_reuses_obligation_single_pass_as_draft": true,
+    "report_end_to_end_latency_and_tokens": true
+  },
+  "machine_evaluation": {
+    "evaluator_id": "structured-policy-assessment/v2-obligation-review",
+    "hard_failures": [
+      "invalid or truncated output",
+      "schema failure",
+      "missing, duplicated, or unknown request-item IDs",
+      "unauthorized or duplicate evidence record IDs"
+    ],
+    "semantic_review_required": [
+      "decision correctness",
+      "obligation completeness and polarity",
+      "unknown-versus-unmet interpretation",
+      "alternative-remedy preservation",
+      "unsupported operational consequences"
+    ],
+    "free_text_substring_hard_failures": false
+  },
+  "review": {
+    "reviewer_kind": "model_advisory",
+    "blinded_to": [
+      "prompt arm",
+      "case ID",
+      "reference answer",
+      "machine result",
+      "latency"
+    ],
+    "same_rubric_for_all_arms": true,
+    "human_attestation": false,
+    "historical_scores_replaced": false
+  },
+  "continuation_gate": {
+    "frozen_before_generation": true,
+    "minimum_cases_per_arm": 14,
+    "maximum_generation_failures": 0,
+    "maximum_invalid_structured_outputs": 0,
+    "qualified_arm_minimum_acceptable_rate": 0.9,
+    "qualified_arm_maximum_unacceptable_count": 0,
+    "qualified_arm_maximum_unsafe_claim_case_count": 0,
+    "all_multipart_unknown_unmet_and_alternative_cases_must_be_acceptable": true,
+    "prompt_improvement_must_not_reduce_acceptable_count": true,
+    "revision_pass_latency_must_be_reported": true,
+    "model_advisory_qualification_does_not_authorize_training": true
+  },
+  "blocked": [
+    "student training",
+    "stronger teacher",
+    "GRPO",
+    "gisting",
+    "autonomous example admission",
+    "deployment"
+  ]
+}

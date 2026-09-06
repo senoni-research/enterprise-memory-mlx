@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/v2-model-advisory",
+  "status": "frozen_before_fresh_qwen_generation",
+  "files": {
+    "protocol.json": "4cd777d1d16c1369418a40d8d8a003c4b8fa4de684593037c7016ff362553e37",
+    "qualification_cases.jsonl": "bc14d0cbba19f65c4cb808f521dd0ecfe06532d8af5ee8155cc21a9f5bd25574"
+  },
+  "case_count": 14,
+  "source_snapshot": {
+    "path": "knowledge/records.jsonl",
+    "sha256": "27da88460ecce895cce6c68453007441b6c2db4ce23af1af5a490eb84702af99"
+  },
+  "protected_existing_evaluation": {
+    "path": "knowledge/eval_frozen/acquisition.jsonl",
+    "sha256": "92a7acd92719bce1ffd16861795be0a75c7837707564c7013053279ee275900a",
+    "used_for_authoring": false
+  },
+  "upstream_advisory": {
+    "path": "docs/results/2026-09-06-company-task-specialization-model-advisory-v2.md",
+    "advisory_jsonl_sha256": "a18b20a7d791be709353084101480cc06a0dfba3389f763032b9792e4b03d319",
+    "phase_b_report_sha256": "428b61f9bd5dd924c23edb2d1cc28e4bc08c87b0d656653cb0d049f02ed8c2d8"
+  },
+  "human_labels_present": false,
+  "production_evidence": false,
+  "training_eligible": false,
+  "stronger_teacher_authorized": false
+}

@@ -85,6 +85,11 @@ from .specialization_audit import (
     validate_specialization_audit_overlay,
 )
 from .specialization_evaluator import verify_evaluator_v2_contract
+from .specialization_qualification import (
+    load_qualification_assets,
+    prepare_qualification_review,
+    run_qualification_comparison,
+)
 from .specialization_real_work import validate_real_work_seed
 from .split_contract import load_eval_suites, verify_frozen_assets
 from .task_specialization import (
@@ -446,6 +451,27 @@ def build_parser() -> argparse.ArgumentParser:
     specialization_actions.add_parser(
         "validate-evaluator-v2",
         help="Verify the draft obligation-review evaluator contract and seed schema",
+    )
+    specialization_actions.add_parser(
+        "validate-qualification-v2",
+        help="Verify the frozen supplier-workflow qualification contract",
+    )
+    qualification_run_parser = specialization_actions.add_parser(
+        "run-qualification-v2",
+        help="Compare three bounded Qwen27 prompt strategies on fresh cases",
+    )
+    qualification_run_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v2",
+    )
+    qualification_review_parser = specialization_actions.add_parser(
+        "prepare-qualification-review",
+        help="Blind a qualification-v2 comparison for GPT advisory review",
+    )
+    qualification_review_parser.add_argument("--comparison", required=True)
+    qualification_review_parser.add_argument(
+        "--output-root",
+        default="artifacts/company-task-specialization/v2/reviews",
     )
     specialization_pilot_parser = specialization_actions.add_parser(
         "pilot",
@@ -1101,13 +1127,48 @@ def _specialization(root: Path, args: argparse.Namespace) -> None:
         return
     if args.specialization_action == "validate-evaluator-v2":
         manifest = verify_evaluator_v2_contract(root)
-        console.print(
-            f"[green]Evaluator-v2 contract verified:[/green] "
-            f"{manifest['status']}"
-        )
+        console.print(f"[green]Evaluator-v2 contract verified:[/green] {manifest['status']}")
         console.print(
             "[bold yellow]Awaiting human validation; teacher requalification "
             "and student training remain blocked.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "validate-qualification-v2":
+        assets = load_qualification_assets(root)
+        console.print(
+            "[green]Qualification-v2 contract verified:[/green] "
+            f"{len(assets.cases)} fresh cases; {assets.protocol['workflow']}"
+        )
+        console.print(
+            "[bold yellow]Model-advisory-only qualification; "
+            "training and stronger-teacher work remain blocked.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "run-qualification-v2":
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        artifacts = run_qualification_comparison(
+            root=root,
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Qualification-v2 comparison:[/green] {artifacts.report_path}")
+        console.print(
+            "[bold yellow]Awaiting blinded GPT advisory review; "
+            "not training or production evidence.[/bold yellow]"
+        )
+        return
+    if args.specialization_action == "prepare-qualification-review":
+        artifacts = prepare_qualification_review(
+            root=root,
+            comparison_path=_rooted_path(root, args.comparison),
+            output_root=_rooted_path(root, args.output_root),
+        )
+        console.print(f"[green]Qualification review packet:[/green] {artifacts.packet_path}")
+        console.print(f"Private mapping: {artifacts.mapping_path}")
+        console.print(f"Model-advisory template: {artifacts.template_path}")
+        console.print(
+            "[bold yellow]Share only the packet. Prompt arms and references "
+            "remain private.[/bold yellow]"
         )
         return
     if args.specialization_action == "pilot":

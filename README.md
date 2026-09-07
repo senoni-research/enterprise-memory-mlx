@@ -429,6 +429,11 @@ is real-work evidence-contract inspection or validated structured workflow
 state—not another prompt tournament, larger model, or student training. See
 [`docs/results/2026-09-06-fact-state-v4-final.md`](docs/results/2026-09-06-fact-state-v4-final.md).
 
+The synthetic prompt phase is now closed. The proposed one-workflow evidence
+contract and current seed-readiness assessment are in
+[`docs/reviews/2026-09-07-real-work-evidence-readiness.md`](docs/reviews/2026-09-07-real-work-evidence-readiness.md).
+No approved private real-work seed is currently established.
+
 ## Latest acquisition smoke
 
 The current rank-16 smoke uses Qwen3-4B, all 36 layers, all q/k/v/o and

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/v1",
+  "status": "frozen_before_corrected_development_generation",
+  "files": {
+    "protocol.json": "79d8e2eaa125f79f22811b31d3ec9df9a9d9e226adb9e9e9f6e0e2c796989bc9",
+    "development_cases_v2.jsonl": "f8c1a31eec50d4ede346b49254ddde6aa4d3bbe0b249ea9452febc40708e5dfe"
+  },
+  "preserved_prior_assets": {
+    "development_cases.jsonl": "76729d5d4533d34940006ad515487a8c99336619ce3c5a3e38d9828aaffd202e"
+  },
+  "development_case_count": 14,
+  "source_snapshot": {
+    "path": "knowledge/records.jsonl",
+    "sha256": "27da88460ecce895cce6c68453007441b6c2db4ce23af1af5a490eb84702af99"
+  },
+  "protected_existing_evaluation": {
+    "path": "knowledge/eval_frozen/acquisition.jsonl",
+    "sha256": "92a7acd92719bce1ffd16861795be0a75c7837707564c7013053279ee275900a",
+    "repair_eligible": false
+  },
+  "production_evidence": false,
+  "human_labels_present": false,
+  "training_eligible": false
+}

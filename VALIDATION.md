@@ -3,8 +3,8 @@
 ## Scope
 
 This document validates the scientific foundation and safety boundary. It is
-not evidence that parametric knowledge acquisition works, and it does not
-authorize training.
+not certified evidence that parametric knowledge acquisition works, and it
+does not authorize confirmatory or additional exploratory training.
 
 Current status: **NOT READY FOR CONFIRMATORY TRAINING OR PROMOTION.**
 
@@ -83,10 +83,13 @@ Accepted as libraries:
 - governed smoke compiler with pinned MLX semantic-neighbour scanning;
 - experimental non-promotable BM25 research control;
 - all-linear 36-layer rank-16 smoke acquisition.
+- architecture-profiled Qwen3.8 hybrid QLoRA with fail-closed target coverage;
+- frozen local single-Gemma source-aware advisory verification;
+- immutable matched 4B/27B exploratory orchestration and comparison reporting.
 
 Not integrated end to end:
 
-- real local judge backends and certification;
+- certified dual-family local judging;
 - human-complete semantic grading;
 - confirmatory 24-view-per-fact rank/exposure acquisition matrix;
 - powered general-capability/retention evaluation;
@@ -120,6 +123,189 @@ downstream benchmark/grading artifact are explicitly non-promotable.
 
 The earlier 30-micro-iteration run is marked
 `invalidated_micro_iteration_accounting` and must not be compared.
+
+## Model-upgrade exploratory boundary
+
+`model-upgrade-exploratory/v1` completed one matched, explicitly seeded seed-42
+cycle using the same 192-row, 24-view curriculum and 96-exposure budget for
+Qwen3-4B and Qwen3.8-27B. The first runtime attempt is retained but invalidated
+because the low-level training path had not explicitly seeded MLX and NumPy.
+Execution revision `v2-explicit-seeding-and-output-integrity` seeds Python,
+NumPy, and MLX before LoRA initialization and dataset iteration. The 27B
+preflight verified all 496 expected targets across 48 linear-attention, 16
+full-attention, and 64 MLP blocks. The corrected measured runs each recorded
+768 micro-iterations and 96 optimizer updates.
+
+The local Gemma advisory found a 27B adapter mean uplift of `0.171875` and five
+additional fully-correct acquisition answers over the same-model base, but
+unknown/OOS failures worsened from 0 to 14 and the adapter remained `0.578125`
+below full context. The frozen decision is
+`end_model_upgrade_exploratory_v1`; seed 43 is not authorized.
+
+The 27B backward preflight covered the actual longest curriculum row (192
+tokens) with no truncation. Artificially padding that row to the configured
+2,048-token cap exceeded MLX Metal's graph resource-count limit. This
+limitation is preserved in failed preflight attempts; no layer, target, rank,
+or measured exposure reduction was used to bypass it.
+
+All Gemma labels remain `single_local_judge_advisory`, `human_approved: false`,
+and `promotion_eligible: false`. The September 1 candidate, artifacts,
+stopping rule, and `human_review_pending` status remain unchanged.
+
+## Company-task specialization boundary
+
+`company-task-specialization/v1` verifies a separately frozen task, split,
+source snapshot, protected historical evaluation hash, model identities,
+teacher gate, and bounded repair-selection rule. Its CLI loads the 4B
+generator, releases it, loads Qwen27 for teacher and repair generation,
+releases it, and only then loads Gemma for advisory scoring.
+
+The initial synthetic development run is retained but invalidated because its
+decision and field semantics were ambiguous. The corrected execution revision
+produced complete, non-truncated generations with zero invalid Gemma outputs,
+but the Qwen27 teacher candidate passed only 7/14 deterministic cases and
+failed the frozen `0.90` teacher threshold. Consequently:
+
+- the repair batch is auditable but unresolved;
+- no repair is advisory-accepted;
+- every candidate records `human_review_required: true`;
+- every candidate records `training_eligible: false`;
+- no model training or autonomous corpus admission is authorized.
+
+The v1 pass count is not an expert-judged material-error count.
+`structured-policy-assessment/v1` used free-text substring omission as a hard
+failure and skipped Gemma on those rows. Correct paraphrases could therefore
+fail, while a polarity-reversed sentence containing the required phrases could
+reach semantic review. Historical scores and admission decisions remain
+preserved.
+
+Draft evaluator `structured-policy-assessment/v2-obligation-review` makes only
+parse/schema and permitted-evidence membership failures authoritative for the
+legacy-shaped answers. Free-text obligation completeness, polarity, equivalent
+deadlines, and decision equivalence become `semantic_review_required`. It
+cannot produce a passing semantic grade until calibrated against the blinded
+human audit and private real-work seed.
+
+Audit packet v2 separates measurement from diagnosis. Blinded Phase A reviewers
+record obligations, satisfaction, unsafe claims, next-step usefulness, and
+ambiguity without seeing or diagnosing historical results. Only after those
+labels are frozen does the maintainer use the private mapping for a Phase B
+disagreement report. Neither phase replaces the historical pilot scores.
+
+The completed Phase A input is a single GPT model-advisory review, not human
+evidence. It contains 22 valid non-human attestations and is bound by SHA-256.
+The private Phase B comparison found 13 cases requiring investigation,
+including possible false failures and false acceptances. It authorizes only a
+fresh model-advisory task-contract experiment; teacher promotion, student
+training, and production claims remain blocked.
+
+Qualification v2 is frozen separately under
+`company-task-specialization/v2-model-advisory`. Its 14 cases cover one
+synthetic supplier-onboarding and first-invoice workflow, including multipart
+decisions, alternative remedies, known-unmet versus unknown conditions, and
+unsupported-consequence traps. The case, protocol, source, and protected
+evaluation hashes are verified before generation.
+
+The pinned Qwen27 comparison completed all 42 generations across three arms.
+Every output parsed under the multipart schema, with zero generation failures
+and zero truncations. Five rows repeated an authorized record ID for distinct
+claims and retain the frozen machine warning; all rows remain in the blinded
+semantic review packet.
+
+The completed GPT review rated each arm 13/14 acceptable and one minor revision,
+with no unacceptable output and all answers supporting the next step. The same
+alternative-remedy case produced the minor issue in every arm. Each arm passed
+the acceptable-rate threshold but failed the frozen zero-unsafe and
+targeted-case requirements. The final decision is `no_arm_qualified`; the
+historical results and training stop remain unchanged.
+
+Remedy-logic v3 is frozen independently under
+`company-task-specialization/v3-remedy-logic`. It binds 24 fresh synthetic
+cases, the unchanged 14-case v2 regression set, the source snapshot, two prompt
+identities, one pinned Qwen27 revision, and a prospective decision rule.
+Exactly two one-call arms are permitted: the existing flat-action baseline and
+the explicit-remedy challenger.
+
+Before inference, model-free tests evaluate `any_of`, `all_of`, and nested
+policy trees under neither, either, and both alternative routes. Mutation tests
+must detect operator reversal, missing routes, unsupported routes, and a
+separate security requirement that an invoice exception cannot waive.
+
+The structured parser and machine grader may enforce only:
+
+- valid recursive action/group nodes and operator vocabulary;
+- exactly one assessment per supplied request item;
+- membership of cited IDs in the supplied source set;
+- generation, truncation, and parse status.
+
+They do not establish that action text maps to the right policy obligation,
+that an operator is semantically correct, or that all and only supported routes
+are present. Those judgments remain in arm-label-blinded semantic review. The
+schemas differ visibly, so no perfect treatment-blinding claim is made.
+
+The frozen gate requires at least 90% acceptable output per arm, no
+unacceptable or unsafe/unsupported output, all targeted logic and multipart
+cases acceptable, and no generation, truncation, or structural failure.
+Challenger advancement also requires more paired alternative-preservation wins
+than losses and no mandatory-condition regression. Runtime accounting includes
+generation, parsing, deterministic rendering, validation, and token totals.
+
+Passing remains model-advisory evidence. It can support a bounded advisory
+teacher designation only; training, autonomous admission, deployment, and
+human-validation claims require separate authorization.
+
+The completed v3 run produced 48/48 valid, non-truncated generations with no
+machine hard failure. The control received 16 acceptable and eight unacceptable
+advisory outcomes. The challenger received 22 acceptable, one minor revision,
+and one unacceptable outcome. It achieved five paired
+alternative-preservation wins with no loss or mandatory-condition regression,
+but both arms made one unsupported attachment/verification inference. The
+challenger also reclassified one established control as unknown.
+
+Accordingly, both arms fail the prospectively frozen gate and no bounded
+advisory teacher is designated. The result does demonstrate that explicit
+remedy groups repaired the targeted alternative-erasure behavior, while
+separately exposing a fact-state adherence problem. The decision and training
+block are preserved in
+`docs/results/2026-09-06-remedy-logic-v3-final.md`.
+
+Fact-state v4 is independently frozen under
+`company-task-specialization/v4-fact-state`. It binds:
+
+- 16 fresh scenarios in 8 two-scenario contrast pairs;
+- a separate synthetic policy snapshot;
+- generator-visible state-authority semantics;
+- the unchanged v3 structured prompt and one compact amendment;
+- separate targeted-learning and substantive-qualification rules;
+- one conditional amended-prompt pass over the 24 v3 cases.
+
+The initial runtime mistakenly excluded supplied operational-state IDs from the
+provenance allowlist. The original artifact is preserved. A model-free
+correction changed all 32 machine grades without changing any generation,
+prompt, case, timing, or token count and without adding a model call. Corrected
+outputs have zero structure, provenance, generation, or truncation failures.
+
+The arm-label-blinded GPT review rated control 8/16 acceptable, three minor, and
+five unacceptable. The amendment received 10 acceptable, four minor, and two
+unacceptable. It produced four paired fact-state wins and one loss, but also
+one remedy-logic and two unsafe-waiver losses.
+
+The amendment therefore fails both the no-regression targeted-learning rule and
+the substantive gate. The final decision is
+`no_success_stop_synthetic_prompt_iteration`. The conditional v3 regression is
+not authorized, historical v3 results are unchanged, and no teacher is
+designated.
+
+Per the frozen boundary, further synthetic prompt iteration stops here.
+Real-work evidence-contract inspection or validated structured workflow state
+requires separate authorization. Student training, automatic admission,
+stronger-model comparison, and deployment remain blocked.
+
+The synthetic Northstar cases validate pipeline mechanics only. A future
+specialization claim requires approved real work and a separately frozen,
+untouched test. A future closed-book acquisition claim must use unseen
+applications of trained facts without policy evidence and must be reported
+separately.
 
 ## Human-review boundary
 

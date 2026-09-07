@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/v3-remedy-logic",
+  "status": "frozen_before_model_generation",
+  "approval": "explicit_user_direction_in_session",
+  "preserved_v2": {
+    "decision": "no_arm_qualified",
+    "report_path": "docs/results/2026-09-06-supplier-qualification-v2-final.md",
+    "report_sha256": "7b447d954a912e929af4a4828b7861294044df17549422eb8b1999177adc5848",
+    "modified": false
+  },
+  "claim_boundary": {
+    "synthetic": true,
+    "reviewer_kind": "model_advisory",
+    "human_evidence": false,
+    "production_evidence": false,
+    "passing_does_not_authorize_training": true
+  },
+  "fresh_qualification": {
+    "case_count": 24,
+    "output_count": 48,
+    "workflow": "supplier_onboarding_and_first_invoice",
+    "cases_path": "knowledge/company_task_specialization/v3_remedy_logic/qualification_cases.jsonl",
+    "split": "fresh_remedy_logic_qualification",
+    "frozen_before_generation": true,
+    "prior_failure_category_informed_coverage": true,
+    "prior_candidate_text_copied": false
+  },
+  "regression_only": {
+    "case_count": 14,
+    "path": "knowledge/company_task_specialization/v2/qualification_cases.jsonl",
+    "sha256": "bc14d0cbba19f65c4cb808f521dd0ecfe06532d8af5ee8155cc21a9f5bd25574",
+    "fresh_qualification_evidence": false,
+    "generated_in_this_budget": false
+  },
+  "source_snapshot": {
+    "path": "knowledge/records.jsonl",
+    "sha256": "27da88460ecce895cce6c68453007441b6c2db4ce23af1af5a490eb84702af99",
+    "kind": "synthetic_northstar_fixture"
+  },
+  "generator": {
+    "model_id": "mlx-community/Qwen3.8-27B-4bit",
+    "revision": "3e6447f082e89cc7f0bc6e5441afd38dfce760ff",
+    "thinking": false,
+    "temperature": 0.0,
+    "max_output_tokens": 1024,
+    "conversation_state_reset_per_attempt": true
+  },
+  "arms": {
+    "flat_action_control": {
+      "generation_calls_per_case": 1,
+      "prompt_version": "operational-assessment-multipart/baseline-v1",
+      "output_schema": "operational-assessment-multipart/v2"
+    },
+    "structured_remedy_challenger": {
+      "generation_calls_per_case": 1,
+      "prompt_version": "operational-assessment-remedy-logic/v1",
+      "output_schema": "operational-assessment-remedy-logic/v1"
+    }
+  },
+  "remedy_contract": {
+    "scope": "Business-logic representation, not JSON Schema anyOf/allOf validation semantics.",
+    "current_decision_separate_from_future_remedy": true,
+    "action_node": {
+      "fields": [
+        "node_type=action",
+        "action",
+        "source_record_id"
+      ]
+    },
+    "group_node": {
+      "fields": [
+        "node_type=group",
+        "operator",
+        "options"
+      ],
+      "operators": {
+        "any_of": "At least one listed route must be completed; completing more than one is not prohibited.",
+        "all_of": "Every listed requirement must be completed."
+      },
+      "nested_groups": true
+    },
+    "proposed_remedy_is_not_satisfied_evidence": true,
+    "recommendation_must_not_erase_other_valid_routes": true,
+    "deterministic_rendering": true
+  },
+  "model_free_validation": {
+    "required_before_generation": true,
+    "scenarios": [
+      "neither purchase order nor recorded exception",
+      "approved purchase order only",
+      "recorded exception only",
+      "both alternatives",
+      "verbal but unrecorded exception",
+      "invoice route satisfied while a separate security control is unmet"
+    ],
+    "mutations": [
+      "any_of changed to all_of",
+      "all_of changed to any_of",
+      "valid route dropped",
+      "unsupported route introduced"
+    ],
+    "machine_authority": [
+      "operator vocabulary",
+      "recursive node structure",
+      "request-item coverage",
+      "source-record-ID membership"
+    ],
+    "semantic_review_required": [
+      "free-text action mapping to policy obligations",
+      "operator correctness for the supplied policy",
+      "route completeness",
+      "unsupported remedies",
+      "mandatory-condition preservation"
+    ]
+  },
+  "review": {
+    "arm_label_blinded": true,
+    "perfect_treatment_blinding_claimed": false,
+    "schema_difference_may_reveal_intervention": true,
+    "hidden_fields": [
+      "arm label",
+      "case ID",
+      "reference logic",
+      "machine result",
+      "timing and token cost"
+    ],
+    "paired_by_case_after_labels_are_frozen": true
+  },
+  "success_rule": {
+    "frozen_before_generation": true,
+    "minimum_cases_per_arm": 24,
+    "minimum_acceptable_rate": 0.9,
+    "maximum_unacceptable_count": 0,
+    "maximum_unsafe_or_unsupported_claim_cases": 0,
+    "all_targeted_remedy_logic_and_multipart_cases_acceptable": true,
+    "maximum_generation_failures": 0,
+    "maximum_truncations": 0,
+    "maximum_invalid_structures": 0,
+    "challenger_improvement": {
+      "paired_valid_alternative_preservation_wins_must_exceed_losses": true,
+      "mandatory_conditions_must_not_regress": true,
+      "aggregate_only_comparison_is_insufficient": true
+    },
+    "equal_quality_decision": "Choose the simpler, faster control unless structured remedies have a separately measured operational benefit.",
+    "challenger_pass_and_improve_decision": "Qualify for bounded advisory example generation subject to a separately approved admission protocol.",
+    "wrong_logic_decision": "Investigate policy interpretation and obligation extraction; do not train.",
+    "new_safety_or_refusal_defect_decision": "Preserve the failure and diagnose before proceeding."
+  },
+  "cost_accounting": {
+    "end_to_end_wall_time": true,
+    "prompt_tokens": true,
+    "completion_tokens": true,
+    "rendering_and_validation_time": true,
+    "extra_explanation_model_call": false
+  },
+  "blocked": [
+    "student training",
+    "stronger teacher",
+    "GRPO",
+    "gisting",
+    "autonomous admission",
+    "deployment"
+  ]
+}

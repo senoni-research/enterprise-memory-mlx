@@ -333,9 +333,7 @@ def test_full_context_authoritative_store_includes_holdout_records(
     plan = _plan(records, suites, config)
 
     full_case = next(case for case in plan if case.arm == "full_context")
-    assert {record.id for record in suites.holdout_records}.issubset(
-        full_case.selected_record_ids
-    )
+    assert {record.id for record in suites.holdout_records}.issubset(full_case.selected_record_ids)
     oracle_case = next(case for case in plan if case.arm == "oracle")
     assert oracle_case.selected_record_ids == (
         next(
@@ -776,7 +774,8 @@ def test_cli_dry_run_loads_tokenizer_only(
     assert exit_code == 0
     assert loaded["tokenizer"] == 1
     assert loaded["model"] == 0
-    assert "BM25 decision: no_feasible_operating_point" in buffer.getvalue()
+    assert "BM25 default/production decision: no_feasible_operating_point" in buffer.getvalue()
+    assert "BM25 active research selection: none" in buffer.getvalue()
 
 
 def test_cli_dry_run_marks_mismatched_default_decision_not_applicable(
@@ -801,7 +800,7 @@ def test_cli_dry_run_marks_mismatched_default_decision_not_applicable(
     exit_code = main(["--root", str(isolated_project), "benchmark", "--dry-run"])
 
     assert exit_code == 0
-    assert "BM25 decision: not_applicable" in buffer.getvalue()
+    assert "BM25 default/production decision: not_applicable" in buffer.getvalue()
 
 
 def test_cli_parametric_only_benchmark_writes_artifact(
@@ -816,6 +815,8 @@ def test_cli_parametric_only_benchmark_writes_artifact(
     adapter_dir.mkdir()
     fake_adapter = VerifiedAcquisitionAdapter(
         run_manifest_path=isolated_project / "run.json",
+        run_identity="run--fixture",
+        profile="fixture",
         model_id=DEFAULT_MODEL,
         model_revision="pinned-revision",
         adapter_path=adapter_dir,
@@ -894,9 +895,7 @@ def test_cli_bm25_arm_without_selection_fails(
         "enterprise_memory_mlx.cli.load_benchmark_tokenizer",
         lambda model_name, revision=None: (_fake_count_tokens, _fake_identity(model_name)),
     )
-    exit_code = main(
-        ["--root", str(isolated_project), "benchmark", "--arm", "bm25", "--dry-run"]
-    )
+    exit_code = main(["--root", str(isolated_project), "benchmark", "--arm", "bm25", "--dry-run"])
     assert exit_code == 2
 
 

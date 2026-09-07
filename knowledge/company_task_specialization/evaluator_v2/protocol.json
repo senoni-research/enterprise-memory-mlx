@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/evaluator-v2",
+  "status": "draft_awaiting_human_validation",
+  "replaces_historical_scores": false,
+  "historical_pilot": {
+    "path": "artifacts/company-task-specialization/v1/pilot-0276f15bf32ef4a4/specialization-pilot.json",
+    "sha256": "0e4f4690ca4a164dd19182e4ed996d7c7751cf75b2115f28ae43046a2706580c",
+    "decision_preserved": "teacher_failed_frozen_implementation_gate"
+  },
+  "measurement_correction": {
+    "problem": "Free-text substring omissions were authoritative hard failures even when a paraphrase could express the obligation, while reversed polarity could retain all required substrings.",
+    "old_interpretation_rejected": "The reported deterministic pass rate is not an expert-judged material-error rate.",
+    "new_rule": "Free-text action completeness, polarity and equivalent deadlines require calibrated semantic or human review."
+  },
+  "machine_authoritative_checks": [
+    "generation and parse integrity",
+    "exact output schema",
+    "permitted record-ID membership",
+    "duplicate record IDs",
+    "genuinely typed constraints only after their checker is separately validated"
+  ],
+  "semantic_or_human_checks": [
+    "obligation completeness",
+    "equivalent natural-language actions",
+    "action polarity",
+    "equivalent absolute and relative deadlines",
+    "decision correctness",
+    "multipart conclusion completeness",
+    "whether the output supports the next operational step"
+  ],
+  "multipart_contract": {
+    "schema_id": "operational-assessment-multipart/v2",
+    "decisions": "One decision per request_item_id.",
+    "required_actions": "Free-text actions reviewed against human-defined obligations.",
+    "missing_information": "Unknown request facts or unavailable evidence.",
+    "exceptions": "Only exceptions that apply.",
+    "evidence": "Permitted record IDs and supported claims."
+  },
+  "human_audit": {
+    "packet_schema_id": "company-task-specialization-output-audit/v2-two-phase",
+    "existing_teacher_answers": 14,
+    "existing_repair_answers": 8,
+    "blinded_to": [
+      "model identity",
+      "teacher versus repair role",
+      "case ID",
+      "reference answer",
+      "deterministic result",
+      "Gemma label",
+      "governed score"
+    ],
+    "phase_a": {
+      "performed_blind": true,
+      "records": [
+        "material obligations",
+        "obligation satisfaction",
+        "unsafe or unsupported claims",
+        "next-step usefulness",
+        "request, evidence, or output ambiguity"
+      ],
+      "causal_diagnosis": false
+    },
+    "phase_b": {
+      "performed_by_maintainer_after_phase_a_labels_are_frozen": true,
+      "uses_private_mapping": true,
+      "compares_human_outcome_with_historical_deterministic_status": true,
+      "diagnoses_are_investigation_categories_not_replacement_scores": true
+    },
+    "does_not_replace_old_scores": true
+  },
+  "real_work_seed": {
+    "target_cases": 25,
+    "workflow_count": 1,
+    "approved_and_redacted": true,
+    "minimum_human_reviewers_per_case": 1,
+    "preferred_human_reviewers_per_case": 2,
+    "single_reviewer_is_not_independent_agreement": true,
+    "content_location": "knowledge/private/",
+    "content_must_not_be_committed": true
+  },
+  "next_teacher_comparison": {
+    "allowed_only_after_human_seed": true,
+    "same_qwen_model_first": true,
+    "arms": [
+      "existing single-pass configuration",
+      "explicit obligation-by-obligation prompt",
+      "one bounded completeness-check-and-revision pass"
+    ],
+    "same_deployment_available_evidence": true,
+    "reference_keywords_in_repair_advice": false,
+    "report_complete_system_latency": true
+  },
+  "blocked": [
+    "student training",
+    "stronger teacher qualification",
+    "GRPO",
+    "gisting",
+    "autonomous example admission",
+    "deployment"
+  ]
+}

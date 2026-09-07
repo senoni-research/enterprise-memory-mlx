@@ -70,7 +70,11 @@ def run_general_diagnostic(
         "promotion_eligible": False,
     }
     output_dir.mkdir(parents=True, exist_ok=True)
-    path = output_dir / "general-diagnostic.json"
+    model_slug = adapter.model_id.rsplit("/", maxsplit=1)[-1].lower()
+    run_suffix = adapter.run_identity.rsplit("--", maxsplit=1)[-1]
+    path = output_dir / f"model-upgrade-v1-{model_slug}-seed42-{run_suffix}-general-diagnostic.json"
+    if path.exists():
+        raise FileExistsError(f"Refusing to overwrite general diagnostic: {path}")
     atomic_write_text(path, json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
     return path
 
@@ -98,10 +102,14 @@ def _generate_rows(
         results.append(
             {
                 "output": answer.output,
-                "normalized_exact": normalized_exact(answer.output, expected),
+                "raw_output": answer.raw_output,
+                "parse_status": answer.parse_status,
+                "finish_reason": answer.finish_reason,
+                "normalized_exact": normalized_exact(answer.output or "", expected),
                 "prompt_tokens": answer.prompt_tokens,
                 "completion_tokens": answer.completion_tokens,
                 "elapsed_seconds": round(answer.elapsed_seconds, 6),
+                "peak_memory_gb": answer.peak_memory_gb,
             }
         )
     return results
@@ -113,17 +121,13 @@ def _summary(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "normalized_exact": exact,
         "total": len(rows),
         "rate": exact / len(rows),
-        "mean_elapsed_seconds": (
-            sum(float(item["elapsed_seconds"]) for item in rows) / len(rows)
-        ),
+        "mean_elapsed_seconds": (sum(float(item["elapsed_seconds"]) for item in rows) / len(rows)),
     }
 
 
 def _normalize(value: str) -> str:
     normalized = unicodedata.normalize("NFKD", value).casefold()
     normalized = "".join(
-        character
-        for character in normalized
-        if not unicodedata.combining(character)
+        character for character in normalized if not unicodedata.combining(character)
     )
     return " ".join(re.sub(r"[^a-z0-9]+", " ", normalized).split())

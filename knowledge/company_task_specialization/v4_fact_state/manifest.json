@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/v4-fact-state",
+  "status": "frozen_before_model_generation",
+  "files": {
+    "protocol.json": "2a5cb788452a5e433cfe977deba30175575b23018b2c0d1ec3fe69e21cd813eb",
+    "contrast_cases.jsonl": "7afe689491c5a6039110a2331f9785f82c52d1a7286006d92b4ca87da753bfe5",
+    "policy_records.jsonl": "518442c84fab4001ddead5d6f4344fa3b79b47ef3dc40e82fa7ff4411bed20e8"
+  },
+  "case_count": 16,
+  "pair_count": 8,
+  "preserved_v3_report": {
+    "path": "docs/results/2026-09-06-remedy-logic-v3-final.md",
+    "sha256": "90ad3f398885b5897b34e1ee96de637fe6ef4bf92bf4da8afc9f21800c83e7fa"
+  },
+  "v3_regression_set": {
+    "path": "knowledge/company_task_specialization/v3_remedy_logic/qualification_cases.jsonl",
+    "sha256": "85db86bcfb4d0221f6db807acc3aa6b4c08157422895477ecbabc6c15ca6ba06"
+  },
+  "fresh_comparison_limit": 1,
+  "conditional_regression_limit": 1,
+  "human_labels_present": false,
+  "production_evidence": false,
+  "training_eligible": false,
+  "teacher_designated": false
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/v3-remedy-logic",
+  "status": "frozen_before_model_generation",
+  "files": {
+    "protocol.json": "65353b7c15f3ae0b1e5707d395da834fc054d9fef53cc4ae4b8df31e2c2c98ee",
+    "qualification_cases.jsonl": "85db86bcfb4d0221f6db807acc3aa6b4c08157422895477ecbabc6c15ca6ba06"
+  },
+  "case_count": 24,
+  "source_snapshot": {
+    "path": "knowledge/records.jsonl",
+    "sha256": "27da88460ecce895cce6c68453007441b6c2db4ce23af1af5a490eb84702af99"
+  },
+  "v2_regression_set": {
+    "path": "knowledge/company_task_specialization/v2/qualification_cases.jsonl",
+    "sha256": "bc14d0cbba19f65c4cb808f521dd0ecfe06532d8af5ee8155cc21a9f5bd25574"
+  },
+  "preserved_v2_report": {
+    "path": "docs/results/2026-09-06-supplier-qualification-v2-final.md",
+    "sha256": "7b447d954a912e929af4a4828b7861294044df17549422eb8b1999177adc5848"
+  },
+  "model_free_tests_required": true,
+  "human_labels_present": false,
+  "production_evidence": false,
+  "training_eligible": false,
+  "stronger_teacher_authorized": false
+}

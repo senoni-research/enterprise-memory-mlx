@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "company-task-specialization-real-work-seed/v1",
+  "title": "Private human-reviewed real-work specialization seed row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "workflow",
+    "request",
+    "evidence",
+    "accepted_resolution",
+    "reviews",
+    "redacted",
+    "evidence_authorized_for_local_research"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workflow": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "record_id",
+          "title",
+          "text",
+          "source_uri",
+          "classification"
+        ],
+        "properties": {
+          "record_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_uri": {
+            "type": "string",
+            "minLength": 1
+          },
+          "classification": {
+            "enum": [
+              "public",
+              "internal_shared",
+              "restricted_local_review"
+            ]
+          }
+        }
+      }
+    },
+    "accepted_resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_items",
+        "required_obligations",
+        "missing_information",
+        "applicable_exceptions",
+        "supporting_record_ids"
+      ],
+      "properties": {
+        "decision_items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "request_item_id",
+              "decision"
+            ],
+            "properties": {
+              "request_item_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "decision": {
+                "enum": [
+                  "proceed",
+                  "do_not_proceed",
+                  "needs_action",
+                  "needs_information",
+                  "refer_to_source"
+                ]
+              }
+            }
+          }
+        },
+        "required_obligations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "obligation_id",
+              "description",
+              "material"
+            ],
+            "properties": {
+              "obligation_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "material": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "missing_information": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "applicable_exceptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "supporting_record_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviewer_id",
+          "domain_role",
+          "reviewed_at",
+          "human_attested",
+          "approved"
+        ],
+        "properties": {
+          "reviewer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "domain_role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "human_attested": {
+            "const": true
+          },
+          "approved": {
+            "const": true
+          }
+        }
+      }
+    },
+    "redacted": {
+      "const": true
+    },
+    "evidence_authorized_for_local_research": {
+      "const": true
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "protocol_id": "company-task-specialization/v1",
+  "status": "frozen_before_corrected_development_generation",
+  "execution_revision": "v2-explicit-decision-and-field-semantics",
+  "corrective_freeze": {
+    "reason": "The first development pass exposed ambiguous decision labels and treated known unmet controls as missing information and inapplicable alternatives as exceptions.",
+    "prior_pilot_status": "invalidated_task_contract_ambiguity",
+    "prior_pilot_path": "artifacts/company-task-specialization/v1/pilot-1f30bc7a492e1844/specialization-pilot.json",
+    "prior_pilot_sha256": "8622c190a1b43f1f2713d7f3aaf21e5074b0c4c05487b39f2e59f0eb74da8941",
+    "prior_artifacts_preserved": true,
+    "final_or_held_out_data_inspected": false
+  },
+  "classification": "internal_shared",
+  "protocol_approval": "explicit_user_direction_in_session",
+  "historical_experiment_unchanged": true,
+  "historical_model_upgrade_report": {
+    "path": "artifacts/model-upgrade/report-runtime-v2/model-upgrade-exploratory-v1-comparison.json",
+    "sha256": "0cf2aeb0276cbdf4514d885d56fbe4a8ea2286a34dc6bc9e850340db49c633ba",
+    "decision": "end_model_upgrade_exploratory_v1"
+  },
+  "task": {
+    "name": "source-grounded operational policy assessment",
+    "generation_prompt_version": "operational-assessment-json/v2",
+    "repair_prompt_version": "operational-assessment-repair/v2",
+    "input": "An operational request plus only the policy evidence permitted for that case.",
+    "output_schema": {
+      "decision": [
+        "proceed",
+        "do_not_proceed",
+        "needs_action",
+        "needs_information",
+        "refer_to_source"
+      ],
+      "required_actions": "Actions that must occur; known unmet controls belong here.",
+      "missing_information": "Unknown request facts needed to decide, or an unavailable authoritative source; not controls already known to be unmet.",
+      "exceptions": "Only exceptions that actually apply; omit alternatives explicitly absent in the request.",
+      "evidence": "array of objects with exactly record_id and claim"
+    },
+    "claim_boundary": "Success with supplied evidence is task specialization, not parametric factual acquisition."
+  },
+  "source_snapshot": {
+    "path": "knowledge/records.jsonl",
+    "sha256": "27da88460ecce895cce6c68453007441b6c2db4ce23af1af5a490eb84702af99",
+    "kind": "synthetic_northstar_fixture",
+    "production_evidence": false,
+    "restricted_records_must_not_be_rendered": true
+  },
+  "models": {
+    "teacher_and_repairer_candidate": {
+      "model_id": "mlx-community/Qwen3.8-27B-4bit",
+      "revision": "3e6447f082e89cc7f0bc6e5441afd38dfce760ff",
+      "thinking": false,
+      "temperature": 0.0,
+      "max_output_tokens": 1024
+    },
+    "untrained_student_control": {
+      "model_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+      "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+      "thinking": false,
+      "temperature": 0.0,
+      "max_output_tokens": 1024
+    },
+    "independent_advisory_evaluator": {
+      "model_id": "mlx-community/gemma-4-31b-it-8bit",
+      "revision": "f5f3dc92ab4af76724c36c21eb6bedadb3a851be",
+      "thinking": false,
+      "temperature": 0.0,
+      "max_output_tokens": 1024,
+      "human_calibrated_for_this_task": false
+    }
+  },
+  "split_contract": {
+    "split_before_teacher_generation": true,
+    "development_repair_pool": "Corrected synthetic cases in development_cases_v2.jsonl; eligible for diagnosis and repair.",
+    "specialization_primary_test": "Unseen requests from known scenario families with applicable evidence supplied.",
+    "specialization_compositional_test": "Unseen combinations and difficult exceptions with applicable evidence supplied.",
+    "specialization_transfer_test": "Unseen policies or entities whose applicable policy evidence is supplied.",
+    "parametric_acquisition_test": "Target facts may appear in training, but evaluation questions and applications remain unseen and no policy evidence is supplied.",
+    "policy_update_test": "Controlled previous and updated snapshots with independent current, historical, and retention probes.",
+    "untouched_final_test": "Must be authored and frozen separately; it must never enter diagnosis, repair, prompt iteration, or training.",
+    "existing_acquisition_suite_repair_eligible": false
+  },
+  "teacher_qualification": {
+    "minimum_cases": 12,
+    "minimum_deterministic_pass_rate": 0.9,
+    "minimum_gemma_mean_score": 0.9,
+    "maximum_generation_failures": 0,
+    "maximum_invalid_verifier_outputs": 0,
+    "all_refer_or_refusal_cases_must_pass": true,
+    "gemma_alone_defines_correctness": false
+  },
+  "evaluation": {
+    "deterministic_evaluator_version": "structured-policy-assessment/v1",
+    "semantic_rubric_version": "source-aware-single-gemma/v1",
+    "deterministic_failures_are_authoritative": true,
+    "raw_and_final_outputs_are_stored_separately": true,
+    "invalid_or_truncated_outputs_score_zero": true
+  },
+  "development_repair": {
+    "maximum_repairs": 8,
+    "selection": "Deterministically failing untrained-4B cases ordered by stable case hash.",
+    "repairer_receives": [
+      "original request",
+      "permitted policy evidence",
+      "untrained-4B response",
+      "deterministic failure reasons"
+    ],
+    "repairer_must_not_receive": [
+      "Gemma rationale",
+      "held-out test material",
+      "unavailable deployment hints"
+    ],
+    "replay_preserves_original_request_and_evidence": true,
+    "advisory_acceptance": "A repair must pass deterministic checks and receive a valid Gemma score of 1.0 without human-attention escalation.",
+    "training_eligibility": "No example is training-eligible until the task evaluator is calibrated against human judgments and accepted repairs are human-audited."
+  },
+  "future_required_comparisons": {
+    "task_competence": "trained 4B plus evidence versus untrained 4B plus identical evidence",
+    "replacement_value": "trained 4B plus evidence versus qualified Qwen27 plus identical evidence, including complete-system latency and memory",
+    "parametric_access": "trained 4B without evidence versus untrained 4B without evidence on unseen applications of trained facts",
+    "repair_value": "equal-budget validated random examples versus validated failure-focused repairs from the same checkpoint"
+  },
+  "future_gates": {
+    "research_continuation": "Failure-focused learning must beat the equal-budget random control without unacceptable grounding or refusal regression.",
+    "deployment_eligibility": "Requires representative real-work evidence, calibrated evaluation, reliability, and measured end-to-end operational advantage.",
+    "research_continuation_does_not_authorize_deployment": true
+  },
+  "deferred": [
+    "student training",
+    "full-model fine-tuning",
+    "GRPO",
+    "gisting",
+    "continuous autonomous admission",
+    "deployment"
+  ],
+  "limitations": [
+    "The development records and cases are synthetic and cannot establish performance on real company work.",
+    "Gemma judgments remain advisory until calibrated against human judgments for this task.",
+    "This bounded batch tests pipeline mechanics and candidate-example quality, not production economics.",
+    "No development case may be promoted into training solely because Qwen and Gemma agree."
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "status": "rejected_before_compilation",
+  "reason": "Objective-to-claim binding review found that several broad prompts had narrow one-claim targets, creating prompt/target completeness mismatches.",
+  "views_sha256": "44300a275b160e971b566ea03906254b92db68bd10eb2b11cfde547616b906ee",
+  "authoring_attempts_sha256": "f3238bdea17af1dfd5f1dd0f1423f51fe73870ad4145ceaa850ae385aaab3efa",
+  "accepted_for_training": false,
+  "promotion_eligible": false
+}

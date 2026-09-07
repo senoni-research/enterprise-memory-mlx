@@ -1,0 +1,72 @@
+{
+  "author": {
+    "chat_template_hash": "40c21f34cf67d8c760ef72f8ad3ae5afad514299d4b06e91dd9a8d705af7b541",
+    "isolated_source_only_process": true,
+    "kind": "model",
+    "model_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "model_revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "prompt_hash": "ad1d036ca61f25313dd70505ac6f6af4ffa8940062cc259e98c6bed91924c011"
+  },
+  "authoring_attempts_sha256": "5553ebf41b58b9eae9e48d1ec7bf8722c01ba8d0d25503e34dadd9aa1b49c64c",
+  "authoring_methods": {
+    "deterministic_source_only_fallback": 8,
+    "model": 184
+  },
+  "classification": "internal_shared",
+  "counts": {
+    "objectives_per_record": 24,
+    "records": 8,
+    "rows": 192,
+    "views_per_record": {
+      "ENG-INC-002": 24,
+      "ENG-REL-001": 24,
+      "FIN-EXP-001": 24,
+      "FIN-INV-002": 24,
+      "HR-LEAVE-001": 24,
+      "HR-REMOTE-002": 24,
+      "PROC-VEND-001": 24,
+      "SUP-SLA-001": 24
+    }
+  },
+  "created_at": "2026-09-05T20:57:28.523785+00:00",
+  "dataset_version": "v1",
+  "files": {
+    "views.jsonl": "a00caf42fb11fd506d213e537107b368f76841b014b65a959303624e47fc21e7"
+  },
+  "fixture_hash": "dfed40a365f3bfc738504f9f44ddc91085040470a6b489a602804208683fd3ee",
+  "human_approved": false,
+  "limitations": [
+    "Study prompts are model-drafted with deterministic source-only fallbacks and have not been independently human-reviewed.",
+    "Distinct objective IDs do not prove statistically independent formulations.",
+    "Assistant targets are constructed from exact governed source spans.",
+    "The historical evaluation suite has been repeatedly inspected and is diagnostic."
+  ],
+  "promotion_eligible": false,
+  "protocol_id": "model-upgrade-exploratory/v1",
+  "schedule_contract": {
+    "epochs": 4,
+    "micro_iterations": 768,
+    "optimizer_updates": 96,
+    "target_exposures_per_record": 96,
+    "total_rows": 192
+  },
+  "schema_version": 1,
+  "source_snapshot": {
+    "benchmark_outputs_excluded": true,
+    "eligible_record_ids": [
+      "ENG-INC-002",
+      "ENG-REL-001",
+      "FIN-EXP-001",
+      "FIN-INV-002",
+      "HR-LEAVE-001",
+      "HR-REMOTE-002",
+      "PROC-VEND-001",
+      "SUP-SLA-001"
+    ],
+    "expected_answers_excluded": true,
+    "includes_holdout_records": false,
+    "questions_stripped": true
+  },
+  "source_snapshot_hash": "4ace7d81c67823e56c223a5bcf410a455dc89a7f63a5ad981d4c3776c7208d9d",
+  "status": "model_assisted_not_human_approved"
+}

@@ -38,6 +38,8 @@ emmlx review --reviewer "Your Name"   # identity is asserted, not authenticated
 emmlx acquire                         # governed compile + dry-run config
 # Explicitly non-promotable synthetic smoke only:
 emmlx acquire --execute
+# Separately versioned, non-promotable model-upgrade experiment:
+emmlx model-upgrade --help
 emmlx grade --benchmark artifacts/benchmark/<raw-result>.json
 pytest
 ruff check .
@@ -142,8 +144,10 @@ headline accuracy remain blocked.
 A completed blinded **model-review advisory** (not human labels) for this
 benchmark is summarized with full hash bindings in
 [`docs/results/2026-09-01-smoke-advisory.md`](docs/results/2026-09-01-smoke-advisory.md).
-Its advisory outcome was `stop_parametric_research`; the operative status
-remains `human_review_pending`.
+Its serialized rule result was `stop_parametric_research`; the operative
+interpretation is to stop that candidate, not to treat model-only labels as a
+general disproof of parametric acquisition. Its status remains
+`human_review_pending`.
 
 ## Current scientific foundation
 
@@ -160,6 +164,7 @@ Implemented:
 - typed factual checks;
 - citation/provenance/OOS checks;
 - a fake-backend semantic-judge calibration harness;
+- a frozen local single-Gemma advisory backend that cannot certify or promote;
 - blinded local human-review tooling.
 
 The BM25 validation experiment produced
@@ -201,11 +206,233 @@ revocable information, and audit evidence must not rely on weights.
 - 40-core integrated Apple GPU.
 - 128 GB unified memory.
 - MLX / MLX-LM, no CUDA or multi-GPU assumptions.
-- Qwen3-4B as the principal experimental model.
-- Full BF16 4B training only after a representative feasibility preflight.
+- Qwen3.8-27B 4-bit as the new exploratory candidate, with a matched
+  Qwen3-4B 4-bit control.
+- Gemma 4 31B 8-bit as a sequentially loaded, frozen advisory verifier.
 
-Legacy and confirmatory training remain blocked. One explicitly
-`smoke_non_promotable` acquisition profile is available for machinery checks.
+Legacy and confirmatory training remain blocked. The historical
+`smoke_non_promotable` profile and the separately versioned
+`model-upgrade-exploratory/v1` profile are non-promotable.
+
+## Model-upgrade exploratory v1
+
+The frozen protocol is
+[`knowledge/model_upgrade_exploratory/v1/protocol.json`](knowledge/model_upgrade_exploratory/v1/protocol.json).
+It compares each 4B/27B adapter with its own base and with direct evidence,
+using the same 24-view-per-record curriculum and 96-exposure budget. Qwen
+generation and Gemma verification run in separate processes with thinking
+disabled, greedy decoding, fresh per-case state, and a 1,024-token cap.
+
+Run stages explicitly:
+
+```bash
+emmlx model-upgrade preflight --model mlx-community/Qwen3-4B-Instruct-2507-4bit
+emmlx model-upgrade preflight --model mlx-community/Qwen3.8-27B-4bit
+emmlx model-upgrade judge-preflight
+emmlx model-upgrade train --model mlx-community/Qwen3-4B-Instruct-2507-4bit
+emmlx model-upgrade train --model mlx-community/Qwen3.8-27B-4bit
+```
+
+The generated curriculum records model authorship and any deterministic
+source-only fallback, but remains `human_approved: false`. Local result
+artifacts are ignored by Git. The experiment is complete only after the
+measured 4B/27B benchmark, local Gemma regrading, historical bridge, general
+diagnostic, and bounded comparison report exist.
+
+The seed-42 experiment is now complete. Its single-Gemma advisory found:
+
+- no generator-quality gain from 27B over 4B on this diagnostic;
+- 27B closed-book adapter uplift of `+0.171875` over its own base, with five
+  additional fully-correct answers and 9 paired wins versus 3 losses;
+- 27B adapter mean `0.265625`, versus `0.84375` with full context, `0.875`
+  with oracle context, and `0.34375` with experimental BM25;
+- unknown/OOS failures worsening from 0 for the 27B base to 14 for its
+  adapter.
+
+The frozen continuation gate therefore ends this experiment without a seed-43
+repeat. These are model-review labels, not human-approved evidence. The local
+comparison and historical judge bridge are under
+`artifacts/model-upgrade/report-runtime-v2/` and
+`artifacts/model-upgrade/historical-bridge-runtime-v2/`; generated artifacts
+remain uncommitted. The first runtime attempt is retained but invalidated
+because the custom low-level trainer had not explicitly seeded MLX and NumPy.
+Execution revision `v2-explicit-seeding-and-output-integrity` reran both
+models from the untouched bases and produced the figures above. The 27B
+preflight covered all 496 expected adapter targets and the actual fixed-dataset
+maximum of 192 tokens. Its separate artificial
+2,048-token padded stress attempt hit MLX Metal's graph resource-count limit,
+which is retained as a disclosed runtime limitation.
+
+## Company task specialization v1
+
+`company-task-specialization/v1` is a separate source-grounded task experiment,
+not a reinterpretation of the closed-book acquisition result. Its frozen
+contract and synthetic development cases are under
+`knowledge/company_task_specialization/v1/`.
+
+```bash
+emmlx specialization validate-contract
+emmlx specialization validate-evaluator-v2
+emmlx specialization validate-qualification-v2
+emmlx specialization pilot
+emmlx specialization prepare-audit \
+  --pilot artifacts/company-task-specialization/v1/pilot-0276f15bf32ef4a4/specialization-pilot.json
+```
+
+The pilot runs the untrained 4B baseline, the Qwen27 teacher/repairer candidate,
+and the Gemma advisory evaluator sequentially. It never trains a model. The
+first development pass was retained and invalidated after exposing ambiguous
+decision and field semantics. The corrected
+`v2-explicit-decision-and-field-semantics` pass found:
+
+- untrained 4B with evidence: 6/14 deterministic passes, mean `0.429`;
+- Qwen27 teacher candidate: 7/14 deterministic passes, mean `0.500`;
+- Qwen27 repairs: 5/8 deterministic passes, mean `0.562`;
+- zero advisory-accepted or training-eligible repairs.
+
+The Qwen27 candidate therefore failed the frozen implementation's teacher
+qualification. Review subsequently found that free-text substring omissions
+were treated as hard failures, so the result is not an expert-judged teacher
+error rate. No SFT, GRPO, gisting, autonomous admission, or deployment is
+authorized. A blinded audit, approved real work, and a human-calibrated
+obligation-level evaluator are required before training can be considered.
+The shareable, hash-bound summary is
+[`docs/results/2026-09-06-company-task-specialization-v1-advisory.md`](docs/results/2026-09-06-company-task-specialization-v1-advisory.md).
+The completed blinded GPT review and private Phase B comparison are summarized
+separately in
+[`docs/results/2026-09-06-company-task-specialization-model-advisory-v2.md`](docs/results/2026-09-06-company-task-specialization-model-advisory-v2.md).
+They are model-advisory development evidence, not human labels.
+The draft evaluator-v2 and private real-work schema are under
+`knowledge/company_task_specialization/evaluator_v2/`. Real case content must
+remain under the ignored `knowledge/private/` boundary.
+
+The audit command writes a shareable ZIP, a private unblinding map, and a
+review template under `artifacts/company-task-specialization/human-audit/`.
+Send only the versioned ZIP to a reviewer. Phase A records obligations,
+satisfaction, unsafe claims, next-step usefulness, and ambiguity without asking
+the reviewer to diagnose a hidden evaluator or reference. After the completed
+labels are frozen, validation uses the private map to write the separate Phase B
+disagreement diagnosis:
+
+```bash
+emmlx specialization validate-audit \
+  --packet <specialization-output-audit-v2.zip> \
+  --mapping <private-review-id-map-v2.json> \
+  --overlay <completed-review.jsonl> \
+  --output <audit-report.json>
+
+emmlx specialization validate-real-seed \
+  --input knowledge/private/company-task-specialization/real-work.jsonl \
+  --output artifacts/company-task-specialization/real-work-seed-manifest.json
+```
+
+The owner elected to continue the next exploratory cycle with GPT labels only.
+`company-task-specialization/v2-model-advisory` therefore makes no human or
+production claim. It freezes 14 fresh synthetic supplier-workflow cases and
+compares the same pinned Qwen27 under a baseline prompt, an obligation-focused
+prompt, and one bounded revision pass:
+
+```bash
+emmlx specialization run-qualification-v2
+emmlx specialization prepare-qualification-review \
+  --comparison artifacts/company-task-specialization/v2/<run>/qualification-comparison.json
+emmlx specialization score-qualification-review \
+  --comparison <qualification-comparison.json> \
+  --packet <qualification-model-advisory.zip> \
+  --mapping <private-review-map.json> \
+  --advisory <qualification-model-advisory.jsonl>
+```
+
+The completed generation artifact has 42/42 structured outputs and no
+generation failures or truncation. The blinded GPT review rated every arm
+13/14 acceptable with one minor alternative-remedy wording defect and no
+unacceptable answers. Because every arm failed the frozen zero-unsafe and
+targeted-case gates, no arm qualified. The obligation prompt and revision pass
+provided no quality improvement over the faster baseline. No student training
+or stronger-teacher run is authorized. The generation summary is
+[`docs/results/2026-09-06-supplier-qualification-v2-pending-advisory.md`](docs/results/2026-09-06-supplier-qualification-v2-pending-advisory.md).
+The final decision is
+[`docs/results/2026-09-06-supplier-qualification-v2-final.md`](docs/results/2026-09-06-supplier-qualification-v2-final.md).
+
+`company-task-specialization/v3-remedy-logic` preserves that result and tests
+the identified representation defect directly. Its 24 frozen fresh cases
+compare only the unchanged single-pass Qwen27 baseline against the same model
+with recursive `any_of`/`all_of` remedy groups. The old 14 cases are bound as a
+separate regression set and are not reused as fresh evidence.
+
+Model-free tests establish the typed OR, AND, and nested behavior and detect
+operator swaps, dropped routes, and unsupported routes before inference.
+Machine checks remain limited to node structure, request coverage, and supplied
+source IDs. Blinded semantic review still decides whether free-text actions,
+operators, alternatives, and mandatory controls match policy.
+
+```bash
+emmlx specialization validate-remedy-v3
+emmlx specialization run-remedy-v3
+emmlx specialization prepare-remedy-review \
+  --comparison artifacts/company-task-specialization/v3-remedy-logic/<run>/remedy-logic-comparison.json
+emmlx specialization score-remedy-review \
+  --comparison <remedy-logic-comparison.json> \
+  --packet <remedy-logic-model-advisory.zip> \
+  --mapping <private-review-map.json> \
+  --advisory <completed-model-advisory.jsonl>
+```
+
+The review hides arm labels, case IDs, references, machine results, and costs.
+Because candidates use visibly different schemas, it is described as
+arm-label blinded rather than perfectly treatment blinded. Passing can support
+only a bounded advisory teacher designation; the student-training block remains
+in force pending a separately approved admission protocol.
+
+The run completed all 48 generations with no failure, truncation, invalid
+structure, or machine hard failure. The GPT advisory review rated the control
+16/24 acceptable with eight unacceptable, and the challenger 22/24 acceptable
+with one minor revision and one unacceptable. The challenger produced five
+paired alternative-preservation wins, zero losses, and no mandatory-condition
+regression, demonstrating that the representation fixed its target defect.
+
+It still failed the frozen gate. Both arms invented an attachment or
+verification requirement after facts established questionnaire completion, and
+the challenger made one additional known-complete control sound unknown. The
+final decision is `no_arm_passes_substantive_gate`; no teacher is designated
+and training stays blocked. See
+[`docs/results/2026-09-06-remedy-logic-v3-final.md`](docs/results/2026-09-06-remedy-logic-v3-final.md).
+
+`company-task-specialization/v4-fact-state` retained the structured remedy
+schema and compared the unchanged v3 prompt against one compact fact-state
+amendment. Its 16 fresh scenarios form 8 contrast pairs over authenticated
+workflow state, unknown status, requester claims, document availability,
+explicit attachment or verification rules, collective completion, conflicts,
+and supersession:
+
+```bash
+emmlx specialization validate-fact-state-v4
+emmlx specialization run-fact-state-v4
+emmlx specialization prepare-fact-state-review \
+  --comparison <fact-state-comparison.json>
+emmlx specialization score-fact-state-review \
+  --comparison <fact-state-comparison.json> \
+  --packet <fact-state-model-advisory.zip> \
+  --mapping <private-review-map.json> \
+  --advisory <completed-model-advisory.jsonl>
+```
+
+The amendment improved 4 paired scenarios and regressed 1. It fixed the direct
+recorded-completion/absent-attachment contrasts, but still converted unknown
+state into required action, reopened some collectively completed controls, and
+introduced one remedy-logic and two unsafe-waiver regressions. Control scored
+8/16 acceptable; the amendment scored 10/16 acceptable.
+
+The frozen decision is `no_success_stop_synthetic_prompt_iteration`. The
+conditional v3 regression was not authorized or run. The retained next boundary
+is real-work evidence-contract inspection or validated structured workflow
+state—not another prompt tournament, larger model, or student training. See
+[`docs/results/2026-09-06-fact-state-v4-final.md`](docs/results/2026-09-06-fact-state-v4-final.md).
+
+The synthetic prompt phase is now closed. The proposed one-workflow evidence
+contract and current seed-readiness assessment are in
+[`docs/reviews/2026-09-07-real-work-evidence-readiness.md`](docs/reviews/2026-09-07-real-work-evidence-readiness.md).
+No approved private real-work seed is currently established.
 
 ## Latest acquisition smoke
 
@@ -264,6 +491,8 @@ scripts/                    bootstrap and clean source packaging
 ## Documentation
 
 - [`docs/adr/0001-purpose-hardware-and-first-boundary.md`](docs/adr/0001-purpose-hardware-and-first-boundary.md)
+- [`docs/adr/0002-model-upgrade-exploratory-v1.md`](docs/adr/0002-model-upgrade-exploratory-v1.md)
+- [`docs/adr/0003-company-task-specialization-v1.md`](docs/adr/0003-company-task-specialization-v1.md)
 - [`docs/ROADMAP.md`](docs/ROADMAP.md)
 - [`docs/security.md`](docs/security.md)
 - [`docs/data-contract.md`](docs/data-contract.md)

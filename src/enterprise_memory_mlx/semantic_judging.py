@@ -81,6 +81,13 @@ class JudgeBackendResult:
     latency_seconds: float
     prompt_tokens: int
     completion_tokens: int
+    final_text: str | None = None
+    finish_reason: str | None = None
+    parse_status: str | None = None
+    rendered_prompt_hash: str | None = None
+    chat_template_hash: str | None = None
+    generation_config_hash: str | None = None
+    peak_memory_gb: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -91,6 +98,13 @@ class JudgeBackendResult:
             "latency_seconds": self.latency_seconds,
             "prompt_tokens": self.prompt_tokens,
             "completion_tokens": self.completion_tokens,
+            "final_text": self.final_text,
+            "finish_reason": self.finish_reason,
+            "parse_status": self.parse_status,
+            "rendered_prompt_hash": self.rendered_prompt_hash,
+            "chat_template_hash": self.chat_template_hash,
+            "generation_config_hash": self.generation_config_hash,
+            "peak_memory_gb": self.peak_memory_gb,
         }
 
 
@@ -151,14 +165,10 @@ class CalibrationCase:
         if not case_id:
             raise CalibrationValidationError("Calibration case is missing case_id")
         reviewers = tuple(
-            str(item).strip()
-            for item in value.get("human_reviewers", ())
-            if str(item).strip()
+            str(item).strip() for item in value.get("human_reviewers", ()) if str(item).strip()
         )
         source_ids = tuple(
-            str(item).strip()
-            for item in value.get("source_record_ids", ())
-            if str(item).strip()
+            str(item).strip() for item in value.get("source_record_ids", ()) if str(item).strip()
         )
         domain = str(value.get("domain", "")).strip().lower()
         if not domain:
@@ -176,9 +186,7 @@ class CalibrationCase:
             human_reviewers=reviewers,
             human_approved=bool(value.get("human_approved", False)),
             error_categories=tuple(
-                str(item).strip()
-                for item in value.get("error_categories", ())
-                if str(item).strip()
+                str(item).strip() for item in value.get("error_categories", ()) if str(item).strip()
             ),
             domain=domain,
             certification_stratum=stratum,
@@ -193,8 +201,10 @@ class CalibrationCase:
 
     @property
     def requires_two_reviewers(self) -> bool:
-        return self.disputed or self.deterministic_hard_failure or (
-            self.certification_stratum == AUDIT_STRATUM
+        return (
+            self.disputed
+            or self.deterministic_hard_failure
+            or (self.certification_stratum == AUDIT_STRATUM)
         )
 
     def canonical_dict(self) -> dict[str, Any]:
@@ -320,9 +330,7 @@ class SliceMetrics:
             "incorrect_to_pass_rate": self.incorrect_to_pass_rate.to_dict(),
             "false_fail_rate": self.false_fail_rate.to_dict(),
             "invalid_output_rate": self.invalid_output_rate.to_dict(),
-            "family_clustered_false_pass_rate": (
-                self.family_clustered_false_pass_rate.to_dict()
-            ),
+            "family_clustered_false_pass_rate": (self.family_clustered_false_pass_rate.to_dict()),
         }
 
 
@@ -676,9 +684,7 @@ def parse_jsonl_bytes(data: bytes) -> list[dict[str, Any]]:
         try:
             row = json.loads(stripped)
         except json.JSONDecodeError as exc:
-            raise CalibrationValidationError(
-                f"Invalid JSONL at line {line_number}: {exc}"
-            ) from exc
+            raise CalibrationValidationError(f"Invalid JSONL at line {line_number}: {exc}") from exc
         if not isinstance(row, dict):
             raise CalibrationValidationError(f"Expected a JSON object at line {line_number}")
         rows.append(row)
@@ -725,9 +731,7 @@ def convert_candidate_file(
     seen: set[str] = set()
     for case in cases:
         if case.case_id in seen:
-            raise CalibrationValidationError(
-                f"duplicate candidate case_id: {case.case_id}"
-            )
+            raise CalibrationValidationError(f"duplicate candidate case_id: {case.case_id}")
         seen.add(case.case_id)
     source_bytes, overlay_bytes = split_case_bytes(cases)
     # Round-trip through the same merge path the harness uses so the recorded
@@ -743,9 +747,7 @@ def convert_candidate_file(
             LABELED_DATASET_FILE: hashes.labeled_dataset_hash,
         },
         "case_count": len(cases),
-        "human_labels_present": any(
-            case.human_semantic_score is not None for case in cases
-        ),
+        "human_labels_present": any(case.human_semantic_score is not None for case in cases),
         "human_approved_count": sum(case.human_approved for case in cases),
     }
     source_path = output_dir / SOURCE_CASES_FILE
@@ -827,9 +829,7 @@ def compute_judge_metrics(
             n_invalid += 1
             continue
         if case.human_semantic_score not in LEGAL_SCORES:
-            raise CalibrationValidationError(
-                f"{case.case_id}: metrics require a legal human score"
-            )
+            raise CalibrationValidationError(f"{case.case_id}: metrics require a legal human score")
         valid_human.append(case.human_semantic_score)
         valid_judge.append(output.score)
 
@@ -849,18 +849,15 @@ def compute_judge_metrics(
             two_step += 1
 
     false_pass = sum(
-        judge == 1.0 and human != 1.0
-        for human, judge in zip(valid_human, valid_judge, strict=True)
+        judge == 1.0 and human != 1.0 for human, judge in zip(valid_human, valid_judge, strict=True)
     )
     not_fully_correct = sum(human != 1.0 for human in valid_human)
     incorrect_to_pass = sum(
-        judge == 1.0 and human == 0.0
-        for human, judge in zip(valid_human, valid_judge, strict=True)
+        judge == 1.0 and human == 0.0 for human, judge in zip(valid_human, valid_judge, strict=True)
     )
     human_incorrect = sum(human == 0.0 for human in valid_human)
     false_fail = sum(
-        judge == 0.0 and human == 1.0
-        for human, judge in zip(valid_human, valid_judge, strict=True)
+        judge == 0.0 and human == 1.0 for human, judge in zip(valid_human, valid_judge, strict=True)
     )
     human_correct = sum(human == 1.0 for human in valid_human)
 
@@ -902,13 +899,9 @@ def compute_judge_metrics(
         false_fail_rate=_rate(false_fail, human_correct, confidence),
         invalid_output_rate=_rate(n_invalid, n_cases, confidence),
         by_error_category=(
-            _slice_metrics(cases, parsed, "error_category", confidence)
-            if include_slices
-            else ()
+            _slice_metrics(cases, parsed, "error_category", confidence) if include_slices else ()
         ),
-        by_domain=(
-            _slice_metrics(cases, parsed, "domain", confidence) if include_slices else ()
-        ),
+        by_domain=(_slice_metrics(cases, parsed, "domain", confidence) if include_slices else ()),
         family_clustered=family_clustered,
     )
 
@@ -1065,9 +1058,7 @@ def grade_with_dual_judges(
             _release_backend(judge)
 
     first, second = parsed
-    reasons = tuple(
-        item.reason for item in parsed if item.valid and item.reason is not None
-    )
+    reasons = tuple(item.reason for item in parsed if item.valid and item.reason is not None)
     if (
         first.valid
         and second.valid
@@ -1185,9 +1176,7 @@ def _validate_calibration_inputs(
             "human-label-overlay hash does not match the expected hash"
         )
     if hashes.labeled_dataset_hash != expected_labeled_dataset_hash:
-        raise CalibrationValidationError(
-            "labeled-dataset hash does not match the expected hash"
-        )
+        raise CalibrationValidationError("labeled-dataset hash does not match the expected hash")
     files = manifest.get("files")
     if not isinstance(files, Mapping):
         raise CalibrationValidationError("manifest is missing files")
@@ -1245,9 +1234,7 @@ def _validate_calibration_inputs(
         )
 
     counts = {score: 0 for score in LEGAL_SCORES}
-    eligible = [
-        case for case in cases if case.certification_stratum == HEADLINE_STRATUM
-    ]
+    eligible = [case for case in cases if case.certification_stratum == HEADLINE_STRATUM]
     for case in eligible:
         if case.human_semantic_score in LEGAL_SCORES:
             counts[case.human_semantic_score] += 1
@@ -1332,15 +1319,18 @@ def _judge_cases_by_lifecycle(
 def _acquire_backend(judge: JudgeBackend) -> None:
     if _INVOCATION.loaded:
         _INVOCATION.overlapping = True
+        raise CalibrationValidationError("Judge backends cannot overlap in memory")
     _INVOCATION.events.append(f"acquire:{judge.model_id}")
-    _INVOCATION.loaded.add(judge.model_id)
     judge.acquire()
+    _INVOCATION.loaded.add(judge.model_id)
 
 
 def _release_backend(judge: JudgeBackend) -> None:
-    judge.release()
-    _INVOCATION.events.append(f"release:{judge.model_id}")
-    _INVOCATION.loaded.discard(judge.model_id)
+    try:
+        judge.release()
+    finally:
+        _INVOCATION.events.append(f"release:{judge.model_id}")
+        _INVOCATION.loaded.discard(judge.model_id)
 
 
 def _verify_backend_result(
@@ -1409,13 +1399,9 @@ def _threshold_failures(
     )
     if agreement is None or agreement < thresholds.min_exact_agreement:
         failed.append(
-            f"{label}: exact agreement "
-            f"{_fmt_rate(agreement)} < {thresholds.min_exact_agreement}"
+            f"{label}: exact agreement {_fmt_rate(agreement)} < {thresholds.min_exact_agreement}"
         )
-    if (
-        metrics.weighted_kappa is None
-        or metrics.weighted_kappa < thresholds.min_weighted_kappa
-    ):
+    if metrics.weighted_kappa is None or metrics.weighted_kappa < thresholds.min_weighted_kappa:
         failed.append(
             f"{label}: weighted kappa "
             f"{_fmt_rate(metrics.weighted_kappa)} < {thresholds.min_weighted_kappa}"
@@ -1566,36 +1552,28 @@ def _family_clustered_metrics(
             and all(output.valid for _case, output in members)
         ):
             exact_success += 1
-        if any(
-            case.human_semantic_score != 1.0
-            for case, output in valid
-        ):
+        if any(case.human_semantic_score != 1.0 for case, output in valid):
             false_pass_den += 1
             if any(
-                output.score == 1.0 and case.human_semantic_score != 1.0
-                for case, output in valid
+                output.score == 1.0 and case.human_semantic_score != 1.0 for case, output in valid
             ):
                 false_pass_num += 1
         if any(case.human_semantic_score == 0.0 for case, output in valid):
             incorrect_den += 1
             if any(
-                output.score == 1.0 and case.human_semantic_score == 0.0
-                for case, output in valid
+                output.score == 1.0 and case.human_semantic_score == 0.0 for case, output in valid
             ):
                 incorrect_num += 1
         if any(case.human_semantic_score == 1.0 for case, output in valid):
             false_fail_den += 1
             if any(
-                output.score == 0.0 and case.human_semantic_score == 1.0
-                for case, output in valid
+                output.score == 0.0 and case.human_semantic_score == 1.0 for case, output in valid
             ):
                 false_fail_num += 1
     return FamilyClusteredMetrics(
         n_families=n_families,
         exact_agreement=_clustered_rate(exact_success, n_families, confidence),
-        fully_correct_false_pass_rate=_clustered_rate(
-            false_pass_num, false_pass_den, confidence
-        ),
+        fully_correct_false_pass_rate=_clustered_rate(false_pass_num, false_pass_den, confidence),
         incorrect_to_pass_rate=_clustered_rate(incorrect_num, incorrect_den, confidence),
         false_fail_rate=_clustered_rate(false_fail_num, false_fail_den, confidence),
         invalid_output_rate=_clustered_rate(invalid_num, n_families, confidence),
@@ -1670,14 +1648,8 @@ def _weighted_kappa_variance(
         return None
     row_p = [sum(row) / total for row in counts]
     col_p = [sum(counts[i][j] for i in range(3)) / total for j in range(3)]
-    w_bar_row = [
-        sum(weights[i][j] * col_p[j] for j in range(3))
-        for i in range(3)
-    ]
-    w_bar_col = [
-        sum(weights[i][j] * row_p[i] for i in range(3))
-        for j in range(3)
-    ]
+    w_bar_row = [sum(weights[i][j] * col_p[j] for j in range(3)) for i in range(3)]
+    w_bar_col = [sum(weights[i][j] * row_p[i] for i in range(3)) for j in range(3)]
     term = 0.0
     for i in range(3):
         for j in range(3):
@@ -1766,10 +1738,10 @@ def clopper_pearson_two_sided(
     if not 0.0 < confidence < 1.0:
         raise ValueError("confidence must be in (0, 1)")
     one_sided = 1.0 - (1.0 - confidence) / 2.0
-    low = 0.0 if successes == 0 else 1.0 - clopper_pearson_upper(
-        trials - successes, trials, one_sided
+    low = (
+        0.0
+        if successes == 0
+        else 1.0 - clopper_pearson_upper(trials - successes, trials, one_sided)
     )
-    high = 1.0 if successes == trials else clopper_pearson_upper(
-        successes, trials, one_sided
-    )
+    high = 1.0 if successes == trials else clopper_pearson_upper(successes, trials, one_sided)
     return low, high

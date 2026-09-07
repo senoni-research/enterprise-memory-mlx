@@ -13,7 +13,13 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
+from .experiment_profiles import MODEL_UPGRADE_PROFILE, MODEL_UPGRADE_PROTOCOL_ID
 from .leakage import assert_no_leakage, scan_leakage
+from .model_upgrade_views import (
+    VIEWS_PER_RECORD,
+    authoring_source_payload,
+    load_versioned_study_views,
+)
 from .schemas import KnowledgeRecord
 from .semantic_neighbors import EmbeddingBackend, nearest_neighbors
 from .split_contract import (
@@ -23,7 +29,11 @@ from .split_contract import (
 )
 from .utils import atomic_write_text, read_jsonl, sha256_json
 
-AcquisitionProfile = Literal["smoke_non_promotable", "confirmatory"]
+AcquisitionProfile = Literal[
+    "smoke_non_promotable",
+    "model_upgrade_exploratory_v1",
+    "confirmatory",
+]
 
 ACQUISITION_SYSTEM_PROMPT = (
     "Learn the approved company record exactly. Preserve numbers, units, "
@@ -65,12 +75,8 @@ class ExposureSchedule:
             "optimizer_steps": self.optimizer_steps,
             "micro_iterations_per_epoch": self.micro_iterations_per_epoch,
             "micro_iterations": self.micro_iterations,
-            "realized_exposures_per_fact": dict(
-                sorted(self.realized_exposures_per_fact.items())
-            ),
-            "exposure_overshoot_per_fact": dict(
-                sorted(self.exposure_overshoot_per_fact.items())
-            ),
+            "realized_exposures_per_fact": dict(sorted(self.realized_exposures_per_fact.items())),
+            "exposure_overshoot_per_fact": dict(sorted(self.exposure_overshoot_per_fact.items())),
         }
 
 
@@ -98,9 +104,14 @@ def compile_acquisition_dataset(
     seed: int = 42,
     semantic_fail_threshold: float = 0.985,
     semantic_audit_approved_by: str | None = None,
+    study_views_root: Path | None = None,
 ) -> AcquisitionCompilation:
     """Compile only after every contract/leakage check passes."""
-    if profile not in {"smoke_non_promotable", "confirmatory"}:
+    if profile not in {
+        "smoke_non_promotable",
+        MODEL_UPGRADE_PROFILE,
+        "confirmatory",
+    }:
         raise ValueError(f"Unsupported acquisition profile: {profile}")
     if target_exposures_per_fact <= 0:
         raise ValueError("target_exposures_per_fact must be positive")
@@ -112,8 +123,7 @@ def compile_acquisition_dataset(
     freeze_problems = verify_frozen_assets(eval_dir)
     if freeze_problems:
         raise ValueError(
-            "Frozen evaluation assets failed verification:\n"
-            + "\n".join(freeze_problems)
+            "Frozen evaluation assets failed verification:\n" + "\n".join(freeze_problems)
         )
     records = tuple(
         record for record in _load_governed_records(knowledge_dir) if record.is_trainable()
@@ -124,11 +134,26 @@ def compile_acquisition_dataset(
     violations = validate_split_contract(list(records), suites)
     if violations:
         raise ValueError(
-            "Split contract violations:\n"
-            + "\n".join(str(item) for item in violations)
+            "Split contract violations:\n" + "\n".join(str(item) for item in violations)
         )
 
-    rows = tuple(_build_study_views(records))
+    versioned_views = None
+    if profile == MODEL_UPGRADE_PROFILE:
+        if study_views_root is None:
+            raise ValueError("model-upgrade exploratory compilation requires --study-views-root")
+        versioned_views = load_versioned_study_views(study_views_root, records)
+        fixture_manifest = json.loads(
+            (eval_dir / "freeze_manifest.json").read_text(encoding="utf-8")
+        )
+        if versioned_views.manifest.get("fixture_hash") != fixture_manifest.get("combined_hash"):
+            raise ValueError("Study-view fixture binding does not match frozen assets")
+        if versioned_views.manifest.get("source_snapshot_hash") != sha256_json(
+            authoring_source_payload(records)
+        ):
+            raise ValueError("Study-view source snapshot does not match governed records")
+        rows = versioned_views.rows
+    else:
+        rows = tuple(_build_study_views(records))
     _validate_view_identity(rows)
     view_counts = Counter(str(row["record_id"]) for row in rows)
     deficits = {
@@ -144,31 +169,30 @@ def compile_acquisition_dataset(
         )
     if profile == "confirmatory" and not semantic_audit_approved_by:
         raise ValueError("Confirmatory acquisition requires an approved semantic audit")
+    if profile == MODEL_UPGRADE_PROFILE:
+        if set(view_counts.values()) != {VIEWS_PER_RECORD}:
+            raise ValueError(
+                f"Model-upgrade curriculum requires exactly {VIEWS_PER_RECORD} "
+                "views per eligible record"
+            )
+        if target_exposures_per_fact != 96:
+            raise ValueError("Model-upgrade primary endpoint is fixed at 96 exposures")
 
-    training_texts = {
-        str(row["view_family_id"]): _user_text(row)
-        for row in rows
-    }
+    training_texts = {str(row["view_family_id"]): _user_text(row) for row in rows}
     lexical_report = scan_leakage(training_texts, suites.all_questions())
     assert_no_leakage(lexical_report)
 
-    eval_pairs = [
-        (question.question_id, question.question)
-        for question in suites.all_questions()
-    ]
+    eval_pairs = [(question.question_id, question.question) for question in suites.all_questions()]
     semantic = nearest_neighbors(
         list(training_texts.items()),
         eval_pairs,
         semantic_backend,
         top_n=min(100, len(training_texts) * max(1, len(eval_pairs))),
     )
-    semantic_findings = [
-        item for item in semantic if item.score >= semantic_fail_threshold
-    ]
+    semantic_findings = [item for item in semantic if item.score >= semantic_fail_threshold]
     if semantic_findings:
         details = "\n".join(
-            f"{item.left_id} ~ {item.right_id}: {item.score:.4f}"
-            for item in semantic_findings[:10]
+            f"{item.left_id} ~ {item.right_id}: {item.score:.4f}" for item in semantic_findings[:10]
         )
         raise ValueError(f"Semantic-neighbour leakage threshold exceeded:\n{details}")
 
@@ -178,14 +202,30 @@ def compile_acquisition_dataset(
         effective_batch_size=effective_batch_size,
         micro_batch_size=micro_batch_size,
     )
+    if profile == MODEL_UPGRADE_PROFILE and (
+        schedule.total_rows != len(records) * VIEWS_PER_RECORD
+        or schedule.epochs != 4
+        or schedule.micro_iterations != 768
+        or schedule.optimizer_steps != 96
+        or any(schedule.exposure_overshoot_per_fact.values())
+    ):
+        raise ValueError(
+            "Model-upgrade schedule must be 192 rows, four epochs, "
+            "768 micro-iterations, 96 optimizer updates, and zero overshoot"
+        )
     shuffled = list(rows)
     random.Random(seed).shuffle(shuffled)
-    dataset_dir = output_root / "datasets" / profile
-    manifest_path = output_root / "manifests" / f"{profile}.json"
-    audit_path = output_root / "audits" / f"{profile}.json"
-    dataset_content = "".join(
-        json.dumps(row, ensure_ascii=False) + "\n" for row in shuffled
-    )
+    dataset_content = "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in shuffled)
+    dataset_hash = hashlib.sha256(dataset_content.encode()).hexdigest()
+    if profile == MODEL_UPGRADE_PROFILE:
+        identity = dataset_hash[:16]
+        dataset_dir = output_root / "datasets" / profile / identity
+        manifest_path = output_root / "manifests" / profile / f"{identity}.json"
+        audit_path = output_root / "audits" / profile / f"{identity}.json"
+    else:
+        dataset_dir = output_root / "datasets" / profile
+        manifest_path = output_root / "manifests" / f"{profile}.json"
+        audit_path = output_root / "audits" / f"{profile}.json"
     max_semantic_similarity = max((item.score for item in semantic), default=None)
     audit = {
         "schema_version": 1,
@@ -202,11 +242,10 @@ def compile_acquisition_dataset(
             "nearest_pairs": [item.to_dict() for item in semantic[:25]],
         },
         "promotion_eligible": profile == "confirmatory",
+        "protocol_id": (MODEL_UPGRADE_PROTOCOL_ID if profile == MODEL_UPGRADE_PROFILE else None),
     }
     audit_content = json.dumps(audit, indent=2, ensure_ascii=False) + "\n"
-    fixture_manifest = json.loads(
-        (eval_dir / "freeze_manifest.json").read_text(encoding="utf-8")
-    )
+    fixture_manifest = json.loads((eval_dir / "freeze_manifest.json").read_text(encoding="utf-8"))
     source_payload = [_record_payload(record) for record in records]
     manifest = {
         "schema_version": 1,
@@ -216,33 +255,61 @@ def compile_acquisition_dataset(
         "non_promotable_reasons": (
             []
             if profile == "confirmatory"
+            else (
+                [
+                    "exploratory model-upgrade profile",
+                    "model-assisted views are not independently human-approved",
+                    "historical evaluation is diagnostic, not confirmatory",
+                    "single local semantic verifier is advisory only",
+                ]
+                if profile == MODEL_UPGRADE_PROFILE
+                else [
+                    "smoke profile",
+                    "fewer than 24 independent view families per fact",
+                    "semantic audit has not received independent human approval",
+                    "semantic answer grading is unavailable",
+                ]
+            )
+        ),
+        "known_caveats": (
+            [
+                "The 24-view curriculum is model-assisted and not human-approved.",
+                "The historical frozen suite has been repeatedly inspected and is "
+                "not a fresh confirmatory holdout.",
+            ]
+            if profile == MODEL_UPGRADE_PROFILE
             else [
-                "smoke profile",
-                "fewer than 24 independent view families per fact",
-                "semantic audit has not received independent human approval",
-                "semantic answer grading is unavailable",
+                (
+                    "training includes governed source-question views that are "
+                    "semantically adjacent to the frozen evaluation paraphrases "
+                    "(max cross similarity "
+                    + (
+                        f"{max_semantic_similarity:.4f}"
+                        if max_semantic_similarity is not None
+                        else "unavailable"
+                    )
+                    + " under the pinned audit model); results on this dataset "
+                    "are not a clean unseen-form test"
+                ),
             ]
         ),
-        "known_caveats": [
-            (
-                "training includes governed source-question views that are "
-                "semantically adjacent to the frozen evaluation paraphrases "
-                "(max cross similarity "
-                + (
-                    f"{max_semantic_similarity:.4f}"
-                    if max_semantic_similarity is not None
-                    else "unavailable"
-                )
-                + " under the pinned audit model); results on this dataset "
-                "are not a clean unseen-form test"
-            ),
-        ],
         "records": source_payload,
         "record_ids": [record.id for record in records],
         "source_snapshot_hash": sha256_json(source_payload),
         "highest_sensitivity": _highest_sensitivity(records),
         "fixture_hash": fixture_manifest["combined_hash"],
-        "dataset_sha256": hashlib.sha256(dataset_content.encode()).hexdigest(),
+        "dataset_sha256": dataset_hash,
+        "study_views": (
+            {
+                "source_path": str(versioned_views.views_path),
+                "source_sha256": versioned_views.dataset_hash,
+                "manifest_path": str(versioned_views.manifest_path),
+                "manifest_sha256": versioned_views.manifest_hash,
+                "human_approved": False,
+            }
+            if versioned_views is not None
+            else None
+        ),
         "audit_sha256": hashlib.sha256(audit_content.encode()).hexdigest(),
         "view_family_count": len(rows),
         "view_counts": dict(sorted(view_counts.items())),
@@ -250,6 +317,31 @@ def compile_acquisition_dataset(
         "schedule": schedule.to_dict(),
         "seed": seed,
     }
+
+    if profile == MODEL_UPGRADE_PROFILE and any(
+        target.exists() for target in (dataset_dir, manifest_path, audit_path)
+    ):
+        required = (dataset_dir / "train.jsonl", manifest_path, audit_path)
+        if not all(target.is_file() for target in required):
+            raise FileExistsError("Incomplete model-upgrade compilation exists; refusing overwrite")
+        if (dataset_dir / "train.jsonl").read_text(encoding="utf-8") != dataset_content:
+            raise FileExistsError("Existing model-upgrade dataset bytes differ; refusing overwrite")
+        existing_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if (
+            existing_manifest.get("dataset_sha256") != dataset_hash
+            or existing_manifest.get("profile") != profile
+            or existing_manifest.get("schedule") != schedule.to_dict()
+        ):
+            raise FileExistsError("Existing model-upgrade manifest differs; refusing overwrite")
+        return AcquisitionCompilation(
+            dataset_dir=dataset_dir,
+            manifest_path=manifest_path,
+            audit_path=audit_path,
+            records=records,
+            rows=rows,
+            schedule=schedule,
+            promotion_eligible=False,
+        )
 
     atomic_write_text(dataset_dir / "train.jsonl", dataset_content)
     atomic_write_text(audit_path, audit_content)
@@ -277,11 +369,7 @@ def derive_exposure_schedule(
 ) -> ExposureSchedule:
     if not view_counts or any(value <= 0 for value in view_counts.values()):
         raise ValueError("view_counts must contain positive counts")
-    if (
-        target_exposures_per_fact <= 0
-        or effective_batch_size <= 0
-        or micro_batch_size <= 0
-    ):
+    if target_exposures_per_fact <= 0 or effective_batch_size <= 0 or micro_batch_size <= 0:
         raise ValueError("target exposures and batch sizes must be positive")
     if effective_batch_size % micro_batch_size:
         raise ValueError("effective batch size must be divisible by micro batch size")
@@ -291,10 +379,7 @@ def derive_exposure_schedule(
     steps_per_epoch = math.ceil(total_rows / effective_batch_size)
     micro_iterations_per_epoch = math.ceil(total_rows / micro_batch_size)
     gradient_accumulation_steps = effective_batch_size // micro_batch_size
-    realized = {
-        record_id: count * epochs
-        for record_id, count in view_counts.items()
-    }
+    realized = {record_id: count * epochs for record_id, count in view_counts.items()}
     return ExposureSchedule(
         target_exposures_per_fact=target_exposures_per_fact,
         views_per_fact=dict(view_counts),
@@ -435,11 +520,7 @@ def _validate_view_identity(rows: tuple[dict[str, Any], ...]) -> None:
 
 def _user_text(row: dict[str, Any]) -> str:
     messages = row["messages"]
-    return next(
-        str(message["content"])
-        for message in messages
-        if message["role"] == "user"
-    )
+    return next(str(message["content"]) for message in messages if message["role"] == "user")
 
 
 def _record_payload(record: KnowledgeRecord) -> dict[str, Any]:

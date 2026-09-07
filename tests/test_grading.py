@@ -70,9 +70,7 @@ def _artifact(
 ) -> tuple[Path, object]:
     suites = load_eval_suites(eval_dir)
     questions = getattr(suites, suite_name)
-    fixture = json.loads(
-        (eval_dir / "freeze_manifest.json").read_text(encoding="utf-8")
-    )
+    fixture = json.loads((eval_dir / "freeze_manifest.json").read_text(encoding="utf-8"))
     rows = [
         {
             "question_id": question.question_id,
@@ -116,8 +114,7 @@ def test_deterministic_grading_never_invents_semantic_accuracy(
     assert report.promotion_eligible is False
     assert all(row.deterministic_score in {None, 0.0} for row in report.rows)
     assert all(
-        row.status in {"deterministic_hard_fail", "semantic_review_required"}
-        for row in report.rows
+        row.status in {"deterministic_hard_fail", "semantic_review_required"} for row in report.rows
     )
     assert all(item["semantic_accuracy"] is None for item in report.aggregates)
     assert all(item["status"] != "pass" for item in report.gates)
@@ -130,9 +127,7 @@ def test_wrong_critical_currency_is_a_certain_hard_failure(
     eval_dir = project_root / "knowledge" / "eval_frozen"
     raw, suites = _artifact(tmp_path, eval_dir)
     payload = json.loads(raw.read_text())
-    payload["results"][0]["output"] = (
-        "Written approval is needed above £999 from the budget owner."
-    )
+    payload["results"][0]["output"] = "Written approval is needed above £999 from the budget owner."
     raw.write_text(json.dumps(payload), encoding="utf-8")
 
     report = grade_benchmark_artifact(raw, eval_dir, suites)
@@ -185,6 +180,32 @@ def test_generation_failure_remains_unscored(
     assert first.strict is None
     assert first.provenance is None
     assert first.reasons == ("backend stopped",)
+
+
+def test_truncated_generated_output_is_reparsed_as_unscored(
+    tmp_path: Path,
+    project_root: Path,
+) -> None:
+    eval_dir = project_root / "knowledge" / "eval_frozen"
+    raw, suites = _artifact(tmp_path, eval_dir)
+    payload = json.loads(raw.read_text())
+    row = payload["results"][0]
+    row.update(
+        {
+            "raw_output": row["output"],
+            "parse_status": "plain",
+            "finish_reason": "length",
+            "truncated": True,
+        }
+    )
+    raw.write_text(json.dumps(payload), encoding="utf-8")
+
+    report = grade_benchmark_artifact(raw, eval_dir, suites)
+
+    first = report.rows[0]
+    assert first.status == "unscored_generation_failure"
+    assert first.generation_status == "failed"
+    assert first.reasons == ("truncated_output",)
 
 
 def test_temporal_v2_preserves_as_of_date(

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "clarification_id": "structured-inference-v1/freeze-hash-field-correction",
+  "rewrites_history": false,
+  "backdated_snapshots": false,
+  "inspected_only": true,
+  "code_field_assignment": {
+    "observed_in": "src/enterprise_memory_mlx/structured_inference.py write_freeze/run_structured_inference",
+    "field_name": "freeze_manifest_sha256",
+    "value_actually_assigned": "sha256 of freeze/measurement-contract.json",
+    "not_the_hash_of": "freeze/freeze-manifest.json"
+  },
+  "current_freeze_directory_hashes": {
+    "path": "artifacts/qwen4b-structured-inference-v1/freeze",
+    "measurement-contract.json": "d043dc33bf3576a43e634717f8a92fd3e3c31a81a5b5020d1494ef706ca53058",
+    "freeze-manifest.json": "455cfd03c4635dda451ceca15001b7b935f77748f9ca53777097c2cdbd3f9849",
+    "implementation-identity.json": "6423c80d2fbc753b7c8047d1e6756cfa3ff457ba21a1bc9f5c4957283f2bf59e",
+    "dependency-pin.json": "80992d7d052504c1524980b6111ba150d0907613ae0b911dffac442f0916e3fa",
+    "schemas.json": "4c581fe5779eb126b811e8aa14a459b1f4979207204bd643bdbe8cd4b2d4876f"
+  },
+  "freeze_manifest_file_contents": {
+    "measurement_contract_sha256": "d043dc33bf3576a43e634717f8a92fd3e3c31a81a5b5020d1494ef706ca53058",
+    "implementation_identity_sha256": "6423c80d2fbc753b7c8047d1e6756cfa3ff457ba21a1bc9f5c4957283f2bf59e",
+    "dependency_pin_sha256": "80992d7d052504c1524980b6111ba150d0907613ae0b911dffac442f0916e3fa",
+    "schemas_sha256": "4c581fe5779eb126b811e8aa14a459b1f4979207204bd643bdbe8cd4b2d4876f"
+  },
+  "execute_bindings": {
+    "run-20260912T112732Z": {
+      "kind": "setup_failure_records",
+      "decoder_invoked_not_established": true,
+      "raw_output_files_present": false,
+      "recorded_failure": "ValueError: Only fast tokenizers are supported",
+      "recorded_field_freeze_manifest_sha256": "d043dc33bf3576a43e634717f8a92fd3e3c31a81a5b5020d1494ef706ca53058",
+      "that_field_matches_current_measurement_contract": true,
+      "that_field_matches_current_freeze_manifest_file": false,
+      "copied_freeze_snapshot_in_run_dir": false,
+      "bindable_now": [
+        "measurement-contract.json currently hashes to the recorded field value"
+      ],
+      "not_bindable": [
+        "a historical freeze-manifest.json snapshot from this execute is not separately preserved",
+        "a historical implementation-identity.json snapshot from this execute is not separately preserved",
+        "write_freeze overwrites artifacts/qwen4b-structured-inference-v1/freeze/"
+      ]
+    },
+    "run-20260912T112818Z": {
+      "kind": "ten_measured_decodes",
+      "raw_output_files_present": true,
+      "generation_calls_recorded": 10,
+      "recorded_field_freeze_manifest_sha256": "d043dc33bf3576a43e634717f8a92fd3e3c31a81a5b5020d1494ef706ca53058",
+      "that_field_matches_current_measurement_contract": true,
+      "that_field_matches_current_freeze_manifest_file": false,
+      "copied_freeze_snapshot_in_run_dir": false,
+      "current_implementation_identity_file_sha256": "6423c80d2fbc753b7c8047d1e6756cfa3ff457ba21a1bc9f5c4957283f2bf59e",
+      "current_implementation_identity_records_structured_inference_py": "9f4d721ee7a51f2f244ca7a1419e78fe2f2ab7ff1d9377e5d4c937dcde1d7bc2",
+      "note": "The current freeze/ directory is the last write_freeze result. No earlier freeze directory copy exists. Do not treat the current implementation-identity as a reconstructed first-execute snapshot."
+    }
+  },
+  "do_not_infer": [
+    "unrecorded tokenizer object types at first-execute load time beyond the persisted ValueError",
+    "whether Metal weights were fully resident during the setup failure",
+    "any freeze file bytes other than those now on disk plus the hashes recorded in the two execute manifests and source-link files"
+  ]
+}

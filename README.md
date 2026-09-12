@@ -497,6 +497,9 @@ scripts/                    bootstrap and clean source packaging
 - [`docs/security.md`](docs/security.md)
 - [`docs/data-contract.md`](docs/data-contract.md)
 - [`docs/research-notes.md`](docs/research-notes.md)
+- [`docs/exact-memory-long-context-qlora.md`](docs/exact-memory-long-context-qlora.md)
+- [`docs/exact-memory-long-context-qlora.qualification-2026-09-11.md`](docs/exact-memory-long-context-qlora.qualification-2026-09-11.md)
+- [`docs/qwen4b-structured-inference-v1.report.md`](docs/qwen4b-structured-inference-v1.report.md)
 - [`VALIDATION.md`](VALIDATION.md)
 
 ## Development

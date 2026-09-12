@@ -66,6 +66,7 @@ from .gemma_advisory import run_gemma_advisory, run_gemma_preflight
 from .grading import grade_benchmark_artifact, write_grading_report
 from .hardware import PRESETS, resolve_preset
 from .inference import interactive_chat
+from .learning_mechanics import run_experiment
 from .legacy_guard import LEGACY_COMMANDS, block_legacy_command
 from .model_upgrade_report import write_model_upgrade_comparison
 from .registry import find_adapter
@@ -643,6 +644,44 @@ def build_parser() -> argparse.ArgumentParser:
     chat_parser.add_argument("--domain", default="global")
     chat_parser.add_argument("--max-tokens", type=int, default=320)
 
+    mechanics_parser = subparsers.add_parser(
+        "learning-mechanics",
+        help="Authorized senoni-deliverable-review/qwen4b-learning-mechanics-v1 run",
+    )
+    mechanics_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Run the disposable preflight and, if it passes, the 40-update experiment",
+    )
+    eval_mechanics_parser = subparsers.add_parser(
+        "learning-mechanics-eval",
+        help="Inference-only completion of the existing Qwen4B learning-mechanics run",
+    )
+    eval_mechanics_parser.add_argument(
+        "--source-run",
+        required=True,
+        help="Bound training run directory (must be run-20260910T210406Z-seed42)",
+    )
+    eval_mechanics_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="After verification, run the five authorized inference attempts",
+    )
+    structured_parser = subparsers.add_parser(
+        "structured-inference",
+        help="Authorized senoni-deliverable-review/structured-inference-v1 format-only run",
+    )
+    structured_parser.add_argument(
+        "--source-run",
+        required=True,
+        help="Bound training run directory (must be run-20260910T210406Z-seed42)",
+    )
+    structured_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="After freeze, run the ten authorized constrained generations",
+    )
+
     return parser
 
 
@@ -670,6 +709,43 @@ def main(argv: Sequence[str] | None = None) -> int:
             _model_upgrade(root, args)
         elif args.command == "specialization":
             _specialization(root, args)
+        elif args.command == "learning-mechanics":
+            if not args.execute:
+                raise ValueError("learning-mechanics requires --execute")
+            result = run_experiment(root)
+            color = "green" if result["status"] == "completed" else "yellow"
+            console.print(
+                f"[{color}]Learning-mechanics {result['status']}:[/{color}] "
+                f"{result['run_dir']}"
+            )
+        elif args.command == "learning-mechanics-eval":
+            from .learning_mechanics_eval import run_evaluation, run_verification
+
+            if args.execute:
+                result = run_evaluation(root, args.source_run)
+            else:
+                result = run_verification(root, args.source_run)
+            color = (
+                "green"
+                if result["status"] in {"verified_only", "evaluation_completed"}
+                else "yellow"
+            )
+            console.print(
+                f"[{color}]Learning-mechanics-eval {result['status']}:[/{color}] "
+                f"{result.get('eval_dir') or args.source_run}"
+            )
+        elif args.command == "structured-inference":
+            from .structured_inference import run_structured_inference, run_verification
+
+            if args.execute:
+                result = run_structured_inference(root, args.source_run)
+            else:
+                result = run_verification(root, args.source_run)
+            color = "green" if result["status"] in {"verified_only", "completed"} else "yellow"
+            console.print(
+                f"[{color}]Structured-inference {result['status']}:[/{color}] "
+                f"{result.get('run_dir') or args.source_run}"
+            )
         else:
             parser.error(f"Unsupported command: {args.command}")
     except (FileNotFoundError, RuntimeError, ValueError, OSError) as exc:

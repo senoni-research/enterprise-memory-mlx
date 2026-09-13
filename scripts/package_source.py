@@ -14,13 +14,14 @@ ARCHIVE_ROOT = "enterprise-memory-mlx"
 ROOT_FILES = {
     ".gitignore",
     ".python-version",
+    "CITATION.cff",
     "LICENSE",
     "Makefile",
     "README.md",
     "VALIDATION.md",
     "pyproject.toml",
 }
-ROOT_DIRECTORIES = {".github", "docs", "knowledge", "scripts", "src", "tests"}
+ROOT_DIRECTORIES = {".github", "docs", "knowledge", "paper", "scripts", "src", "tests"}
 EXCLUDED_NAMES = {
     ".DS_Store",
     "__MACOSX",

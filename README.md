@@ -4,6 +4,25 @@ A local MLX research and engineering platform for testing whether governed
 company knowledge can be acquired in model adaptations without losing safety,
 general capability, provenance, or updateability.
 
+## Working paper
+
+**Behavioral Compilation: From Harness to Weights on a Single Machine**
+
+Philippe Dagher  
+SENONI Research  
+Working Paper 2026-02 · 13 September 2026
+
+[Download the PDF](paper/Behavioral-Compilation-From-Harness-to-Weights.pdf)
+
+This is a systems research working paper, not a peer-reviewed publication
+and not a deployment claim. It reports a bounded local experiment on one
+M4 Max, including failed runs, matched controls, semantic defects, and
+unresolved validation limits. Citation metadata is in
+[`CITATION.cff`](CITATION.cff).
+
+Dagher, P. (2026). *Behavioral Compilation: From Harness to Weights on a
+Single Machine*. SENONI Research Working Paper 2026-02.
+
 ## Current status
 
 **NOT READY FOR CONFIRMATORY TRAINING OR PROMOTION.**
@@ -483,6 +502,7 @@ knowledge/                  governed synthetic records and versioned contracts
 src/enterprise_memory_mlx/ current libraries plus disabled legacy internals
 tests/                      contract and component tests
 docs/                       ADR, security, roadmap, and historical notes
+paper/                      SENONI Research Working Paper 2026-02
 artifacts/                  generated local outputs; ignored
 dev/                        local plans and dispatch briefs; ignored
 scripts/                    bootstrap and clean source packaging
@@ -500,6 +520,7 @@ scripts/                    bootstrap and clean source packaging
 - [`docs/exact-memory-long-context-qlora.md`](docs/exact-memory-long-context-qlora.md)
 - [`docs/exact-memory-long-context-qlora.qualification-2026-09-11.md`](docs/exact-memory-long-context-qlora.qualification-2026-09-11.md)
 - [`docs/qwen4b-structured-inference-v1.report.md`](docs/qwen4b-structured-inference-v1.report.md)
+- [`paper/Behavioral-Compilation-From-Harness-to-Weights.pdf`](paper/Behavioral-Compilation-From-Harness-to-Weights.pdf)
 - [`VALIDATION.md`](VALIDATION.md)
 
 ## Development

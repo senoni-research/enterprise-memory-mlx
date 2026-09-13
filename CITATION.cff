@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "If you use or discuss this work, please cite it as below."
+title: "Behavioral Compilation: From Harness to Weights on a Single Machine"
+type: article
+authors:
+  - family-names: Dagher
+    given-names: Philippe
+    email: philippe.dagher@senoni.com
+    affiliation: "SENONI Research"
+date-released: 2026-09-13
+version: 1.0.0
+abstract: >
+  Production AI systems often accumulate domain expertise in discrete
+  artifacts surrounding a frontier model. This paper asks whether the
+  methodological structure of compiling stable organizational behavior
+  into weights, while keeping mutable authority external, can be studied
+  on a single local workstation. A rank-16 QLoRA adapter trained on five
+  approved long-context review examples improved from 22/25 to 25/25
+  labels and from 3/5 to 5/5 dispositions under a matched structured
+  decoder. A later model-advisory found remaining evidence and authority
+  defects. The result is exact-example decision fitting, not
+  generalization or deployment readiness.
+keywords:
+  - large language models
+  - local fine-tuning
+  - QLoRA
+  - MLX
+  - Apple Silicon
+  - task specialization
+  - continual learning
+  - structured generation
+  - evidence grounding
+  - enterprise AI
+  - behavioral compilation
+license: MIT
+repository-code: "https://github.com/senoni-research/enterprise-memory-mlx"
+url: "https://github.com/senoni-research/enterprise-memory-mlx"
+preferred-citation:
+  type: article
+  title: "Behavioral Compilation: From Harness to Weights on a Single Machine"
+  authors:
+    - family-names: Dagher
+      given-names: Philippe
+  year: 2026
+  month: 9
+  publisher: "SENONI Research"
+  notes: "Working Paper 2026-02"
+  url: "https://github.com/senoni-research/enterprise-memory-mlx"

@@ -1,0 +1,32 @@
+{
+  "frozen_before_rollouts": true,
+  "hard_zero": [
+    "invalid_json_or_schema",
+    "provenance_hard_violation",
+    "unsafe_waiver_or_forbidden_action"
+  ],
+  "historical_qwen27_or_gpt_labels": false,
+  "judge": "deterministic_machine_only",
+  "language_model_reward": false,
+  "lexical_rationale_reward": false,
+  "renormalize_over_applicable_components": true,
+  "reward_range": [
+    0.0,
+    1.0
+  ],
+  "schema_version": 1,
+  "weight_rationale": {
+    "current_decisions": "Exact request-item decisions are fully machine-checkable against the frozen reference and are the primary held-out target.",
+    "fact_state": "Applicable only when expected_fact_state exists. Typed established/unknown/unmet labels constrain the legal decision.",
+    "remedy_logic": "Operator, arity, and nesting are machine-checkable via skeletons; free-text action wording is excluded.",
+    "safe_next_action": "Deterministic prohibitions: proceed-when-blocked, unsupported extra routes, dropped all_of members, and reopening completed work.",
+    "structural_provenance": "Hard gate already zeros invalid JSON/provenance; residual weight keeps schema completeness visible when the gate passes."
+  },
+  "weights": {
+    "current_decisions": 0.3,
+    "fact_state": 0.2,
+    "remedy_logic": 0.2,
+    "safe_next_action": 0.15,
+    "structural_provenance": 0.15
+  }
+}

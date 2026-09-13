@@ -682,6 +682,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="After freeze, run the ten authorized constrained generations",
     )
 
+    grpo_parser = subparsers.add_parser(
+        "grpo-pilot",
+        help="Bounded Qwen4B GRPO/RFT specialization pilot",
+    )
+    grpo_actions = grpo_parser.add_subparsers(dest="grpo_action", required=True)
+    grpo_actions.add_parser("validate", help="Validate the frozen GRPO protocol and split")
+    grpo_actions.add_parser("preflight", help="Disposable rollout and one-update GRPO preflight")
+    grpo_actions.add_parser("execute", help="One measured GRPO trajectory after a passed preflight")
+    grpo_actions.add_parser("evaluate", help="Held-out BASE vs RFT evaluation after training")
+    grpo_actions.add_parser("prepare-review", help="Write a blinded semantic-review packet")
+
     return parser
 
 
@@ -715,8 +726,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = run_experiment(root)
             color = "green" if result["status"] == "completed" else "yellow"
             console.print(
-                f"[{color}]Learning-mechanics {result['status']}:[/{color}] "
-                f"{result['run_dir']}"
+                f"[{color}]Learning-mechanics {result['status']}:[/{color}] {result['run_dir']}"
             )
         elif args.command == "learning-mechanics-eval":
             from .learning_mechanics_eval import run_evaluation, run_verification
@@ -746,6 +756,32 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"[{color}]Structured-inference {result['status']}:[/{color}] "
                 f"{result.get('run_dir') or args.source_run}"
             )
+        elif args.command == "grpo-pilot":
+            from .grpo_runtime import (
+                run_evaluate,
+                run_execute,
+                run_preflight,
+                run_prepare_review,
+                validate_experiment,
+            )
+
+            if args.grpo_action == "validate":
+                result = validate_experiment(root)
+            elif args.grpo_action == "preflight":
+                result = run_preflight(root)
+            elif args.grpo_action == "execute":
+                result = run_execute(root)
+            elif args.grpo_action == "evaluate":
+                result = run_evaluate(root)
+            elif args.grpo_action == "prepare-review":
+                result = run_prepare_review(root)
+            else:
+                parser.error(f"Unsupported grpo-pilot action: {args.grpo_action}")
+            status = result.get("status") or result.get("continuation_status") or "completed"
+            color = (
+                "green" if status in {"validated", "preflight_passed", "completed"} else "yellow"
+            )
+            console.print(f"[{color}]GRPO pilot {args.grpo_action} {status}[/{color}]")
         else:
             parser.error(f"Unsupported command: {args.command}")
     except (FileNotFoundError, RuntimeError, ValueError, OSError) as exc:

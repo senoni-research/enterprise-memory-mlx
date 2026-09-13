@@ -1,0 +1,117 @@
+{
+  "adapter": {
+    "dropout": 0.0,
+    "num_layers": 36,
+    "rank": 16,
+    "scale": 2.0,
+    "target_modules": [
+      "self_attn.q_proj",
+      "self_attn.k_proj",
+      "self_attn.v_proj",
+      "self_attn.o_proj",
+      "mlp.gate_proj",
+      "mlp.up_proj",
+      "mlp.down_proj"
+    ]
+  },
+  "claim_boundary": {
+    "closed_book_knowledge": false,
+    "complete_evidence_entailment": false,
+    "continual_learning": false,
+    "deployment": false,
+    "human_level_review": false,
+    "sft_adapter_generalization": false,
+    "synthetic_governed_scenarios_only": true
+  },
+  "continuation_rule": {
+    "all_required": [
+      "mean_deterministic_reward_rft_minus_base >= 0.10",
+      "rft_full_machine_success_cases >= base_full_machine_success_cases + 2",
+      "paired_wins > paired_losses",
+      "rft_provenance_hard_failures <= base_provenance_hard_failures",
+      "rft_new_unsafe_hard_failures == 0",
+      "rft_exact_decision_accuracy >= base_exact_decision_accuracy"
+    ],
+    "fail_status": "stop_rft_candidate",
+    "not_authorized": [
+      "production",
+      "human_approval",
+      "evidence_entailment_certification",
+      "general_task_solved"
+    ],
+    "pass_status": "rft_pilot_promising_semantic_review_required",
+    "rule_id": "qwen4b-grpo-v1/structured-test-gate",
+    "surface": "primary_structured_decoder_test"
+  },
+  "model": {
+    "existing_sft_examples_excluded": true,
+    "id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "initialize_from_existing_sft_adapter": false,
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "reward_implementation_sha256": "e8fbc652becf93b849ebf905dbbcf9f7f0ce8fc1ae3769488c5feffa90231b0b",
+    "tokenizer_files": {
+      "chat_template.jinja": "40c21f34cf67d8c760ef72f8ad3ae5afad514299d4b06e91dd9a8d705af7b541",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "4397cc477eb6d79715ccd2000accd6b3531928f30029665832fa1b255f24d2b9"
+    }
+  },
+  "origin_main_sha": "a6c0421f244c18a439a907d67b4869fe59f85792",
+  "parent_protocols": {
+    "v3": "company-task-specialization/v3-remedy-logic",
+    "v4": "company-task-specialization/v4-fact-state"
+  },
+  "protocol_id": "company-task-specialization/qwen4b-grpo-v1",
+  "resource_stop": {
+    "process_rss_bytes": 120259084288,
+    "swap_growth_bytes": 8589934592,
+    "wired_limit_description": "MLX wired-limit setting only; not a proven 96 GiB application cap"
+  },
+  "schema_version": 1,
+  "status": "frozen_before_measured_training",
+  "trainer": {
+    "advantage_epsilon": 0.0001,
+    "algorithm": "GRPO",
+    "algorithm_variants_available": [
+      "grpo",
+      "bnpo",
+      "dr_grpo"
+    ],
+    "beta_kl": 0.1,
+    "clip_epsilon": 0.0001,
+    "cot_required": false,
+    "formula_source": "mlx_lm_lora/trainer/grpo_trainer.py grpo_loss + calculate_rewards_and_advantages at v3.0.0",
+    "git_commit": "fb4f39db66fadec3b71a41441e863d9f1bf87844",
+    "importance_sampling_level": "token",
+    "license": "Apache-2.0",
+    "logprob_deviation": "prompt-conditioned completion logprobs; library generate_grpo currently forwards completion tokens only and is not copied",
+    "package": "mlx-lm-lora",
+    "package_imported": false,
+    "reference_model": "none_on_policy; ref logprobs are stop-gradient of the generating policy (library default when reference_model_path is None)",
+    "repository": "https://github.com/Goekdeniz-Guelmez/mlx-lm-lora",
+    "rollout_deviation": "sequential mlx_lm.stream_generate per group member; library default batch_generate is not used",
+    "selected_loss_type": "grpo",
+    "telemetry": false,
+    "version": "3.0.0",
+    "zero_variance_handling": "advantages collapse to ~0 via (r-mean)/(std+1e-4); groups are recorded, not fabricated"
+  },
+  "training": {
+    "batch_prompts": 1,
+    "dev_cases": 8,
+    "epochs": 4,
+    "grammar_during_training_rollouts": false,
+    "group_size": 4,
+    "learning_rate": 5e-06,
+    "max_completion_tokens": 1024,
+    "max_rollouts": 384,
+    "optimizer": "AdamW",
+    "prompt_groups": 96,
+    "seed": 42,
+    "temperature": 0.8,
+    "test_cases": 8,
+    "thinking": false,
+    "tools": false,
+    "top_p": 0.95,
+    "train_cases": 24,
+    "weight_decay": 0.01
+  }
+}

@@ -38,6 +38,10 @@ include = ["enterprise_memory_mlx*"]
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
+markers = [
+  "private_data: tests that read the local private deliverable-review pack or measured outputs",
+  "mlx_integration: tests that need local Apple/MLX, llguidance, or a model snapshot",
+]
 
 [tool.ruff]
 line-length = 100

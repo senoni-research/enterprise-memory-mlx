@@ -62,6 +62,7 @@ SUPPORTED_ARMS: tuple[BenchmarkArm, ...] = (
 DEFAULT_ARMS: tuple[BenchmarkArm, ...] = ("base", "full_context", "oracle")
 DEFAULT_MODEL = "mlx-community/Qwen3-4B-Instruct-2507-4bit"
 DEFAULT_MAX_CONTEXT_TOKENS = 8_192
+MAX_GENERATION_OUTPUT_TOKENS = 4_096
 TOKENIZER_LOADER = "mlx_lm.utils.load_tokenizer"
 SELECTOR_VERSION = "select_retrieval_operating_point/v1-deterministic-grid"
 DEFAULT_BM25_DECISION_RELATIVE_PATH = Path("knowledge/operating_points/bm25/v1-no-feasible.json")
@@ -198,8 +199,8 @@ class BenchmarkConfig:
             raise ValueError("max_context_tokens must be positive")
         if self.max_output_tokens <= 0:
             raise ValueError("max_output_tokens must be positive")
-        if self.max_output_tokens > 1024:
-            raise ValueError("max_output_tokens cannot exceed 1024")
+        if self.max_output_tokens > MAX_GENERATION_OUTPUT_TOKENS:
+            raise ValueError(f"max_output_tokens cannot exceed {MAX_GENERATION_OUTPUT_TOKENS}")
         if self.thinking_enabled:
             raise ValueError("The current controlled comparison requires thinking disabled")
         if self.temperature != 0.0:
@@ -759,9 +760,12 @@ class MLXBenchmarkBackend:
         *,
         revision: str,
         adapter_path: str | None = None,
+        max_context_tokens: int | None = None,
     ) -> None:
         if not revision:
             raise ValueError("A resolved Hugging Face revision is required to load model weights")
+        if max_context_tokens is not None and max_context_tokens <= 0:
+            raise ValueError("max_context_tokens must be positive when provided")
         try:
             from mlx_lm import load, stream_generate
             from mlx_lm.models.cache import make_prompt_cache
@@ -779,6 +783,7 @@ class MLXBenchmarkBackend:
         )
         self._sampler = make_sampler(temp=0.0)
         self._closed = False
+        self._max_context_tokens = max_context_tokens
         self._template = getattr(self._tokenizer, "chat_template", None)
         if not self._template:
             raise RuntimeError("Pinned tokenizer has no chat template")
@@ -810,21 +815,38 @@ class MLXBenchmarkBackend:
     ) -> GeneratedAnswer:
         if self._closed or self._model is None:
             raise RuntimeError("Benchmark backend is closed")
-        if not 0 < max_tokens <= 1024:
-            raise ValueError("max_tokens must be in [1, 1024]")
+        if not 0 < max_tokens <= MAX_GENERATION_OUTPUT_TOKENS:
+            raise ValueError(f"max_tokens must be in [1, {MAX_GENERATION_OUTPUT_TOKENS}]")
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": question},
         ]
+        conversation = self._tokenizer.apply_chat_template(
+            messages,
+            add_generation_prompt=False,
+            tokenize=False,
+            enable_thinking=False,
+        )
         prompt = self._tokenizer.apply_chat_template(
             messages,
             add_generation_prompt=True,
             tokenize=False,
             enable_thinking=False,
         )
-        if prompt.count("<think>") > prompt.count("</think>"):
-            raise RuntimeError("Non-thinking template left an open thinking channel")
+        assistant_prefix = _template_generated_assistant_prefix(
+            conversation=conversation,
+            prompt=prompt,
+        )
+        _validate_assistant_prefix(assistant_prefix, thinking_enabled=False)
         prompt_tokens = len(self._tokenizer.encode(prompt, add_special_tokens=False))
+        if (
+            self._max_context_tokens is not None
+            and prompt_tokens + max_tokens > self._max_context_tokens
+        ):
+            raise ValueError(
+                "Rendered prompt plus reserved output exceeds model context: "
+                f"{prompt_tokens} + {max_tokens} > {self._max_context_tokens}"
+            )
         prompt_cache = self._make_prompt_cache(self._model)
         started = time.perf_counter()
         fragments = []
@@ -893,25 +915,62 @@ def parse_final_answer(
     """Return only the final channel; never score an incomplete thought stream."""
     if not isinstance(raw_output, str):
         return None, "non_text"
+    stripped = raw_output.lstrip()
+    starts_reasoning_channel = stripped.startswith("<think>")
     if finish_reason == "length":
         return None, (
             "truncated_during_reasoning"
-            if "<think>" in raw_output and "</think>" not in raw_output
+            if starts_reasoning_channel and "</think>" not in stripped
             else "truncated_output"
         )
-    if "<think>" not in raw_output:
+    if not starts_reasoning_channel:
         final = raw_output.strip()
         if not final:
             return None, "missing_final_answer"
         return final, "plain"
-    if "</think>" not in raw_output:
+    if "</think>" not in stripped:
         return None, "unclosed_thinking_channel"
     if not thinking_enabled:
         return None, "thinking_protocol_violation"
-    final = raw_output.rsplit("</think>", maxsplit=1)[-1].strip()
+    final = stripped.split("</think>", maxsplit=1)[-1].strip()
     if not final:
         return None, "missing_final_answer"
     return final, "thinking_stripped"
+
+
+def _template_generated_assistant_prefix(*, conversation: str, prompt: str) -> str:
+    if not isinstance(conversation, str) or not isinstance(prompt, str):
+        raise RuntimeError("Pinned tokenizer chat template must render text")
+    if not prompt.startswith(conversation):
+        raise RuntimeError(
+            "Unable to isolate the template-generated assistant prefix from the conversation"
+        )
+    return prompt[len(conversation) :]
+
+
+def _validate_assistant_prefix(prefix: str, *, thinking_enabled: bool) -> None:
+    depth = 0
+    content_start: int | None = None
+    for match in re.finditer(r"</?think>", prefix):
+        tag = match.group(0)
+        if tag == "<think>":
+            if depth:
+                raise RuntimeError("Template-generated assistant prefix has nested think tags")
+            depth = 1
+            content_start = match.end()
+            continue
+        if depth != 1 or content_start is None:
+            raise RuntimeError("Template-generated assistant prefix has an orphan closing tag")
+        if not thinking_enabled and prefix[content_start : match.start()].strip():
+            raise RuntimeError(
+                "Non-thinking template generated non-empty assistant reasoning content"
+            )
+        depth = 0
+        content_start = None
+    if depth:
+        if thinking_enabled and content_start is not None and not prefix[content_start:].strip():
+            return
+        raise RuntimeError("Template-generated assistant prefix left an open thinking channel")
 
 
 def _context_for_arm(

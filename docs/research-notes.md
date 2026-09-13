@@ -24,6 +24,12 @@ The paper compiles entity subgraphs into per-entity LoRA adapters and shows a ga
 
 The implementation targets **MLX-LM v0.31.3**. MLX-LM supports LoRA, QLoRA, DoRA and full fine-tuning; local JSONL chat/completion/text formats; prompt masking; gradient accumulation; checkpointing; adapter resume; and adapter fusion.
 
+Long-context QLoRA on this laptop does not use the stock full-logit /
+full-score training path. The exact-memory runtime — query-blocked
+causal attention and supervised-position output projection — is written
+up for technical communication in
+[`docs/exact-memory-long-context-qlora.md`](exact-memory-long-context-qlora.md).
+
 Official sources:
 
 - https://github.com/ml-explore/mlx-lm

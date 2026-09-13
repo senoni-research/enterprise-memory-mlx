@@ -1,0 +1,19 @@
+{
+  "case_count": 40,
+  "dev_count": 8,
+  "existing_sft_adapter_used": false,
+  "files": {
+    "protocol.json": "4bdc5a788f12a1837321e5725030bee80933f2330b402ad41ea18d8943ff9dc4",
+    "reward-contract.json": "0439ab9b757e92ed1bae72c0d4cc0cf6374a3f508e76eda9aa18ecf9c4113d8e",
+    "reward-specs.jsonl": "2b4d1458982d2fa005a519ec8120d8abb71c022860921bde2dc0846eed9d833c",
+    "source-bindings.json": "900a66f672ea00bf90f09b0ef6adda022346d00d18bd2c49515319ecfad1fa06",
+    "split-manifest.json": "f2a4222cebb1a7ca2fc06613e6eca5109087a21be6b026b4227537cc0539f1ce"
+  },
+  "human_labels_present": false,
+  "origin_main_sha": "a6c0421f244c18a439a907d67b4869fe59f85792",
+  "private_data": false,
+  "protocol_id": "company-task-specialization/qwen4b-grpo-v1",
+  "schema_version": 1,
+  "test_count": 8,
+  "train_count": 24
+}

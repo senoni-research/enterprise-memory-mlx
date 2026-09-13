@@ -1,0 +1,1513 @@
+{
+  "algorithm": "family-preserving subset-sum enumeration, then seed-42 choice among coverage-valid partitions",
+  "assignment": {
+    "v3-date-allof-2": "test",
+    "v3-inv-anyof-2": "train",
+    "v3-multi-onb-inv": "train",
+    "v3-multi-po-inv": "test",
+    "v3-nest-sec-inv": "dev",
+    "v3-nest-sec-terms-inv": "train",
+    "v3-pay-cond-1": "dev",
+    "v3-po-allof-2": "train",
+    "v3-po-allof-4": "train",
+    "v3-po-allof-5": "train",
+    "v3-po-cond-1": "train",
+    "v4-cts4-pair-01": "test",
+    "v4-cts4-pair-02": "train",
+    "v4-cts4-pair-03": "train",
+    "v4-cts4-pair-04": "train",
+    "v4-cts4-pair-05": "test",
+    "v4-cts4-pair-06": "dev",
+    "v4-cts4-pair-07": "dev",
+    "v4-cts4-pair-08": "test"
+  },
+  "families": [
+    {
+      "case_ids": [
+        "CTS3-QUAL-001"
+      ],
+      "family_id": "v3-po-allof-5",
+      "pair_ids": [],
+      "size": 1,
+      "source": "v3",
+      "tags": [
+        "all_of",
+        "already_satisfied"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-002",
+        "CTS3-QUAL-005",
+        "CTS3-QUAL-006",
+        "CTS3-QUAL-007"
+      ],
+      "family_id": "v3-po-cond-1",
+      "pair_ids": [],
+      "size": 4,
+      "source": "v3",
+      "tags": [
+        "already_satisfied",
+        "attachment_not_completion",
+        "known_unmet",
+        "missing_information",
+        "single_remedy",
+        "unknown_not_unmet"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-003",
+        "CTS3-QUAL-004"
+      ],
+      "family_id": "v3-po-allof-2",
+      "pair_ids": [],
+      "size": 2,
+      "source": "v3",
+      "tags": [
+        "all_of",
+        "cumulative_requirements",
+        "known_unmet"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-008"
+      ],
+      "family_id": "v3-po-allof-4",
+      "pair_ids": [],
+      "size": 1,
+      "source": "v3",
+      "tags": [
+        "all_of",
+        "already_satisfied"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-009",
+        "CTS3-QUAL-010",
+        "CTS3-QUAL-011",
+        "CTS3-QUAL-012",
+        "CTS3-QUAL-013",
+        "CTS3-QUAL-016"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "pair_ids": [],
+      "size": 6,
+      "source": "v3",
+      "tags": [
+        "already_satisfied",
+        "alternative_remedies",
+        "any_of",
+        "both_alternatives_satisfied",
+        "exception_route",
+        "known_unmet",
+        "missing_information",
+        "po_route",
+        "recorded_not_verbal",
+        "unknown_not_unmet"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-014"
+      ],
+      "family_id": "v3-pay-cond-1",
+      "pair_ids": [],
+      "size": 1,
+      "source": "v3",
+      "tags": [
+        "known_unmet",
+        "single_remedy",
+        "temporal_state"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-015"
+      ],
+      "family_id": "v3-date-allof-2",
+      "pair_ids": [],
+      "size": 1,
+      "source": "v3",
+      "tags": [
+        "all_of",
+        "derived_deadline",
+        "missing_information"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-017",
+        "CTS3-QUAL-018",
+        "CTS3-QUAL-019"
+      ],
+      "family_id": "v3-multi-onb-inv",
+      "pair_ids": [],
+      "size": 3,
+      "source": "v3",
+      "tags": [
+        "all_of",
+        "alternative_remedies",
+        "any_of",
+        "cumulative_requirements",
+        "exception_route",
+        "multipart_decision"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-020"
+      ],
+      "family_id": "v3-multi-po-inv",
+      "pair_ids": [],
+      "size": 1,
+      "source": "v3",
+      "tags": [
+        "alternative_remedies",
+        "any_of",
+        "multipart_decision",
+        "single_remedy"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-021",
+        "CTS3-QUAL-022",
+        "CTS3-QUAL-023"
+      ],
+      "family_id": "v3-nest-sec-inv",
+      "pair_ids": [],
+      "size": 3,
+      "source": "v3",
+      "tags": [
+        "all_of",
+        "already_satisfied_security",
+        "any_of",
+        "both_alternatives_satisfied",
+        "nested_logic",
+        "separate_security_control"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS3-QUAL-024"
+      ],
+      "family_id": "v3-nest-sec-terms-inv",
+      "pair_ids": [],
+      "size": 1,
+      "source": "v3",
+      "tags": [
+        "all_of",
+        "already_satisfied_po",
+        "nested_logic",
+        "separate_security_control"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS4-FRESH-01A",
+        "CTS4-FRESH-01B"
+      ],
+      "family_id": "v4-cts4-pair-01",
+      "pair_ids": [
+        "CTS4-PAIR-01"
+      ],
+      "size": 2,
+      "source": "v4",
+      "tags": [
+        "attachment_absent",
+        "completion_only",
+        "established_fact",
+        "no_invented_requirement",
+        "unknown_fact"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS4-FRESH-02A",
+        "CTS4-FRESH-02B"
+      ],
+      "family_id": "v4-cts4-pair-02",
+      "pair_ids": [
+        "CTS4-PAIR-02"
+      ],
+      "size": 2,
+      "source": "v4",
+      "tags": [
+        "all_of",
+        "attachment_explicitly_required",
+        "attachment_present",
+        "completion_only",
+        "known_unmet"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS4-FRESH-03A",
+        "CTS4-FRESH-03B"
+      ],
+      "family_id": "v4-cts4-pair-03",
+      "pair_ids": [
+        "CTS4-PAIR-03"
+      ],
+      "size": 2,
+      "source": "v4",
+      "tags": [
+        "collective_completion",
+        "known_unmet",
+        "no_reopened_controls",
+        "unknown_fact"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS4-FRESH-04A",
+        "CTS4-FRESH-04B"
+      ],
+      "family_id": "v4-cts4-pair-04",
+      "pair_ids": [
+        "CTS4-PAIR-04"
+      ],
+      "size": 2,
+      "source": "v4",
+      "tags": [
+        "conflicting_records",
+        "established_fact",
+        "record_supersession",
+        "unknown_fact"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS4-FRESH-05A",
+        "CTS4-FRESH-05B"
+      ],
+      "family_id": "v4-cts4-pair-05",
+      "pair_ids": [
+        "CTS4-PAIR-05"
+      ],
+      "size": 2,
+      "source": "v4",
+      "tags": [
+        "authority_boundary",
+        "established_fact",
+        "requester_claim",
+        "unknown_fact"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS4-FRESH-06A",
+        "CTS4-FRESH-06B"
+      ],
+      "family_id": "v4-cts4-pair-06",
+      "pair_ids": [
+        "CTS4-PAIR-06"
+      ],
+      "size": 2,
+      "source": "v4",
+      "tags": [
+        "all_of",
+        "attachment_explicitly_required",
+        "attachment_present",
+        "completion_only",
+        "established_fact",
+        "unknown_fact"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS4-FRESH-07A",
+        "CTS4-FRESH-07B"
+      ],
+      "family_id": "v4-cts4-pair-07",
+      "pair_ids": [
+        "CTS4-PAIR-07"
+      ],
+      "size": 2,
+      "source": "v4",
+      "tags": [
+        "all_of",
+        "collective_completion",
+        "known_unmet",
+        "partial_completion",
+        "policy_scope",
+        "unknown_fact"
+      ]
+    },
+    {
+      "case_ids": [
+        "CTS4-FRESH-08A",
+        "CTS4-FRESH-08B"
+      ],
+      "family_id": "v4-cts4-pair-08",
+      "pair_ids": [
+        "CTS4-PAIR-08"
+      ],
+      "size": 2,
+      "source": "v4",
+      "tags": [
+        "attachment_absent",
+        "established_fact",
+        "no_invented_requirement",
+        "unknown_fact",
+        "verification_explicitly_required"
+      ]
+    }
+  ],
+  "pair_distribution": {
+    "dev": [
+      "CTS4-PAIR-06",
+      "CTS4-PAIR-07"
+    ],
+    "test": [
+      "CTS4-PAIR-01",
+      "CTS4-PAIR-05",
+      "CTS4-PAIR-08"
+    ],
+    "train": [
+      "CTS4-PAIR-02",
+      "CTS4-PAIR-03",
+      "CTS4-PAIR-04"
+    ]
+  },
+  "rows": [
+    {
+      "authorized_ids": [
+        "PROC-VEND-001"
+      ],
+      "case_id": "CTS3-QUAL-001",
+      "evaluation_tags": [
+        "already_satisfied",
+        "all_of"
+      ],
+      "family_id": "v3-po-allof-5",
+      "pair_id": null,
+      "prompt_sha256": "d5965d33e4fed390bee7eb11f17bf82651f355264fe973936a39f39bd7d4b123",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "670cd963a616b57adc2b944bacc16d852b85e6362640ea44b59958c9da596f25",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001"
+      ],
+      "case_id": "CTS3-QUAL-002",
+      "evaluation_tags": [
+        "known_unmet",
+        "single_remedy"
+      ],
+      "family_id": "v3-po-cond-1",
+      "pair_id": null,
+      "prompt_sha256": "0ca17c44228406e63046b1071c034f0264d645f7ebfa91c4b513879343e5527a",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "3d042f5678e363c02617baeadf6e92fc2d437789edd727abf162dc09e2a00c99",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001"
+      ],
+      "case_id": "CTS3-QUAL-003",
+      "evaluation_tags": [
+        "known_unmet",
+        "all_of",
+        "cumulative_requirements"
+      ],
+      "family_id": "v3-po-allof-2",
+      "pair_id": null,
+      "prompt_sha256": "1c5b00b4ab0e9e586b328f42a7d254141e197a0c4fd60522c772bdd50c67474f",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "9390249688073a30f468002d472550ac90762a9808ebe6058b9dec58ef8aa32f",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001"
+      ],
+      "case_id": "CTS3-QUAL-004",
+      "evaluation_tags": [
+        "known_unmet",
+        "all_of",
+        "cumulative_requirements"
+      ],
+      "family_id": "v3-po-allof-2",
+      "pair_id": null,
+      "prompt_sha256": "e71f4354a699279b1e69fd191b2d4042d6f6cf35410ca412ece2407b1c642d14",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "8489d10602a19a7b5e4426a28d6314a62e18ef1a4dc4424bf4c1d445a7b63e03",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001"
+      ],
+      "case_id": "CTS3-QUAL-005",
+      "evaluation_tags": [
+        "missing_information",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-po-cond-1",
+      "pair_id": null,
+      "prompt_sha256": "d9e4a445a1c0fc137a21a3943af155d70ff3ca4da2500e48ce4d3367a4db5ce5",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "866b2e20b9d6cdab8f76bcc9557500a1baaaebcd896f897322344c0bd02187aa",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001"
+      ],
+      "case_id": "CTS3-QUAL-006",
+      "evaluation_tags": [
+        "already_satisfied",
+        "attachment_not_completion"
+      ],
+      "family_id": "v3-po-cond-1",
+      "pair_id": null,
+      "prompt_sha256": "3bd0183920bc3b777ac3db58a83f0b8ae15ef01194e267d54233b9ba47f75f94",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "7ed5ffb6e71b5388959774c0494eb02ced96926041bc06fee3418699935a4294",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001"
+      ],
+      "case_id": "CTS3-QUAL-007",
+      "evaluation_tags": [
+        "known_unmet",
+        "single_remedy"
+      ],
+      "family_id": "v3-po-cond-1",
+      "pair_id": null,
+      "prompt_sha256": "cbc7e429e2bdecb03615d227a5972b2838c11e86dd0ae8b25735c638291674e7",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "0b039cd901bbb03145f7477685407e21b0c15da5cfcd3cac7277593ac54a3992",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001"
+      ],
+      "case_id": "CTS3-QUAL-008",
+      "evaluation_tags": [
+        "already_satisfied",
+        "all_of"
+      ],
+      "family_id": "v3-po-allof-4",
+      "pair_id": null,
+      "prompt_sha256": "1de5c63510d51d09ccb0d2dd792a520ce180ef13dd6bd8e80c25e9cebf3a3db3",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "2f7112504d1d256717db4987a86797cd67c5c99c9086d0fac7a2500cc0bdef88",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-009",
+      "evaluation_tags": [
+        "any_of",
+        "alternative_remedies",
+        "known_unmet"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "pair_id": null,
+      "prompt_sha256": "272fb9f2e6c5284445ab759b57f975670c22bfbc5b46a186c26ca9916294a196",
+      "request_item_ids": [
+        "invoice_processing"
+      ],
+      "row_sha256": "88d04d4c72a37966021161cf522b672f1016c5093321d140a516d36c6214e9c5",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-010",
+      "evaluation_tags": [
+        "any_of",
+        "already_satisfied",
+        "po_route"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "pair_id": null,
+      "prompt_sha256": "87ae880ed3e24cb4befd5fbf916a8f9b52357bcd4676d3d91eea2455ec25c7a0",
+      "request_item_ids": [
+        "invoice_processing"
+      ],
+      "row_sha256": "b093c17e7450263ae71169c06c2a756622732826c4ce7bd41305ec9e19be2064",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-011",
+      "evaluation_tags": [
+        "any_of",
+        "already_satisfied",
+        "exception_route"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "pair_id": null,
+      "prompt_sha256": "0f59b8f583898231998a5681bac5540e15799c7e6dda361ade00f16410361578",
+      "request_item_ids": [
+        "invoice_processing"
+      ],
+      "row_sha256": "b10988b154ffc1d72d475d5d8b21dd905f47ba02eae249b15cf88a5ba2d22613",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-012",
+      "evaluation_tags": [
+        "any_of",
+        "both_alternatives_satisfied"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "pair_id": null,
+      "prompt_sha256": "3939d50480a0dccbfb0ac55a7cbf202bb0e66c1ce873a2a970b3c5b9bbef6035",
+      "request_item_ids": [
+        "invoice_processing"
+      ],
+      "row_sha256": "835f6253e6e2c534cd0ed93cfc180c36ee58dde75d74702965f039122b2c9fd9",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-013",
+      "evaluation_tags": [
+        "any_of",
+        "alternative_remedies",
+        "recorded_not_verbal"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "pair_id": null,
+      "prompt_sha256": "5e2582fc8e81867333b144d873202c2c7588222d886b31eca7288f6264568c01",
+      "request_item_ids": [
+        "invoice_processing"
+      ],
+      "row_sha256": "f542a3e210c89a866336cddb3f506deea183e6a7ebf4654bcb562a79943282ee",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-014",
+      "evaluation_tags": [
+        "known_unmet",
+        "single_remedy",
+        "temporal_state"
+      ],
+      "family_id": "v3-pay-cond-1",
+      "pair_id": null,
+      "prompt_sha256": "6f569ff7485938afb162714cb0373f3ce9f139b0ff7facdb3f321d26282f31a2",
+      "request_item_ids": [
+        "invoice_payment"
+      ],
+      "row_sha256": "9bfc5ef08f530531a5482e1e7c0499805ffe302bf087f5ecad5c91c08bff0693",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "FIN-INV-002"
+      ],
+      "split": "dev",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-015",
+      "evaluation_tags": [
+        "missing_information",
+        "all_of",
+        "derived_deadline"
+      ],
+      "family_id": "v3-date-allof-2",
+      "pair_id": null,
+      "prompt_sha256": "85d8733c86c05c5c82ddf01bfd96e223fa447efe055c04ee89caa4562a219a4f",
+      "request_item_ids": [
+        "exact_payment_due_date"
+      ],
+      "row_sha256": "4e6976cdde9d4b8581d6535e7cb3c45b3596bc99afd80be180ba74b091a84bc6",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "FIN-INV-002"
+      ],
+      "split": "test",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-016",
+      "evaluation_tags": [
+        "missing_information",
+        "unknown_not_unmet",
+        "any_of"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "pair_id": null,
+      "prompt_sha256": "aed1728bd48cb4fc9718e5494c9861e66a7637ad17c5d9225c27a7397004666e",
+      "request_item_ids": [
+        "invoice_processing"
+      ],
+      "row_sha256": "63865b542429306e35042094a021ba84e1522db42a3cf0694d35fd022399959f",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-017",
+      "evaluation_tags": [
+        "multipart_decision",
+        "any_of",
+        "alternative_remedies"
+      ],
+      "family_id": "v3-multi-onb-inv",
+      "pair_id": null,
+      "prompt_sha256": "9fd5a22df890e808c9d481496d894e40e4f42e318049311b6b81cc63e5dbdc49",
+      "request_item_ids": [
+        "supplier_onboarding",
+        "invoice_processing"
+      ],
+      "row_sha256": "3e202beb2b17ae162db14c3cbf9caf25b461492f9fcca19d1769d75f1474ef3d",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-018",
+      "evaluation_tags": [
+        "multipart_decision",
+        "all_of",
+        "any_of",
+        "cumulative_requirements",
+        "alternative_remedies"
+      ],
+      "family_id": "v3-multi-onb-inv",
+      "pair_id": null,
+      "prompt_sha256": "cd4cf0f2cec4545cfbc7ab687b8766f21508a0c6aa3dc716decde0f1a5bfbf48",
+      "request_item_ids": [
+        "supplier_onboarding",
+        "invoice_processing"
+      ],
+      "row_sha256": "bac2dd789a2ca18c5d9cc2e5bf54490fbc65f5377f530b288e7e34589dcc131f",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-019",
+      "evaluation_tags": [
+        "multipart_decision",
+        "all_of",
+        "exception_route"
+      ],
+      "family_id": "v3-multi-onb-inv",
+      "pair_id": null,
+      "prompt_sha256": "af3232f43705249b83022f069ffb11c55ef694a04907deee38c27a4703e08ff8",
+      "request_item_ids": [
+        "supplier_onboarding",
+        "invoice_processing"
+      ],
+      "row_sha256": "039d98c28c13193eb5fdbd051a4aa4f7c527e41de087d7514be29f83dbdee052",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-020",
+      "evaluation_tags": [
+        "multipart_decision",
+        "single_remedy",
+        "any_of",
+        "alternative_remedies"
+      ],
+      "family_id": "v3-multi-po-inv",
+      "pair_id": null,
+      "prompt_sha256": "e5e1e0e690f80a9aafba29adebea59c6cd93d2f239e10ca2f3919bfc3132a133",
+      "request_item_ids": [
+        "purchase_order_issue",
+        "invoice_processing"
+      ],
+      "row_sha256": "43e1a9c3314323db965a877ce756e2933f895cb92cc6212934dfebafbdcb28d7",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "split": "test",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-021",
+      "evaluation_tags": [
+        "nested_logic",
+        "all_of",
+        "any_of",
+        "separate_security_control"
+      ],
+      "family_id": "v3-nest-sec-inv",
+      "pair_id": null,
+      "prompt_sha256": "35f50dbfa6ee1df703f1499b46026b0cd02c119aae8d8cd0addd8136bcf86d81",
+      "request_item_ids": [
+        "activate_supplier_and_process_invoice"
+      ],
+      "row_sha256": "0ac0c2e21f9668ba93f547aa138d038a46b3a6f6a503a665e993df05d89e5866",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "split": "dev",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-022",
+      "evaluation_tags": [
+        "nested_logic",
+        "any_of",
+        "already_satisfied_security"
+      ],
+      "family_id": "v3-nest-sec-inv",
+      "pair_id": null,
+      "prompt_sha256": "d6988b843d3d0f98f451bbcdcfa271e09cac2ce48278ea831064d95ce6f3f8f7",
+      "request_item_ids": [
+        "activate_supplier_and_process_invoice"
+      ],
+      "row_sha256": "58d616fca63be08f6f3c564c060e38648a9d5aa895c566ebfb5aa161e59a76d2",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "split": "dev",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-023",
+      "evaluation_tags": [
+        "nested_logic",
+        "both_alternatives_satisfied",
+        "separate_security_control"
+      ],
+      "family_id": "v3-nest-sec-inv",
+      "pair_id": null,
+      "prompt_sha256": "6fcb3d76ed5f9d05781f587475c061d884fc4a0c152947d16c268ecab09af916",
+      "request_item_ids": [
+        "activate_supplier_and_process_invoice"
+      ],
+      "row_sha256": "504e3d2235c10de6de12d724645a0d198c442b2e438a019fc8f6aeac170b52f2",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "split": "dev",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "case_id": "CTS3-QUAL-024",
+      "evaluation_tags": [
+        "nested_logic",
+        "all_of",
+        "already_satisfied_po",
+        "separate_security_control"
+      ],
+      "family_id": "v3-nest-sec-terms-inv",
+      "pair_id": null,
+      "prompt_sha256": "7235b03d4d8bc2f8a4846cbc59c95d86392793e901173bda6d1dbc2e65612866",
+      "request_item_ids": [
+        "activate_supplier_and_process_invoice"
+      ],
+      "row_sha256": "aa3ccf886e168b5823a6422a9720f83f90f73717ac2df1461d04bec442e3bc2c",
+      "source_protocol": "v3",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "FIN-INV-002"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "4bf1cb52ba829b34930eaf0e4ffce807bfca5d24f7dc8b73775891a2d4bb2483"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-01A-CLASS",
+        "WF-01A-SEC",
+        "DOC-01A-SEC",
+        "WF-01A-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-01A",
+      "evaluation_tags": [
+        "established_fact",
+        "attachment_absent",
+        "completion_only",
+        "no_invented_requirement"
+      ],
+      "family_id": "v4-cts4-pair-01",
+      "pair_id": "CTS4-PAIR-01",
+      "prompt_sha256": "2b29f809fccb2761b4e76ea56439dc5ee99eef612f7dfb8be25be263b102158c",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "1d1537ac34887f0f6bc0eebdbf19129eaff50dd96fb88c9ca31af12bd2dcbc01",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "test",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-01B-CLASS",
+        "WF-01B-SEC",
+        "DOC-01B-SEC",
+        "WF-01B-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-01B",
+      "evaluation_tags": [
+        "unknown_fact",
+        "attachment_absent",
+        "completion_only"
+      ],
+      "family_id": "v4-cts4-pair-01",
+      "pair_id": "CTS4-PAIR-01",
+      "prompt_sha256": "76fed741a7ad61c188196d1b313a900db37a4b67884a2bffdc5b6e60fd84c40e",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "141929330f98d00c815e8d624e8b25afd90f85c888f0a5bdce27f4cbc2938fb5",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "test",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-02A-CLASS",
+        "WF-02A-SEC",
+        "DOC-02A-SEC",
+        "WF-02A-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-02A",
+      "evaluation_tags": [
+        "known_unmet",
+        "attachment_present",
+        "completion_only"
+      ],
+      "family_id": "v4-cts4-pair-02",
+      "pair_id": "CTS4-PAIR-02",
+      "prompt_sha256": "2f3046092ee06b71c3048316822b8744d260ae39f1fa85a684257c8b3fcea963",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "6d2b4ff2032e7a1c46fde848e734eb2745ebded5ea4667e55e23f72dd4ade990",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "PROC-SEC-ATT-003",
+        "WF-02B-CLASS",
+        "WF-02B-SEC",
+        "DOC-02B-SEC",
+        "WF-02B-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-02B",
+      "evaluation_tags": [
+        "known_unmet",
+        "attachment_explicitly_required",
+        "all_of"
+      ],
+      "family_id": "v4-cts4-pair-02",
+      "pair_id": "CTS4-PAIR-02",
+      "prompt_sha256": "190edb6f856494ce24949d076e5995fe56ffc74385148d09b12d5d8a1f8bcd9e",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "56506634af0b8591316dbc3bc8a4e3a0f34b1be6f0bdf4b3728e8f07105d8caa",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "PROC-SEC-ATT-003"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-03A-CLASS",
+        "WF-03A-SEC",
+        "WF-03A-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-03A",
+      "evaluation_tags": [
+        "collective_completion",
+        "known_unmet",
+        "no_reopened_controls"
+      ],
+      "family_id": "v4-cts4-pair-03",
+      "pair_id": "CTS4-PAIR-03",
+      "prompt_sha256": "cf8c1e22441f309818d171770e54a1a9960c33fefb97c7dd3e9b6d5265296984",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "a0e2e268135526ba936cd3f7075a15f7559477b44ff731889f390d13a0b7c3c7",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-03B-CLASS",
+        "WF-03B-SEC",
+        "WF-03B-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-03B",
+      "evaluation_tags": [
+        "collective_completion",
+        "unknown_fact",
+        "no_reopened_controls"
+      ],
+      "family_id": "v4-cts4-pair-03",
+      "pair_id": "CTS4-PAIR-03",
+      "prompt_sha256": "8f9cd765cf29b1c35ea0cde396df216c5ff572cb20c5b19816590361a7725f6e",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "4ca59230e4f6e5dc18888a423d8df15929844a5bb631f262f03adab05746e933",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-04A-CLASS",
+        "WF-04A-SEC-1",
+        "WF-04A-SEC-2",
+        "WF-04A-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-04A",
+      "evaluation_tags": [
+        "conflicting_records",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-04",
+      "pair_id": "CTS4-PAIR-04",
+      "prompt_sha256": "f6a279ec544afdb026695310af45d65163820419989325df5373d9e56de4906e",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "0cd931890f0dc45a49a2f036428d4f99004335bd7476be20139da89f88d9dc00",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-04B-CLASS",
+        "WF-04B-SEC-OLD",
+        "WF-04B-SEC-NEW",
+        "WF-04B-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-04B",
+      "evaluation_tags": [
+        "record_supersession",
+        "established_fact"
+      ],
+      "family_id": "v4-cts4-pair-04",
+      "pair_id": "CTS4-PAIR-04",
+      "prompt_sha256": "5a767b02bb59b9d33f7ccab439696e9eafe3d46fc14c01a196045785fde95e05",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "ffee1d85d0a0d311e0d75c1d1ed6935c23b8fc263b6b260d6ea8ce53e004c31f",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "train",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-05A-CLASS",
+        "CLAIM-05A-SEC",
+        "WF-05A-SEC",
+        "WF-05A-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-05A",
+      "evaluation_tags": [
+        "authority_boundary",
+        "requester_claim",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-05",
+      "pair_id": "CTS4-PAIR-05",
+      "prompt_sha256": "c20b7e501f360070c7119f9d7744209b31ccddc7420688b514bc08415ade1b58",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "51b28121e7d7cd4edf89d40271c76397404220f4c6f0839fcf5b691f51e7e61e",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "test",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-05B-CLASS",
+        "WF-05B-SEC",
+        "CLAIM-05B-SEC",
+        "WF-05B-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-05B",
+      "evaluation_tags": [
+        "authority_boundary",
+        "requester_claim",
+        "established_fact"
+      ],
+      "family_id": "v4-cts4-pair-05",
+      "pair_id": "CTS4-PAIR-05",
+      "prompt_sha256": "2366e45531d2a2765ba62eaf5cf7ace28558c35b35bd9ed2c676d5fa150acfd7",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "b9dc165cc42f82a91d3c0eb49b7e9efef9d3f0566ebc496a48a003702626ede8",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "test",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-06A-CLASS",
+        "DOC-06A-SEC",
+        "WF-06A-SEC",
+        "WF-06A-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-06A",
+      "evaluation_tags": [
+        "attachment_present",
+        "unknown_fact",
+        "completion_only"
+      ],
+      "family_id": "v4-cts4-pair-06",
+      "pair_id": "CTS4-PAIR-06",
+      "prompt_sha256": "428b26736cf6a3fc735c55f5e77dfa0c46b1f2298bd41f743db7a5c0f80194a5",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "e5bf43e41458f53bd239e3db75685f19a523893e7dee63cd2f489f4910bf132a",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "dev",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "PROC-SEC-ATT-003",
+        "WF-06B-CLASS",
+        "WF-06B-SEC",
+        "DOC-06B-SEC",
+        "WF-06B-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-06B",
+      "evaluation_tags": [
+        "attachment_explicitly_required",
+        "established_fact",
+        "all_of"
+      ],
+      "family_id": "v4-cts4-pair-06",
+      "pair_id": "CTS4-PAIR-06",
+      "prompt_sha256": "5db2164a095d85a66e53bea6bd1aeba51c0cbeef6824d0b369cc7bda6013bfaa",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "08c0f75a121708b938dc8a5bedd6ee0823e3fadf16a1cf3de768d6c2380e5f5f",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "PROC-SEC-ATT-003"
+      ],
+      "split": "dev",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-07A-CLASS",
+        "WF-07A-SEC",
+        "WF-07A-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-07A",
+      "evaluation_tags": [
+        "collective_completion",
+        "policy_scope",
+        "known_unmet"
+      ],
+      "family_id": "v4-cts4-pair-07",
+      "pair_id": "CTS4-PAIR-07",
+      "prompt_sha256": "c4972d5964b39393c3064252a5c9149b286d2d7273192f1e6a967e08422187b7",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "a400f1f32b56780af1195192e3d7346af9bb9c2fab8c6834bbb279bb26573cd5",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "dev",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "WF-07B-SEC",
+        "WF-07B-PARTIAL",
+        "WF-07B-CLASS"
+      ],
+      "case_id": "CTS4-FRESH-07B",
+      "evaluation_tags": [
+        "partial_completion",
+        "unknown_fact",
+        "known_unmet",
+        "all_of"
+      ],
+      "family_id": "v4-cts4-pair-07",
+      "pair_id": "CTS4-PAIR-07",
+      "prompt_sha256": "0e56006a79536be465476900db69a6f198fe5aaed957eed95b1101576c045afe",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "b6a02d368961403a711234e983fccbe1595d9c2c79da9c0ac71d9436f5023610",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001"
+      ],
+      "split": "dev",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "PROC-SEC-VER-004",
+        "WF-08A-CLASS",
+        "WF-08A-SEC",
+        "WF-08A-VER",
+        "DOC-08A-SEC",
+        "WF-08A-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-08A",
+      "evaluation_tags": [
+        "verification_explicitly_required",
+        "unknown_fact",
+        "attachment_absent"
+      ],
+      "family_id": "v4-cts4-pair-08",
+      "pair_id": "CTS4-PAIR-08",
+      "prompt_sha256": "ae0c5c400d894382b27ae775c2cd3507cb07b86e14d38c0292f06e3f4123fdb3",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "f8ae84a39b10576d900fcdb5c9e2197ec95afb949a1f76c6934d99e6a9c9acd6",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "PROC-SEC-VER-004"
+      ],
+      "split": "test",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    },
+    {
+      "authorized_ids": [
+        "PROC-VEND-001",
+        "PROC-SEC-VER-004",
+        "WF-08B-CLASS",
+        "WF-08B-SEC",
+        "WF-08B-VER",
+        "DOC-08B-SEC",
+        "WF-08B-OTHER"
+      ],
+      "case_id": "CTS4-FRESH-08B",
+      "evaluation_tags": [
+        "verification_explicitly_required",
+        "established_fact",
+        "attachment_absent",
+        "no_invented_requirement"
+      ],
+      "family_id": "v4-cts4-pair-08",
+      "pair_id": "CTS4-PAIR-08",
+      "prompt_sha256": "50097ccae768e9c3bc22e34c4a01d616afc4bd703aec229c02caed2094c055b3",
+      "request_item_ids": [
+        "purchase_order_issue"
+      ],
+      "row_sha256": "fa077e32934d01aef882208b8a71c2077fb868c67bc8607d41d123a75c9b47aa",
+      "source_protocol": "v4",
+      "source_record_ids": [
+        "PROC-VEND-001",
+        "PROC-SEC-VER-004"
+      ],
+      "split": "test",
+      "system_prompt_sha256": "057b33b8760921c8954be442791c8a266eba834fcc940079d9e4b62383b8f4ca"
+    }
+  ],
+  "schema_version": 1,
+  "seed": 42,
+  "source_record_distribution": {
+    "dev": {
+      "FIN-INV-002": 4,
+      "PROC-SEC-ATT-003": 1,
+      "PROC-VEND-001": 7
+    },
+    "test": {
+      "FIN-INV-002": 2,
+      "PROC-SEC-VER-004": 2,
+      "PROC-VEND-001": 7
+    },
+    "train": {
+      "FIN-INV-002": 10,
+      "PROC-SEC-ATT-003": 1,
+      "PROC-VEND-001": 18
+    }
+  },
+  "tag_distribution": {
+    "dev": {
+      "all_of": 3,
+      "already_satisfied_security": 1,
+      "any_of": 2,
+      "attachment_explicitly_required": 1,
+      "attachment_present": 1,
+      "both_alternatives_satisfied": 1,
+      "collective_completion": 1,
+      "completion_only": 1,
+      "established_fact": 1,
+      "known_unmet": 3,
+      "nested_logic": 3,
+      "partial_completion": 1,
+      "policy_scope": 1,
+      "separate_security_control": 2,
+      "single_remedy": 1,
+      "temporal_state": 1,
+      "unknown_fact": 2
+    },
+    "test": {
+      "all_of": 1,
+      "alternative_remedies": 1,
+      "any_of": 1,
+      "attachment_absent": 4,
+      "authority_boundary": 2,
+      "completion_only": 2,
+      "derived_deadline": 1,
+      "established_fact": 3,
+      "missing_information": 1,
+      "multipart_decision": 1,
+      "no_invented_requirement": 2,
+      "requester_claim": 2,
+      "single_remedy": 1,
+      "unknown_fact": 3,
+      "verification_explicitly_required": 2
+    },
+    "train": {
+      "all_of": 8,
+      "already_satisfied": 5,
+      "already_satisfied_po": 1,
+      "alternative_remedies": 4,
+      "any_of": 8,
+      "attachment_explicitly_required": 1,
+      "attachment_not_completion": 1,
+      "attachment_present": 1,
+      "both_alternatives_satisfied": 1,
+      "collective_completion": 2,
+      "completion_only": 1,
+      "conflicting_records": 1,
+      "cumulative_requirements": 3,
+      "established_fact": 1,
+      "exception_route": 2,
+      "known_unmet": 8,
+      "missing_information": 2,
+      "multipart_decision": 3,
+      "nested_logic": 1,
+      "no_reopened_controls": 2,
+      "po_route": 1,
+      "record_supersession": 1,
+      "recorded_not_verbal": 1,
+      "separate_security_control": 1,
+      "single_remedy": 2,
+      "unknown_fact": 2,
+      "unknown_not_unmet": 2
+    }
+  }
+}

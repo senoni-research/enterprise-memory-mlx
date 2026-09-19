@@ -1,0 +1,39 @@
+{
+  "record_id": "company-task-specialization/qwen4b-typed-action-annotation-v2/applied-model-advisory-review",
+  "review_kind": "model_advisory_applied",
+  "reviewer_id": "GPT-6 Astra Pro (external, model_advisory)",
+  "reviewer_kind": "model_advisory",
+  "human_attested": false,
+  "training_authorized": false,
+  "input_packet_sha256": "8a63b877baa1f931793e3687999855f528fc7de48ca1f47ea7700d641766cb70",
+  "advisory_zip_sha256": "a7a7d4facbc00595d8b13b2420b25ec2e416ae956a9601537c5360d09b5d725d",
+  "advisory_file_sha256": {
+    "README.md": "534d85d1bbd349d2425f96e38e070f92191e0899ba5cec36765c01ea861cce3e",
+    "model_free_checks.py": "3894a01e081ddbc4af43b6311cf6cea5e84d168eee3831fd3ca93cb27a55e2cb",
+    "typed-action-correction-requests.json": "783ef933ad2969e92db555ced0d56703f916d479cf973b003dd9621ccb0c890c",
+    "typed-action-model-advisory-integrity.json": "c7e113c4145bb224bb73de61f63b4da756d2830c63f3a221e38c83237613ff7b",
+    "typed-action-model-advisory-summary.md": "fdea2e137cc7cc024ad99a5346efce14b44a8c89b298db9e3dd72e762e72deef",
+    "typed-action-model-advisory.jsonl": "312faaa8071ffe95887d62e2264c5d20079887e8ab02e2786f1f57950a085ad0"
+  },
+  "original_packet_modified": false,
+  "outcome_counts": {
+    "acceptable": 22,
+    "minor_revision": 2
+  },
+  "corrections_applied": [
+    "ROW-013",
+    "ROW-024"
+  ],
+  "contract_followups_applied": [
+    "CONTRACT-ARGUMENTS",
+    "CONTRACT-IDENTITY",
+    "CONTRACT-ACTION-RESULT",
+    "CONTRACT-CONFLICT-SCOPE",
+    "CONTRACT-SUPPORT-SPANS"
+  ],
+  "claim_boundary": "A target-annotation review, not an evaluation of a trained model, proof of a safe executor, or permission to train.",
+  "historical_stops": {
+    "grpo_v1": "stop_preflight",
+    "landscape_v1": "abandon_standard_grpo_for_current_dataset"
+  }
+}

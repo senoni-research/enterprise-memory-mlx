@@ -1,0 +1,48 @@
+{
+  "rows": [
+    {
+      "best_family_weighted_egr": 0.37468,
+      "eligible": false,
+      "family_weighted_egr_g4": 0.276684,
+      "family_weighted_egr_g8": 0.37468,
+      "fraction_valid_json": 0.902778,
+      "protocol_noise_fraction": 0.041667,
+      "provenance_hard_fail_rate": 0.107639,
+      "regime_id": "R0_CANONICAL",
+      "truncation_count": 0
+    },
+    {
+      "best_family_weighted_egr": 0.474798,
+      "eligible": false,
+      "family_weighted_egr_g4": 0.358131,
+      "family_weighted_egr_g8": 0.474798,
+      "fraction_valid_json": 0.902778,
+      "protocol_noise_fraction": 0.041667,
+      "provenance_hard_fail_rate": 0.107639,
+      "regime_id": "R1_TEMP_ONLY",
+      "truncation_count": 0
+    },
+    {
+      "best_family_weighted_egr": 0.395758,
+      "eligible": false,
+      "family_weighted_egr_g4": 0.267525,
+      "family_weighted_egr_g8": 0.395758,
+      "fraction_valid_json": 0.909722,
+      "protocol_noise_fraction": 0.041667,
+      "provenance_hard_fail_rate": 0.104167,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "truncation_count": 0
+    },
+    {
+      "best_family_weighted_egr": 0.404546,
+      "eligible": false,
+      "family_weighted_egr_g4": 0.297306,
+      "family_weighted_egr_g8": 0.404546,
+      "fraction_valid_json": 0.920139,
+      "protocol_noise_fraction": 0.083333,
+      "provenance_hard_fail_rate": 0.086806,
+      "regime_id": "R3_NATIVE_POLICY",
+      "truncation_count": 0
+    }
+  ]
+}

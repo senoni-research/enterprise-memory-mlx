@@ -1,0 +1,20 @@
+{
+  "completed_rollouts": 1152,
+  "diagnosis": "mostly saturated_high: gather harder/counterfactual training cases; no RL yet",
+  "gates": {
+    "family_weighted_egr": false,
+    "informative_cases": false,
+    "informative_families": false,
+    "no_truncation": false,
+    "provenance": false,
+    "reward_byte_identical": true,
+    "saturated_low_burden": false,
+    "signal_purity": false,
+    "v4_informative_families": false,
+    "valid_json": false
+  },
+  "job_plan_sha256": "7f4334580e223fb930bbb6418aa05fb56e4ef552de6b6412ce217ea4f37df6d0",
+  "recommended_g": null,
+  "selected_regime": null,
+  "status": "abandon_standard_grpo_for_current_dataset"
+}

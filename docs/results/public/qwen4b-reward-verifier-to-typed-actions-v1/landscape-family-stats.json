@@ -1,0 +1,884 @@
+{
+  "rows": [
+    {
+      "cases": [
+        "CTS3-QUAL-009",
+        "CTS3-QUAL-010",
+        "CTS3-QUAL-011",
+        "CTS3-QUAL-012",
+        "CTS3-QUAL-013",
+        "CTS3-QUAL-016"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "already_satisfied",
+        "alternative_remedies",
+        "any_of",
+        "both_alternatives_satisfied",
+        "exception_route",
+        "known_unmet",
+        "missing_information",
+        "po_route",
+        "recorded_not_verbal",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.666667,
+      "regime_id": "R0_CANONICAL",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-009",
+        "CTS3-QUAL-010",
+        "CTS3-QUAL-011",
+        "CTS3-QUAL-012",
+        "CTS3-QUAL-013",
+        "CTS3-QUAL-016"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "already_satisfied",
+        "alternative_remedies",
+        "any_of",
+        "both_alternatives_satisfied",
+        "exception_route",
+        "known_unmet",
+        "missing_information",
+        "po_route",
+        "recorded_not_verbal",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.055556,
+      "mean_egr_g8": 0.111111,
+      "perfect_saturation_burden": 0.652778,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-009",
+        "CTS3-QUAL-010",
+        "CTS3-QUAL-011",
+        "CTS3-QUAL-012",
+        "CTS3-QUAL-013",
+        "CTS3-QUAL-016"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "already_satisfied",
+        "alternative_remedies",
+        "any_of",
+        "both_alternatives_satisfied",
+        "exception_route",
+        "known_unmet",
+        "missing_information",
+        "po_route",
+        "recorded_not_verbal",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.666667,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-009",
+        "CTS3-QUAL-010",
+        "CTS3-QUAL-011",
+        "CTS3-QUAL-012",
+        "CTS3-QUAL-013",
+        "CTS3-QUAL-016"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "already_satisfied",
+        "alternative_remedies",
+        "any_of",
+        "both_alternatives_satisfied",
+        "exception_route",
+        "known_unmet",
+        "missing_information",
+        "po_route",
+        "recorded_not_verbal",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-inv-anyof-2",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.666667,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-017",
+        "CTS3-QUAL-018",
+        "CTS3-QUAL-019"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "alternative_remedies",
+        "any_of",
+        "cumulative_requirements",
+        "exception_route",
+        "multipart_decision"
+      ],
+      "family_id": "v3-multi-onb-inv",
+      "hard_zero_burden": 0.25,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.396633,
+      "mean_egr_g8": 0.554882,
+      "perfect_saturation_burden": 0.055556,
+      "regime_id": "R0_CANONICAL",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-017",
+        "CTS3-QUAL-018",
+        "CTS3-QUAL-019"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "alternative_remedies",
+        "any_of",
+        "cumulative_requirements",
+        "exception_route",
+        "multipart_decision"
+      ],
+      "family_id": "v3-multi-onb-inv",
+      "hard_zero_burden": 0.305555,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.30303,
+      "mean_egr_g8": 0.525253,
+      "perfect_saturation_burden": 0.111111,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-017",
+        "CTS3-QUAL-018",
+        "CTS3-QUAL-019"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "alternative_remedies",
+        "any_of",
+        "cumulative_requirements",
+        "exception_route",
+        "multipart_decision"
+      ],
+      "family_id": "v3-multi-onb-inv",
+      "hard_zero_burden": 0.166667,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.313131,
+      "mean_egr_g8": 0.333333,
+      "perfect_saturation_burden": 0.083333,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-017",
+        "CTS3-QUAL-018",
+        "CTS3-QUAL-019"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "alternative_remedies",
+        "any_of",
+        "cumulative_requirements",
+        "exception_route",
+        "multipart_decision"
+      ],
+      "family_id": "v3-multi-onb-inv",
+      "hard_zero_burden": 0.25,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.498317,
+      "mean_egr_g8": 0.636364,
+      "perfect_saturation_burden": 0.166667,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-024"
+      ],
+      "dominant_signal_source": "quality_signal",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied_po",
+        "nested_logic",
+        "separate_security_control"
+      ],
+      "family_id": "v3-nest-sec-terms-inv",
+      "hard_zero_burden": 0.833333,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.575758,
+      "mean_egr_g8": 0.909091,
+      "perfect_saturation_burden": 0.083333,
+      "regime_id": "R0_CANONICAL",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-024"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied_po",
+        "nested_logic",
+        "separate_security_control"
+      ],
+      "family_id": "v3-nest-sec-terms-inv",
+      "hard_zero_burden": 0.75,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.745455,
+      "mean_egr_g8": 0.981818,
+      "perfect_saturation_burden": 0.25,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-024"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied_po",
+        "nested_logic",
+        "separate_security_control"
+      ],
+      "family_id": "v3-nest-sec-terms-inv",
+      "hard_zero_burden": 0.916667,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.333333,
+      "mean_egr_g8": 0.666667,
+      "perfect_saturation_burden": 0.083333,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-024"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied_po",
+        "nested_logic",
+        "separate_security_control"
+      ],
+      "family_id": "v3-nest-sec-terms-inv",
+      "hard_zero_burden": 0.833333,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.575758,
+      "mean_egr_g8": 0.909091,
+      "perfect_saturation_burden": 0.166667,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-003",
+        "CTS3-QUAL-004"
+      ],
+      "dominant_signal_source": "quality_signal",
+      "evaluation_tags": [
+        "all_of",
+        "cumulative_requirements",
+        "known_unmet"
+      ],
+      "family_id": "v3-po-allof-2",
+      "hard_zero_burden": 0.416666,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.454545,
+      "mean_egr_g8": 0.787879,
+      "perfect_saturation_burden": 0.5,
+      "regime_id": "R0_CANONICAL",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-003",
+        "CTS3-QUAL-004"
+      ],
+      "dominant_signal_source": "quality_signal",
+      "evaluation_tags": [
+        "all_of",
+        "cumulative_requirements",
+        "known_unmet"
+      ],
+      "family_id": "v3-po-allof-2",
+      "hard_zero_burden": 0.25,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.767677,
+      "mean_egr_g8": 0.954546,
+      "perfect_saturation_burden": 0.625,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-003",
+        "CTS3-QUAL-004"
+      ],
+      "dominant_signal_source": "quality_signal",
+      "evaluation_tags": [
+        "all_of",
+        "cumulative_requirements",
+        "known_unmet"
+      ],
+      "family_id": "v3-po-allof-2",
+      "hard_zero_burden": 0.291666,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.751516,
+      "mean_egr_g8": 0.954546,
+      "perfect_saturation_burden": 0.583333,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-003",
+        "CTS3-QUAL-004"
+      ],
+      "dominant_signal_source": "quality_signal",
+      "evaluation_tags": [
+        "all_of",
+        "cumulative_requirements",
+        "known_unmet"
+      ],
+      "family_id": "v3-po-allof-2",
+      "hard_zero_burden": 0.25,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.646464,
+      "mean_egr_g8": 0.833333,
+      "perfect_saturation_burden": 0.666667,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-008"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied"
+      ],
+      "family_id": "v3-po-allof-4",
+      "hard_zero_burden": 0.5,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.939394,
+      "mean_egr_g8": 1.0,
+      "perfect_saturation_burden": 0.5,
+      "regime_id": "R0_CANONICAL",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-008"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied"
+      ],
+      "family_id": "v3-po-allof-4",
+      "hard_zero_burden": 0.333333,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.856566,
+      "mean_egr_g8": 0.99798,
+      "perfect_saturation_burden": 0.666667,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-008"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied"
+      ],
+      "family_id": "v3-po-allof-4",
+      "hard_zero_burden": 0.833333,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.575758,
+      "mean_egr_g8": 0.909091,
+      "perfect_saturation_burden": 0.166667,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-008"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied"
+      ],
+      "family_id": "v3-po-allof-4",
+      "hard_zero_burden": 0.416667,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.919192,
+      "mean_egr_g8": 1.0,
+      "perfect_saturation_burden": 0.583333,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-001"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied"
+      ],
+      "family_id": "v3-po-allof-5",
+      "hard_zero_burden": 1.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.0,
+      "regime_id": "R0_CANONICAL",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-001"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied"
+      ],
+      "family_id": "v3-po-allof-5",
+      "hard_zero_burden": 1.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.0,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-001"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied"
+      ],
+      "family_id": "v3-po-allof-5",
+      "hard_zero_burden": 1.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.0,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-001"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "already_satisfied"
+      ],
+      "family_id": "v3-po-allof-5",
+      "hard_zero_burden": 1.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.0,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-002",
+        "CTS3-QUAL-005",
+        "CTS3-QUAL-006",
+        "CTS3-QUAL-007"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "already_satisfied",
+        "attachment_not_completion",
+        "known_unmet",
+        "missing_information",
+        "single_remedy",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-po-cond-1",
+      "hard_zero_burden": 0.229167,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.400505,
+      "mean_egr_g8": 0.494949,
+      "perfect_saturation_burden": 0.583333,
+      "regime_id": "R0_CANONICAL",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-002",
+        "CTS3-QUAL-005",
+        "CTS3-QUAL-006",
+        "CTS3-QUAL-007"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "already_satisfied",
+        "attachment_not_completion",
+        "known_unmet",
+        "missing_information",
+        "single_remedy",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-po-cond-1",
+      "hard_zero_burden": 0.1875,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.565152,
+      "mean_egr_g8": 0.722727,
+      "perfect_saturation_burden": 0.583333,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-002",
+        "CTS3-QUAL-005",
+        "CTS3-QUAL-006",
+        "CTS3-QUAL-007"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "already_satisfied",
+        "attachment_not_completion",
+        "known_unmet",
+        "missing_information",
+        "single_remedy",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-po-cond-1",
+      "hard_zero_burden": 0.3125,
+      "informative_cases": 2,
+      "mean_egr_g4": 0.413636,
+      "mean_egr_g8": 0.639394,
+      "perfect_saturation_burden": 0.479166,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS3-QUAL-002",
+        "CTS3-QUAL-005",
+        "CTS3-QUAL-006",
+        "CTS3-QUAL-007"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "already_satisfied",
+        "attachment_not_completion",
+        "known_unmet",
+        "missing_information",
+        "single_remedy",
+        "unknown_not_unmet"
+      ],
+      "family_id": "v3-po-cond-1",
+      "hard_zero_burden": 0.270833,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.166666,
+      "mean_egr_g8": 0.333334,
+      "perfect_saturation_burden": 0.479167,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v3"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-02A",
+        "CTS4-FRESH-02B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "attachment_explicitly_required",
+        "attachment_present",
+        "completion_only",
+        "known_unmet"
+      ],
+      "family_id": "v4-cts4-pair-02",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.416666,
+      "regime_id": "R0_CANONICAL",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-02A",
+        "CTS4-FRESH-02B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "attachment_explicitly_required",
+        "attachment_present",
+        "completion_only",
+        "known_unmet"
+      ],
+      "family_id": "v4-cts4-pair-02",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.5,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-02A",
+        "CTS4-FRESH-02B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "attachment_explicitly_required",
+        "attachment_present",
+        "completion_only",
+        "known_unmet"
+      ],
+      "family_id": "v4-cts4-pair-02",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.458334,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-02A",
+        "CTS4-FRESH-02B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "all_of",
+        "attachment_explicitly_required",
+        "attachment_present",
+        "completion_only",
+        "known_unmet"
+      ],
+      "family_id": "v4-cts4-pair-02",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.416666,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-03A",
+        "CTS4-FRESH-03B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "collective_completion",
+        "known_unmet",
+        "no_reopened_controls",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-03",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.0,
+      "regime_id": "R0_CANONICAL",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-03A",
+        "CTS4-FRESH-03B"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "collective_completion",
+        "known_unmet",
+        "no_reopened_controls",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-03",
+      "hard_zero_burden": 0.083334,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.287879,
+      "mean_egr_g8": 0.454545,
+      "perfect_saturation_burden": 0.0,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-03A",
+        "CTS4-FRESH-03B"
+      ],
+      "dominant_signal_source": "safety_signal",
+      "evaluation_tags": [
+        "collective_completion",
+        "known_unmet",
+        "no_reopened_controls",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-03",
+      "hard_zero_burden": 0.083334,
+      "informative_cases": 1,
+      "mean_egr_g4": 0.287879,
+      "mean_egr_g8": 0.454545,
+      "perfect_saturation_burden": 0.0,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-03A",
+        "CTS4-FRESH-03B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "collective_completion",
+        "known_unmet",
+        "no_reopened_controls",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-03",
+      "hard_zero_burden": 0.041667,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.166666,
+      "mean_egr_g8": 0.333334,
+      "perfect_saturation_burden": 0.0,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-04A",
+        "CTS4-FRESH-04B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "conflicting_records",
+        "established_fact",
+        "record_supersession",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-04",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.5,
+      "regime_id": "R0_CANONICAL",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-04A",
+        "CTS4-FRESH-04B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "conflicting_records",
+        "established_fact",
+        "record_supersession",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-04",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.5,
+      "regime_id": "R1_TEMP_ONLY",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-04A",
+        "CTS4-FRESH-04B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "conflicting_records",
+        "established_fact",
+        "record_supersession",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-04",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.5,
+      "regime_id": "R2_NUCLEUS_OFF",
+      "source": "v4"
+    },
+    {
+      "cases": [
+        "CTS4-FRESH-04A",
+        "CTS4-FRESH-04B"
+      ],
+      "dominant_signal_source": "none",
+      "evaluation_tags": [
+        "conflicting_records",
+        "established_fact",
+        "record_supersession",
+        "unknown_fact"
+      ],
+      "family_id": "v4-cts4-pair-04",
+      "hard_zero_burden": 0.0,
+      "informative_cases": 0,
+      "mean_egr_g4": 0.0,
+      "mean_egr_g8": 0.0,
+      "perfect_saturation_burden": 0.5,
+      "regime_id": "R3_NATIVE_POLICY",
+      "source": "v4"
+    }
+  ]
+}

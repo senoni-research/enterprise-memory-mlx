@@ -1,0 +1,203 @@
+{
+  "annotation_id": "company-task-specialization/qwen4b-typed-action-annotation-v2",
+  "supersedes": "company-task-specialization/qwen4b-typed-action-annotation-v1",
+  "operations": {
+    "request_evidence": {
+      "arguments": {
+        "condition_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "source_record_id": {
+          "type": "string",
+          "min_length": 1
+        }
+      },
+      "meaning": null
+    },
+    "perform_unmet_control": {
+      "arguments": {
+        "condition_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "source_record_id": {
+          "type": "string",
+          "min_length": 1
+        }
+      },
+      "meaning": null
+    },
+    "correct_nonconformance": {
+      "arguments": {
+        "condition_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "source_record_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "artifact_kind": {
+          "type": "string",
+          "min_length": 1
+        }
+      },
+      "meaning": null
+    },
+    "record_completion": {
+      "arguments": {
+        "condition_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "source_record_id": {
+          "type": "string",
+          "min_length": 1
+        }
+      },
+      "meaning": null
+    },
+    "request_alternative_authorization": {
+      "arguments": {
+        "condition_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "source_record_id": {
+          "type": "string",
+          "min_length": 1
+        }
+      },
+      "meaning": null
+    },
+    "grant_or_waive": {
+      "arguments": {
+        "condition_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "source_record_id": {
+          "type": "string",
+          "min_length": 1
+        }
+      },
+      "meaning": null
+    },
+    "resolve_record_conflict": {
+      "arguments": {
+        "condition_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "source_record_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "conflicting_state_ids": {
+          "type": "list_of_strings",
+          "min_items": 2
+        }
+      },
+      "meaning": "Propose that an authoritative body reconcile conflicting supplied records. Both conflicting state IDs must be available to the checker. Does not grant the assessor power to edit or adjudicate records."
+    },
+    "refer_to_source": {
+      "arguments": {
+        "source_record_id": {
+          "type": "string",
+          "min_length": 1
+        }
+      },
+      "meaning": null
+    }
+  },
+  "operation_argument_schemas": {
+    "request_evidence": [
+      "condition_id",
+      "source_record_id"
+    ],
+    "perform_unmet_control": [
+      "condition_id",
+      "source_record_id"
+    ],
+    "correct_nonconformance": [
+      "artifact_kind",
+      "condition_id",
+      "source_record_id"
+    ],
+    "record_completion": [
+      "condition_id",
+      "source_record_id"
+    ],
+    "request_alternative_authorization": [
+      "condition_id",
+      "source_record_id"
+    ],
+    "grant_or_waive": [
+      "condition_id",
+      "source_record_id"
+    ],
+    "resolve_record_conflict": [
+      "condition_id",
+      "conflicting_state_ids",
+      "source_record_id"
+    ],
+    "refer_to_source": [
+      "source_record_id"
+    ]
+  },
+  "condition_ids": [
+    "identity_check_complete",
+    "bank_check_complete",
+    "sanctions_check_complete",
+    "conflict_check_complete",
+    "bank_approval_not_by_requester",
+    "security_questionnaire_complete",
+    "data_processing_terms_signed",
+    "baseline_checks_complete",
+    "approved_purchase_order_quoted",
+    "recorded_procurement_exception",
+    "all_onboarding_controls_complete",
+    "questionnaire_pdf_attached",
+    "all_other_applicable_controls_complete"
+  ],
+  "decision_meanings": {
+    "proceed": "the requested action is permitted now and no stated control remains unmet",
+    "do_not_proceed": "the requested action is prohibited or blocked by a known unmet control",
+    "needs_action": "an operational action or deadline must be executed, rather than approved",
+    "needs_information": "request facts are unknown and needed to decide under available policy",
+    "refer_to_source": "the answer requires an absent, live, or restricted authoritative source"
+  },
+  "condition_status": [
+    "met",
+    "unmet",
+    "unknown",
+    "conflicting",
+    "not_applicable"
+  ],
+  "authorities": [
+    "authorized_workflow_record",
+    "workflow_status_observation",
+    "document_observation",
+    "requester_claim",
+    "request_fact",
+    "none"
+  ],
+  "artifact_kinds": [
+    "invoice",
+    "questionnaire_pdf",
+    "not_applicable"
+  ],
+  "state_authority_guide": {
+    "authorized_workflow_record": "Authenticated workflow state. Treat the recorded fact as established unless another unsuperseded authorized record conflicts with it.",
+    "workflow_status_observation": "Authenticated observation of the workflow field. A stated absence of status means that condition is unresolved, not complete or incomplete.",
+    "requester_claim": "Unverified requester statement. Do not treat it as authenticated workflow state unless the supplied policy expressly permits self-attestation.",
+    "document_observation": "Establishes only whether the named document is available; it does not by itself establish completion unless the supplied policy says so."
+  },
+  "outputs_are_proposed_actions_only": true,
+  "action_result_boundary": "Every remedy in these targets is a proposed next action only. A requested action does not establish its desired outcome and does not authorize the assessor to change records. Requesting an exception is not recording one; a negative answer on one unknown any_of branch does not resolve the other; an evidence request may return unmet or conflicting status rather than permission to proceed. A later executor or evaluator must check resulting condition states rather than treating requests as completed policy conditions.",
+  "requested_actions_do_not_establish_outcomes": true,
+  "assessor_record_change_authority": false,
+  "human_attested": false,
+  "training_authorized": false
+}

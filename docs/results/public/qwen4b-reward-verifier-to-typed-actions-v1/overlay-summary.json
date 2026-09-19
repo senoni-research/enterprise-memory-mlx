@@ -1,0 +1,117 @@
+{
+  "counts": {
+    "action_meaning_not_assessed": 1152,
+    "exact_decision_mismatch": 303,
+    "invented_citation": 12,
+    "json_syntax_failure": 28,
+    "old_provenance_hard_fail": 117,
+    "omitted_alternatives": 0,
+    "original_reward_one": 486,
+    "original_truncated": 0,
+    "positive_provenance_success": 1035,
+    "remedy_structure_mismatch": 504,
+    "request_item_coverage_failure": 0,
+    "rescored_reward_unchanged": 1152,
+    "reward_one_with_omitted_alternatives": 0,
+    "reward_one_with_structural_contradiction": 0,
+    "schema_failure": 77,
+    "source_membership_not_assessable": 105,
+    "unauthorized_source_id_use": 12
+  },
+  "denominators": {
+    "all_outputs": 1152,
+    "assessable_remedy_structure": 1047,
+    "assessable_request_item_coverage": 1047,
+    "assessable_source_membership": 1047,
+    "original_reward_one": 486
+  },
+  "diagnosis_id": "company-task-specialization/qwen4b-grpo-verifier-diagnosis-v1",
+  "historical_stops": {
+    "grpo_v1": "stop_preflight",
+    "landscape_v1": "abandon_standard_grpo_for_current_dataset"
+  },
+  "n_expected": 1152,
+  "n_outputs": 1152,
+  "observations": {
+    "landscape_no_truncation_gate": {
+      "frozen_gate_value": false,
+      "note": "The landscape fail-closed every viability gate except reward_byte_identical after no regime was eligible. That false gate is not an observed truncation failure.",
+      "status": "not_evaluated_due_to_ineligibility"
+    },
+    "truncation": {
+      "n_outputs": 1152,
+      "n_truncated": 0,
+      "note": "Observed zero truncation is not a truncation failure merely because the landscape aggregate decision failed.",
+      "status": "observed_pass"
+    }
+  },
+  "old_provenance_reason_prefixes": {
+    "parse": 105,
+    "provenance": 12
+  },
+  "original_case_classifications": {
+    "INFORMATIVE": 32,
+    "MIXED_UNCLASSIFIED": 28,
+    "PROTOCOL_NOISY": 5,
+    "SATURATED_HIGH": 26,
+    "SATURATED_LOW": 5
+  },
+  "original_classifications_by_regime": {
+    "R0_CANONICAL": {
+      "INFORMATIVE": 7,
+      "MIXED_UNCLASSIFIED": 8,
+      "PROTOCOL_NOISY": 1,
+      "SATURATED_HIGH": 7,
+      "SATURATED_LOW": 1
+    },
+    "R1_TEMP_ONLY": {
+      "INFORMATIVE": 10,
+      "MIXED_UNCLASSIFIED": 6,
+      "PROTOCOL_NOISY": 1,
+      "SATURATED_HIGH": 6,
+      "SATURATED_LOW": 1
+    },
+    "R2_NUCLEUS_OFF": {
+      "INFORMATIVE": 8,
+      "MIXED_UNCLASSIFIED": 7,
+      "PROTOCOL_NOISY": 1,
+      "SATURATED_HIGH": 7,
+      "SATURATED_LOW": 1
+    },
+    "R3_NATIVE_POLICY": {
+      "INFORMATIVE": 7,
+      "MIXED_UNCLASSIFIED": 7,
+      "PROTOCOL_NOISY": 2,
+      "SATURATED_HIGH": 6,
+      "SATURATED_LOW": 2
+    }
+  },
+  "overlaps": {
+    "exact_decision_mismatch+remedy_structure_mismatch": 246,
+    "json_syntax_failure+exact_decision_mismatch": 0,
+    "json_syntax_failure+remedy_structure_mismatch": 0,
+    "json_syntax_failure+request_item_coverage_failure": 0,
+    "json_syntax_failure+schema_failure": 0,
+    "json_syntax_failure+unauthorized_source_id_use": 0,
+    "request_item_coverage_failure+exact_decision_mismatch": 0,
+    "request_item_coverage_failure+remedy_structure_mismatch": 0,
+    "request_item_coverage_failure+unauthorized_source_id_use": 0,
+    "schema_failure+exact_decision_mismatch": 0,
+    "schema_failure+remedy_structure_mismatch": 0,
+    "schema_failure+request_item_coverage_failure": 0,
+    "schema_failure+unauthorized_source_id_use": 0,
+    "unauthorized_source_id_use+exact_decision_mismatch": 7,
+    "unauthorized_source_id_use+remedy_structure_mismatch": 11
+  },
+  "parse_status_counts": {
+    "invalid_remedy": 77,
+    "malformed_json": 28,
+    "valid": 1047
+  },
+  "regime_eligibility_reinterpreted": false,
+  "reward_one_with_action_nodes": 260,
+  "reward_one_without_action_nodes": 226,
+  "semantic_correctness_inferred": false,
+  "source_scores": "artifacts/qwen4b-grpo-landscape-v1/run-20260914T153149Z/scores.jsonl",
+  "winner_selected": false
+}

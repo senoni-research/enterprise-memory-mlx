@@ -1,0 +1,41 @@
+{
+  "base_only": true,
+  "claim_boundary": {
+    "generation_only": true,
+    "no_adapter": true,
+    "train_only": true
+  },
+  "master_seed": 42,
+  "meaningful_delta": 0.1,
+  "model": {
+    "id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b"
+  },
+  "optimizer": false,
+  "origin_main_sha": "a6c0421f244c18a439a907d67b4869fe59f85792",
+  "parent_protocol_id": "company-task-specialization/qwen4b-grpo-v1",
+  "planned_jobs": 1152,
+  "protocol_id": "company-task-specialization/qwen4b-grpo-landscape-v1",
+  "regimes": {
+    "R0_CANONICAL": {
+      "temperature": 0.8,
+      "top_p": 0.95
+    },
+    "R1_TEMP_ONLY": {
+      "temperature": 1.0,
+      "top_p": 0.95
+    },
+    "R2_NUCLEUS_OFF": {
+      "temperature": 0.8,
+      "top_p": 1.0
+    },
+    "R3_NATIVE_POLICY": {
+      "temperature": 1.0,
+      "top_p": 1.0
+    }
+  },
+  "replicates": 12,
+  "reward_unchanged": true,
+  "schema_version": 1,
+  "v1_commit": "9056a272ed641632885158cf4f51b7d4029c8274"
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ROW-013",
+    "case_id": "CTS3-QUAL-013",
+    "field": "condition_states.recorded_procurement_exception.observation_authority",
+    "old_value": "requester_claim",
+    "new_value": "request_fact",
+    "training_target_changed": false,
+    "reason": "The explicit narrated absence of a recorded exception, not the requester's verbal-agreement claim, supports the unmet predicate."
+  },
+  {
+    "id": "ROW-024",
+    "case_id": "CTS3-QUAL-024",
+    "field": "condition_states.recorded_procurement_exception.status",
+    "old_value": "unmet",
+    "new_value": "unknown",
+    "training_target_changed": false,
+    "reason": "The facts establish PO-551 but not absence of an exception. The alternate route is unnecessary, so no new blocker or information request is created."
+  }
+]

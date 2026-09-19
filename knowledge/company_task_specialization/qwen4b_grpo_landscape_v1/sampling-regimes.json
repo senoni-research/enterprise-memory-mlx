@@ -1,0 +1,27 @@
+{
+  "order": [
+    "R0_CANONICAL",
+    "R1_TEMP_ONLY",
+    "R2_NUCLEUS_OFF",
+    "R3_NATIVE_POLICY"
+  ],
+  "regimes": {
+    "R0_CANONICAL": {
+      "temperature": 0.8,
+      "top_p": 0.95
+    },
+    "R1_TEMP_ONLY": {
+      "temperature": 1.0,
+      "top_p": 0.95
+    },
+    "R2_NUCLEUS_OFF": {
+      "temperature": 0.8,
+      "top_p": 1.0
+    },
+    "R3_NATIVE_POLICY": {
+      "temperature": 1.0,
+      "top_p": 1.0
+    }
+  },
+  "replicates": 12
+}

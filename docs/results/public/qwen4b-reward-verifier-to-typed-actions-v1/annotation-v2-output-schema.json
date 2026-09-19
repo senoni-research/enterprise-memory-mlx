@@ -1,0 +1,1096 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "company-task-specialization/qwen4b-typed-action-annotation-v2/answer-blind-closed-output",
+  "title": "Typed-action operational assessment (answer-blind, closed)",
+  "description": "Closed operation-specific arguments and condition-reference objects. Structure and vocabulary only. It must not encode the correct decision, condition status, only-the-correct remedy, or only the safe action for a particular case. A syntactically admissible but substantively wrong choice remains possible and is rejected by evaluation, not by this grammar.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assessments"
+  ],
+  "properties": {
+    "assessments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "request_item_id",
+          "decision",
+          "current_blockers",
+          "missing_information",
+          "exceptions",
+          "remedy",
+          "supporting_source_ids"
+        ],
+        "properties": {
+          "request_item_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decision": {
+            "enum": [
+              "do_not_proceed",
+              "needs_action",
+              "needs_information",
+              "proceed",
+              "refer_to_source"
+            ]
+          },
+          "current_blockers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "condition_id",
+                "source_record_id"
+              ],
+              "properties": {
+                "condition_id": {
+                  "enum": [
+                    "identity_check_complete",
+                    "bank_check_complete",
+                    "sanctions_check_complete",
+                    "conflict_check_complete",
+                    "bank_approval_not_by_requester",
+                    "security_questionnaire_complete",
+                    "data_processing_terms_signed",
+                    "baseline_checks_complete",
+                    "approved_purchase_order_quoted",
+                    "recorded_procurement_exception",
+                    "all_onboarding_controls_complete",
+                    "questionnaire_pdf_attached",
+                    "all_other_applicable_controls_complete"
+                  ]
+                },
+                "source_record_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "missing_information": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "condition_id"
+              ],
+              "properties": {
+                "condition_id": {
+                  "enum": [
+                    "identity_check_complete",
+                    "bank_check_complete",
+                    "sanctions_check_complete",
+                    "conflict_check_complete",
+                    "bank_approval_not_by_requester",
+                    "security_questionnaire_complete",
+                    "data_processing_terms_signed",
+                    "baseline_checks_complete",
+                    "approved_purchase_order_quoted",
+                    "recorded_procurement_exception",
+                    "all_onboarding_controls_complete",
+                    "questionnaire_pdf_attached",
+                    "all_other_applicable_controls_complete"
+                  ]
+                }
+              }
+            }
+          },
+          "exceptions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "condition_id",
+                "recorded_exception_id"
+              ],
+              "properties": {
+                "condition_id": {
+                  "enum": [
+                    "identity_check_complete",
+                    "bank_check_complete",
+                    "sanctions_check_complete",
+                    "conflict_check_complete",
+                    "bank_approval_not_by_requester",
+                    "security_questionnaire_complete",
+                    "data_processing_terms_signed",
+                    "baseline_checks_complete",
+                    "approved_purchase_order_quoted",
+                    "recorded_procurement_exception",
+                    "all_onboarding_controls_complete",
+                    "questionnaire_pdf_attached",
+                    "all_other_applicable_controls_complete"
+                  ]
+                },
+                "recorded_exception_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "remedy": {
+            "type": "null",
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "request_evidence"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/request_evidence_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "perform_unmet_control"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/perform_unmet_control_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "correct_nonconformance"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/correct_nonconformance_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "record_completion"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/record_completion_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "request_alternative_authorization"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/request_alternative_authorization_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "grant_or_waive"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/grant_or_waive_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "resolve_record_conflict"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/resolve_record_conflict_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "refer_to_source"
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/refer_to_source_arguments"
+                  }
+                }
+              },
+              {
+                "$ref": "#/$defs/group_node"
+              }
+            ]
+          },
+          "supporting_source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "request_evidence_arguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "source_record_id"
+      ],
+      "properties": {
+        "condition_id": {
+          "enum": [
+            "identity_check_complete",
+            "bank_check_complete",
+            "sanctions_check_complete",
+            "conflict_check_complete",
+            "bank_approval_not_by_requester",
+            "security_questionnaire_complete",
+            "data_processing_terms_signed",
+            "baseline_checks_complete",
+            "approved_purchase_order_quoted",
+            "recorded_procurement_exception",
+            "all_onboarding_controls_complete",
+            "questionnaire_pdf_attached",
+            "all_other_applicable_controls_complete"
+          ]
+        },
+        "source_record_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "perform_unmet_control_arguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "source_record_id"
+      ],
+      "properties": {
+        "condition_id": {
+          "enum": [
+            "identity_check_complete",
+            "bank_check_complete",
+            "sanctions_check_complete",
+            "conflict_check_complete",
+            "bank_approval_not_by_requester",
+            "security_questionnaire_complete",
+            "data_processing_terms_signed",
+            "baseline_checks_complete",
+            "approved_purchase_order_quoted",
+            "recorded_procurement_exception",
+            "all_onboarding_controls_complete",
+            "questionnaire_pdf_attached",
+            "all_other_applicable_controls_complete"
+          ]
+        },
+        "source_record_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "correct_nonconformance_arguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "source_record_id",
+        "artifact_kind"
+      ],
+      "properties": {
+        "condition_id": {
+          "enum": [
+            "identity_check_complete",
+            "bank_check_complete",
+            "sanctions_check_complete",
+            "conflict_check_complete",
+            "bank_approval_not_by_requester",
+            "security_questionnaire_complete",
+            "data_processing_terms_signed",
+            "baseline_checks_complete",
+            "approved_purchase_order_quoted",
+            "recorded_procurement_exception",
+            "all_onboarding_controls_complete",
+            "questionnaire_pdf_attached",
+            "all_other_applicable_controls_complete"
+          ]
+        },
+        "source_record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_kind": {
+          "enum": [
+            "invoice",
+            "questionnaire_pdf",
+            "not_applicable"
+          ]
+        }
+      }
+    },
+    "record_completion_arguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "source_record_id"
+      ],
+      "properties": {
+        "condition_id": {
+          "enum": [
+            "identity_check_complete",
+            "bank_check_complete",
+            "sanctions_check_complete",
+            "conflict_check_complete",
+            "bank_approval_not_by_requester",
+            "security_questionnaire_complete",
+            "data_processing_terms_signed",
+            "baseline_checks_complete",
+            "approved_purchase_order_quoted",
+            "recorded_procurement_exception",
+            "all_onboarding_controls_complete",
+            "questionnaire_pdf_attached",
+            "all_other_applicable_controls_complete"
+          ]
+        },
+        "source_record_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "request_alternative_authorization_arguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "source_record_id"
+      ],
+      "properties": {
+        "condition_id": {
+          "enum": [
+            "identity_check_complete",
+            "bank_check_complete",
+            "sanctions_check_complete",
+            "conflict_check_complete",
+            "bank_approval_not_by_requester",
+            "security_questionnaire_complete",
+            "data_processing_terms_signed",
+            "baseline_checks_complete",
+            "approved_purchase_order_quoted",
+            "recorded_procurement_exception",
+            "all_onboarding_controls_complete",
+            "questionnaire_pdf_attached",
+            "all_other_applicable_controls_complete"
+          ]
+        },
+        "source_record_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "grant_or_waive_arguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "source_record_id"
+      ],
+      "properties": {
+        "condition_id": {
+          "enum": [
+            "identity_check_complete",
+            "bank_check_complete",
+            "sanctions_check_complete",
+            "conflict_check_complete",
+            "bank_approval_not_by_requester",
+            "security_questionnaire_complete",
+            "data_processing_terms_signed",
+            "baseline_checks_complete",
+            "approved_purchase_order_quoted",
+            "recorded_procurement_exception",
+            "all_onboarding_controls_complete",
+            "questionnaire_pdf_attached",
+            "all_other_applicable_controls_complete"
+          ]
+        },
+        "source_record_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "resolve_record_conflict_arguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "source_record_id"
+      ],
+      "properties": {
+        "condition_id": {
+          "enum": [
+            "identity_check_complete",
+            "bank_check_complete",
+            "sanctions_check_complete",
+            "conflict_check_complete",
+            "bank_approval_not_by_requester",
+            "security_questionnaire_complete",
+            "data_processing_terms_signed",
+            "baseline_checks_complete",
+            "approved_purchase_order_quoted",
+            "recorded_procurement_exception",
+            "all_onboarding_controls_complete",
+            "questionnaire_pdf_attached",
+            "all_other_applicable_controls_complete"
+          ]
+        },
+        "source_record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conflicting_state_ids": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "refer_to_source_arguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_record_id"
+      ],
+      "properties": {
+        "source_record_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "group_node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_type",
+        "operator",
+        "options"
+      ],
+      "properties": {
+        "node_type": {
+          "const": "group"
+        },
+        "operator": {
+          "enum": [
+            "any_of",
+            "all_of"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "request_evidence"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/request_evidence_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "perform_unmet_control"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/perform_unmet_control_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "correct_nonconformance"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/correct_nonconformance_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "record_completion"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/record_completion_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "request_alternative_authorization"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/request_alternative_authorization_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "grant_or_waive"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/grant_or_waive_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "condition_id",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "resolve_record_conflict"
+                  },
+                  "condition_id": {
+                    "enum": [
+                      "identity_check_complete",
+                      "bank_check_complete",
+                      "sanctions_check_complete",
+                      "conflict_check_complete",
+                      "bank_approval_not_by_requester",
+                      "security_questionnaire_complete",
+                      "data_processing_terms_signed",
+                      "baseline_checks_complete",
+                      "approved_purchase_order_quoted",
+                      "recorded_procurement_exception",
+                      "all_onboarding_controls_complete",
+                      "questionnaire_pdf_attached",
+                      "all_other_applicable_controls_complete"
+                    ]
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/resolve_record_conflict_arguments"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "node_type",
+                  "operation",
+                  "arguments",
+                  "source_record_id"
+                ],
+                "properties": {
+                  "node_type": {
+                    "const": "action"
+                  },
+                  "operation": {
+                    "const": "refer_to_source"
+                  },
+                  "source_record_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "$ref": "#/$defs/refer_to_source_arguments"
+                  }
+                }
+              },
+              {
+                "$ref": "#/$defs/group_node"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "must_not_encode": [
+    "the correct current decision",
+    "the correct condition status",
+    "only the correct remedy",
+    "only the safe action for a particular case"
+  ],
+  "action_result_boundary": "Every remedy in these targets is a proposed next action only. A requested action does not establish its desired outcome and does not authorize the assessor to change records. Requesting an exception is not recording one; a negative answer on one unknown any_of branch does not resolve the other; an evidence request may return unmet or conflicting status rather than permission to proceed. A later executor or evaluator must check resulting condition states rather than treating requests as completed policy conditions."
+}

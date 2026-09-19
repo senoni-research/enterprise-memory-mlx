@@ -1,0 +1,43 @@
+{
+  "annotation_id": "company-task-specialization/qwen4b-typed-action-annotation-v2",
+  "compared": "company-task-specialization/qwen4b-typed-action-annotation-v1",
+  "training_targets_identical": true,
+  "current_decisions_unchanged": true,
+  "essential_action_mappings_unchanged": true,
+  "mapping_only_changes": [
+    {
+      "case_id": "CTS3-QUAL-013",
+      "correction_ids": [
+        "ROW-013"
+      ],
+      "changed_fields": [
+        {
+          "field": "condition_states.recorded_procurement_exception.observation_authority",
+          "old_value": "requester_claim",
+          "new_value": "request_fact",
+          "training_target_changed": false
+        }
+      ]
+    },
+    {
+      "case_id": "CTS3-QUAL-024",
+      "correction_ids": [
+        "ROW-024"
+      ],
+      "changed_fields": [
+        {
+          "field": "condition_states.recorded_procurement_exception.status",
+          "old_value": "unmet",
+          "new_value": "unknown",
+          "training_target_changed": false
+        }
+      ]
+    }
+  ],
+  "schema_changed": true,
+  "schema_change_summary": "Closed operation-specific argument objects, closed blocker/information/exception objects, duplicate-request and inconsistent-ID structural checks, and the action-result boundary statement.",
+  "catalogue_additions": [
+    "resolve_record_conflict"
+  ],
+  "grammar_encoding_correct_choices": false
+}

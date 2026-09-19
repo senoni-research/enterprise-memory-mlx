@@ -1,0 +1,16 @@
+{
+  "files": {
+    "protocol.json": "acc3777141b3cf05bf9f528fc5e09dfcf0d0b6cbb7ce4861a9fae5db34b9e256",
+    "sampling-regimes.json": "2e628f07a2e09269e59e5d42dc53cbe244c6d51e881a948362b062be70735a48",
+    "source-bindings.json": "08790c18f18693288c36a3466ec030dc672722b4590a87e33a47bf3e6817a10e"
+  },
+  "parent_v1_files": {
+    "protocol.json": "4bdc5a788f12a1837321e5725030bee80933f2330b402ad41ea18d8943ff9dc4",
+    "reward-contract.json": "0439ab9b757e92ed1bae72c0d4cc0cf6374a3f508e76eda9aa18ecf9c4113d8e",
+    "reward-specs.jsonl": "2b4d1458982d2fa005a519ec8120d8abb71c022860921bde2dc0846eed9d833c",
+    "source-bindings.json": "900a66f672ea00bf90f09b0ef6adda022346d00d18bd2c49515319ecfad1fa06",
+    "split-manifest.json": "f2a4222cebb1a7ca2fc06613e6eca5109087a21be6b026b4227537cc0539f1ce"
+  },
+  "protocol_id": "company-task-specialization/qwen4b-grpo-landscape-v1",
+  "schema_version": 1
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="230" viewBox="0 0 360 230">
+<text x="12" y="20">family-unweighted mean EGR G4 vs G8</text>
+<text x="12" y="50">R0_CANONICAL</text>
+<rect x="160" y="38" width="34.8" height="10" fill="#26a"/>
+<rect x="160" y="52" width="47.5" height="10" fill="#d73"/>
+<text x="12" y="90">R1_TEMP_ONLY</text>
+<rect x="160" y="78" width="48.1" height="10" fill="#26a"/>
+<rect x="160" y="92" width="66.2" height="10" fill="#d73"/>
+<text x="12" y="130">R2_NUCLEUS_OFF</text>
+<rect x="160" y="118" width="37.2" height="10" fill="#26a"/>
+<rect x="160" y="132" width="53.0" height="10" fill="#d73"/>
+<text x="12" y="170">R3_NATIVE_POLICY</text>
+<rect x="160" y="158" width="35.2" height="10" fill="#26a"/>
+<rect x="160" y="172" width="49.9" height="10" fill="#d73"/>
+</svg>

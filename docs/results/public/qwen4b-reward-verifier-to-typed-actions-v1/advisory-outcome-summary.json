@@ -1,0 +1,16 @@
+{
+  "review_kind": "model_advisory",
+  "human_attested": false,
+  "training_authorized": false,
+  "reviewed_case_count": 24,
+  "outcome_counts": {
+    "acceptable": 22,
+    "minor_revision": 2,
+    "unacceptable": 0,
+    "cannot_assess": 0
+  },
+  "input_packet_sha256": "8a63b877baa1f931793e3687999855f528fc7de48ca1f47ea7700d641766cb70",
+  "originals_modified": false,
+  "claim_boundary": "A target-annotation review, not an evaluation of a trained model, proof of a safe executor, or permission to train.",
+  "note": "Per-case review rows and full review ZIPs remain local/unpublished."
+}

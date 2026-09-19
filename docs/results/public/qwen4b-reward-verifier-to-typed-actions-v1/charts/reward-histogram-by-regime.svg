@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="340" viewBox="0 0 360 340">
+<text x="12" y="20">reward histogram by regime</text>
+<text x="12" y="42">R0_CANONICAL</text>
+<rect x="40" y="32" width="24" height="58" fill="#4c6"/>
+<rect x="68" y="90" width="24" height="0" fill="#4c6"/>
+<rect x="96" y="90" width="24" height="0" fill="#4c6"/>
+<rect x="124" y="81" width="24" height="9" fill="#4c6"/>
+<rect x="152" y="66" width="24" height="24" fill="#4c6"/>
+<rect x="180" y="90" width="24" height="0" fill="#4c6"/>
+<rect x="208" y="78" width="24" height="12" fill="#4c6"/>
+<rect x="236" y="78" width="24" height="12" fill="#4c6"/>
+<rect x="264" y="68" width="24" height="22" fill="#4c6"/>
+<rect x="292" y="-61" width="24" height="151" fill="#4c6"/>
+<text x="12" y="112">R1_TEMP_ONLY</text>
+<rect x="40" y="107" width="24" height="53" fill="#4c6"/>
+<rect x="68" y="160" width="24" height="0" fill="#4c6"/>
+<rect x="96" y="160" width="24" height="0" fill="#4c6"/>
+<rect x="124" y="151" width="24" height="9" fill="#4c6"/>
+<rect x="152" y="137" width="24" height="23" fill="#4c6"/>
+<rect x="180" y="159" width="24" height="1" fill="#4c6"/>
+<rect x="208" y="146" width="24" height="14" fill="#4c6"/>
+<rect x="236" y="147" width="24" height="13" fill="#4c6"/>
+<rect x="264" y="143" width="24" height="17" fill="#4c6"/>
+<rect x="292" y="2" width="24" height="158" fill="#4c6"/>
+<text x="12" y="182">R2_NUCLEUS_OFF</text>
+<rect x="40" y="167" width="24" height="63" fill="#4c6"/>
+<rect x="68" y="230" width="24" height="0" fill="#4c6"/>
+<rect x="96" y="230" width="24" height="0" fill="#4c6"/>
+<rect x="124" y="221" width="24" height="9" fill="#4c6"/>
+<rect x="152" y="208" width="24" height="22" fill="#4c6"/>
+<rect x="180" y="228" width="24" height="2" fill="#4c6"/>
+<rect x="208" y="217" width="24" height="13" fill="#4c6"/>
+<rect x="236" y="218" width="24" height="12" fill="#4c6"/>
+<rect x="264" y="208" width="24" height="22" fill="#4c6"/>
+<rect x="292" y="85" width="24" height="145" fill="#4c6"/>
+<text x="12" y="252">R3_NATIVE_POLICY</text>
+<rect x="40" y="244" width="24" height="56" fill="#4c6"/>
+<rect x="68" y="300" width="24" height="0" fill="#4c6"/>
+<rect x="96" y="300" width="24" height="0" fill="#4c6"/>
+<rect x="124" y="289" width="24" height="11" fill="#4c6"/>
+<rect x="152" y="278" width="24" height="22" fill="#4c6"/>
+<rect x="180" y="299" width="24" height="1" fill="#4c6"/>
+<rect x="208" y="287" width="24" height="13" fill="#4c6"/>
+<rect x="236" y="288" width="24" height="12" fill="#4c6"/>
+<rect x="264" y="279" width="24" height="21" fill="#4c6"/>
+<rect x="292" y="148" width="24" height="152" fill="#4c6"/>
+</svg>

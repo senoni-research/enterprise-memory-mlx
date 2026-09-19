@@ -1,0 +1,123 @@
+{
+  "structural_logic_validation": "established",
+  "failures": [],
+  "schema_counterexamples": [
+    {
+      "id": "SCHEMA-01-UNTYPED-EXTRA-INSTRUCTION",
+      "expect_rejected": true,
+      "schema_errors": [
+        "arguments_shape:perform_unmet_control"
+      ],
+      "identity_failures": [
+        "argument_fields_not_declared_for_operation"
+      ],
+      "rejected": true,
+      "correct_expectation": true,
+      "note": "arguments.additionalProperties must reject injected instructions"
+    },
+    {
+      "id": "SCHEMA-02-CONFLICTING-DUPLICATED-CONDITION",
+      "expect_rejected": true,
+      "schema_errors": [
+        "condition_mismatch"
+      ],
+      "identity_failures": [
+        "condition_id_mismatch_top_level_vs_arguments"
+      ],
+      "rejected": true,
+      "correct_expectation": true,
+      "note": "top-level and arguments condition must agree"
+    },
+    {
+      "id": "SCHEMA-03-EMPTY-BLOCKER-OBJECT",
+      "expect_rejected": true,
+      "schema_errors": [
+        "blocker_fields"
+      ],
+      "identity_failures": [
+        "blocker_source_id_not_supplied"
+      ],
+      "rejected": true,
+      "correct_expectation": true,
+      "note": "blockers require condition_id and source_record_id"
+    },
+    {
+      "id": "SCHEMA-04-DUPLICATE-REQUEST",
+      "expect_rejected": true,
+      "schema_errors": [],
+      "identity_failures": [
+        "request_item_coverage: ['purchase_order_issue', 'purchase_order_issue'] != ['purchase_order_issue']",
+        "duplicate_request_item"
+      ],
+      "rejected": true,
+      "correct_expectation": true,
+      "note": "duplicate request items are an identity failure"
+    },
+    {
+      "id": "SCHEMA-05-MISSING-OPERATION-ARGUMENTS",
+      "expect_rejected": true,
+      "schema_errors": [
+        "arguments_shape:correct_nonconformance"
+      ],
+      "identity_failures": [
+        "blocker_source_id_not_supplied",
+        "supporting_source_id_not_supplied",
+        "action_source_id_not_supplied",
+        "condition_id_mismatch_top_level_vs_arguments",
+        "source_record_id_mismatch_top_level_vs_arguments",
+        "artifact_kind_unknown_or_missing"
+      ],
+      "rejected": true,
+      "correct_expectation": true,
+      "note": "correct_nonconformance requires artifact_kind"
+    },
+    {
+      "id": "POSITIVE-BASE",
+      "expect_rejected": false,
+      "schema_errors": [],
+      "identity_failures": [],
+      "rejected": false,
+      "correct_expectation": true,
+      "note": "v1-shaped valid draft must keep passing"
+    },
+    {
+      "id": "POSITIVE-ATTACHMENT",
+      "expect_rejected": false,
+      "schema_errors": [],
+      "identity_failures": [],
+      "rejected": false,
+      "correct_expectation": true,
+      "note": "closed argument shape still admits correct_nonconformance"
+    },
+    {
+      "id": "ADMISSIBLE-WRONG-1",
+      "expect_rejected": false,
+      "schema_errors": [],
+      "identity_failures": [],
+      "rejected": false,
+      "correct_expectation": true,
+      "note": "substantively wrong but syntactically admissible choices must remain possible"
+    },
+    {
+      "id": "ADMISSIBLE-WRONG-2",
+      "expect_rejected": false,
+      "schema_errors": [],
+      "identity_failures": [],
+      "rejected": false,
+      "correct_expectation": true,
+      "note": "substantively wrong but syntactically admissible choices must remain possible"
+    }
+  ],
+  "counts": {
+    "drafts_validated": 24,
+    "mapping_corrections_applied": 2,
+    "negative_fixtures_rejected": 5,
+    "admissible_wrong_examples_still_pass": 4
+  },
+  "human_attested": false,
+  "training_authorized": false,
+  "historical_stops": {
+    "grpo_v1": "stop_preflight",
+    "landscape_v1": "abandon_standard_grpo_for_current_dataset"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "purpose": "public aggregate exports; original generated artifacts stay in artifacts/ (gitignored)",
+  "exports": {
+    "landscape-decision.json": {
+      "exported_sha256": "8344cc836142b6446641059386cc904726e144774b61cbc24c6771029ea70bba",
+      "original_path": "artifacts/qwen4b-grpo-landscape-v1/run-20260914T153149Z/decision.json",
+      "original_sha256": "8344cc836142b6446641059386cc904726e144774b61cbc24c6771029ea70bba",
+      "bytes_identical": true
+    },
+    "landscape-regime-stats.json": {
+      "exported_sha256": "9d25c50bd4f56b1d62a128e1a0839f8b2ffd1f24a09de5f86e2c7c16cf0b1d58",
+      "original_path": "artifacts/qwen4b-grpo-landscape-v1/run-20260914T153149Z/regime-stats.json",
+      "original_sha256": "9d25c50bd4f56b1d62a128e1a0839f8b2ffd1f24a09de5f86e2c7c16cf0b1d58",
+      "bytes_identical": true
+    },
+    "landscape-family-stats.json": {
+      "exported_sha256": "5559280ef90c96977fb9e6e3220fda00a734b4d8472bc7e68dc6160369526c73",
+      "original_path": "artifacts/qwen4b-grpo-landscape-v1/run-20260914T153149Z/family-stats.json",
+      "original_sha256": "5559280ef90c96977fb9e6e3220fda00a734b4d8472bc7e68dc6160369526c73",
+      "bytes_identical": true
+    },
+    "charts/case-signal-heatmap.svg": {
+      "exported_sha256": "39d32da62b1c62b04d32ae508ac614e1783be17bfe99fe22421e7083a6207c4c",
+      "original_path": "artifacts/qwen4b-grpo-landscape-v1/run-20260914T153149Z/charts/case-signal-heatmap.svg",
+      "original_sha256": "39d32da62b1c62b04d32ae508ac614e1783be17bfe99fe22421e7083a6207c4c",
+      "bytes_identical": true
+    },
+    "charts/effective-group-rate-g4-g8.svg": {
+      "exported_sha256": "35c0a49525df903b69401f01ac55af227e14dea088161e5a92c7e7452a388804",
+      "original_path": "artifacts/qwen4b-grpo-landscape-v1/run-20260914T153149Z/charts/effective-group-rate-g4-g8.svg",
+      "original_sha256": "35c0a49525df903b69401f01ac55af227e14dea088161e5a92c7e7452a388804",
+      "bytes_identical": true
+    },
+    "charts/hard-zero-reason-histogram.svg": {
+      "exported_sha256": "61bd8071b61a97938df383090ee9f095cdb02ab4652467ebd3864a30fc509fdb",
+      "original_path": "artifacts/qwen4b-grpo-landscape-v1/run-20260914T153149Z/charts/hard-zero-reason-histogram.svg",
+      "original_sha256": "61bd8071b61a97938df383090ee9f095cdb02ab4652467ebd3864a30fc509fdb",
+      "bytes_identical": true
+    },
+    "charts/reward-histogram-by-regime.svg": {
+      "exported_sha256": "5c5e23c5500170f72cb049816eebf9b8528ef156657d381086107f5a9b481305",
+      "original_path": "artifacts/qwen4b-grpo-landscape-v1/run-20260914T153149Z/charts/reward-histogram-by-regime.svg",
+      "original_sha256": "5c5e23c5500170f72cb049816eebf9b8528ef156657d381086107f5a9b481305",
+      "bytes_identical": true
+    },
+    "overlay-summary.json": {
+      "exported_sha256": "a2b0fad1403df5ff1a74e8975ac286f5d4f037ccc142448374f031ad328ff129",
+      "original_path": "artifacts/qwen4b-grpo-landscape-v1/verifier-diagnosis-v1/overlay-summary.json",
+      "original_sha256": "a2b0fad1403df5ff1a74e8975ac286f5d4f037ccc142448374f031ad328ff129",
+      "bytes_identical": true
+    },
+    "annotation-v2-action-catalogue.json": {
+      "exported_sha256": "5a8ab9521fda0c76f92496e9cdf98775334dca0775df13cfc90b52c11262df05",
+      "original_path": "artifacts/qwen4b-typed-action-annotation-v2/action-catalogue.json",
+      "original_sha256": "5a8ab9521fda0c76f92496e9cdf98775334dca0775df13cfc90b52c11262df05",
+      "bytes_identical": true
+    },
+    "annotation-v2-output-schema.json": {
+      "exported_sha256": "3007a84d39fb10b7b0543aedfea0676de2b7a5b35ffe64cd75043a26904f65bb",
+      "original_path": "artifacts/qwen4b-typed-action-annotation-v2/output-schema.json",
+      "original_sha256": "3007a84d39fb10b7b0543aedfea0676de2b7a5b35ffe64cd75043a26904f65bb",
+      "bytes_identical": true
+    },
+    "annotation-v2-focused-diff.json": {
+      "exported_sha256": "c7cad75c9bca47811e5fdc9d517ac9cda70535781a091e9e9b0f41c51ab276c9",
+      "original_path": "artifacts/qwen4b-typed-action-annotation-v2/focused-diff.json",
+      "original_sha256": "c7cad75c9bca47811e5fdc9d517ac9cda70535781a091e9e9b0f41c51ab276c9",
+      "bytes_identical": true
+    },
+    "annotation-v2-validation-results.json": {
+      "exported_sha256": "e09154fbbbb1ab533b4081231dbbde571de015ea4dcb29efc76af08532a7be14",
+      "original_path": "artifacts/qwen4b-typed-action-annotation-v2/validation-results.json",
+      "original_sha256": "e09154fbbbb1ab533b4081231dbbde571de015ea4dcb29efc76af08532a7be14",
+      "bytes_identical": true
+    },
+    "annotation-v2-mapping-corrections.json": {
+      "exported_sha256": "709ea0c3fae451f554c32f1fca6252a09110f24463d84073400038e85500ec7b",
+      "original_path": "artifacts/qwen4b-typed-action-annotation-v2/mapping-corrections.json",
+      "original_sha256": "709ea0c3fae451f554c32f1fca6252a09110f24463d84073400038e85500ec7b",
+      "bytes_identical": true
+    },
+    "annotation-v2-review-record.json": {
+      "exported_sha256": "f643e16d3fd4aacaa7b979bd5e6406403ab1cf5a3aef3b3f7d02262aafdf0b6e",
+      "original_path": "artifacts/qwen4b-typed-action-annotation-v2/review-record.json",
+      "original_sha256": "f643e16d3fd4aacaa7b979bd5e6406403ab1cf5a3aef3b3f7d02262aafdf0b6e",
+      "bytes_identical": true
+    },
+    "advisory-outcome-summary.json": {
+      "exported_sha256": "874a9bf004593bf261cc4320af65f346e34bee7852cf95b8a3c71e97d1e7f3a0",
+      "derived_from": "REVIEW_MANIFEST.json aggregate fields (sanitized)",
+      "bytes_identical": false
+    }
+  }
+}

@@ -693,6 +693,43 @@ def build_parser() -> argparse.ArgumentParser:
     grpo_actions.add_parser("evaluate", help="Held-out BASE vs RFT evaluation after training")
     grpo_actions.add_parser("prepare-review", help="Write a blinded semantic-review packet")
 
+    landscape_parser = subparsers.add_parser(
+        "grpo-landscape",
+        help="TRAIN-only Qwen4B GRPO reward-landscape study",
+    )
+    landscape_actions = landscape_parser.add_subparsers(dest="landscape_action", required=True)
+    landscape_common = argparse.ArgumentParser(add_help=False)
+    landscape_common.add_argument("--root", default=".")
+    landscape_actions.add_parser(
+        "validate",
+        parents=[landscape_common],
+        help="Validate TRAIN-only landscape bindings",
+    )
+    plan_parser = landscape_actions.add_parser(
+        "plan",
+        parents=[landscape_common],
+        help="Materialize the 1152-job plan",
+    )
+    plan_parser.add_argument("--master-seed", type=int, default=42)
+    run_parser = landscape_actions.add_parser(
+        "run",
+        parents=[landscape_common],
+        help="Generate and score TRAIN rollouts",
+    )
+    run_parser.add_argument("--latest-plan", action="store_true")
+    summarize_parser = landscape_actions.add_parser(
+        "summarize",
+        parents=[landscape_common],
+        help="Aggregate landscape scores",
+    )
+    summarize_parser.add_argument("--latest", action="store_true")
+    decide_parser = landscape_actions.add_parser(
+        "decide",
+        parents=[landscape_common],
+        help="Apply the frozen viability gate",
+    )
+    decide_parser.add_argument("--latest", action="store_true")
+
     return parser
 
 
@@ -782,6 +819,35 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "green" if status in {"validated", "preflight_passed", "completed"} else "yellow"
             )
             console.print(f"[{color}]GRPO pilot {args.grpo_action} {status}[/{color}]")
+        elif args.command == "grpo-landscape":
+            from .grpo_landscape import (
+                decide_landscape,
+                plan_landscape,
+                run_landscape,
+                summarize_landscape,
+                validate_landscape,
+            )
+
+            if args.landscape_action == "validate":
+                result = validate_landscape(root)
+            elif args.landscape_action == "plan":
+                result = plan_landscape(root, master_seed=args.master_seed)
+            elif args.landscape_action == "run":
+                if not args.latest_plan:
+                    raise ValueError("grpo-landscape run requires --latest-plan")
+                result = run_landscape(root)
+            elif args.landscape_action == "summarize":
+                if not args.latest:
+                    raise ValueError("grpo-landscape summarize requires --latest")
+                result = summarize_landscape(root)
+            elif args.landscape_action == "decide":
+                if not args.latest:
+                    raise ValueError("grpo-landscape decide requires --latest")
+                result = decide_landscape(root)
+            else:
+                parser.error(f"Unsupported grpo-landscape action: {args.landscape_action}")
+            status = result.get("status") or "completed"
+            console.print(f"[cyan]GRPO landscape {args.landscape_action} {status}[/cyan]")
         else:
             parser.error(f"Unsupported command: {args.command}")
     except (FileNotFoundError, RuntimeError, ValueError, OSError) as exc:

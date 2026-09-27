@@ -26,6 +26,8 @@ semantic = [
 dev = [
   "pytest>=8.3,<9",
   "ruff>=0.9,<1",
+  "jsonschema>=4.23,<5",
+  "numpy>=1.26,<3",
 ]
 
 [project.scripts]

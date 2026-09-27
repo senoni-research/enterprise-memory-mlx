@@ -1,0 +1,16 @@
+{"advisory_outcome": "acceptable", "arm": "B", "case_id": "CTS4-FRESH-01A", "complete_valid": true, "reference_agreement": true, "truncated": false}
+{"advisory_outcome": "unacceptable", "arm": "A", "case_id": "CTS3-QUAL-020", "complete_valid": false, "reference_agreement": false, "truncated": true}
+{"advisory_outcome": "unacceptable", "arm": "A", "case_id": "CTS3-QUAL-015", "complete_valid": false, "reference_agreement": false, "truncated": true}
+{"advisory_outcome": "unacceptable", "arm": "A", "case_id": "CTS4-FRESH-05A", "complete_valid": false, "reference_agreement": false, "truncated": true}
+{"advisory_outcome": "acceptable", "arm": "A", "case_id": "CTS4-FRESH-08B", "complete_valid": true, "reference_agreement": false, "truncated": false}
+{"advisory_outcome": "acceptable", "arm": "B", "case_id": "CTS4-FRESH-01B", "complete_valid": true, "reference_agreement": true, "truncated": false}
+{"advisory_outcome": "unacceptable", "arm": "A", "case_id": "CTS4-FRESH-01B", "complete_valid": false, "reference_agreement": false, "truncated": true}
+{"advisory_outcome": "acceptable", "arm": "B", "case_id": "CTS4-FRESH-08A", "complete_valid": true, "reference_agreement": true, "truncated": false}
+{"advisory_outcome": "unacceptable", "arm": "A", "case_id": "CTS4-FRESH-01A", "complete_valid": false, "reference_agreement": false, "truncated": true}
+{"advisory_outcome": "unacceptable", "arm": "A", "case_id": "CTS4-FRESH-08A", "complete_valid": false, "reference_agreement": false, "truncated": true}
+{"advisory_outcome": "acceptable", "arm": "B", "case_id": "CTS4-FRESH-05A", "complete_valid": true, "reference_agreement": true, "truncated": false}
+{"advisory_outcome": "minor_revision", "arm": "B", "case_id": "CTS3-QUAL-020", "complete_valid": true, "reference_agreement": false, "truncated": false}
+{"advisory_outcome": "acceptable", "arm": "B", "case_id": "CTS4-FRESH-05B", "complete_valid": true, "reference_agreement": true, "truncated": false}
+{"advisory_outcome": "unacceptable", "arm": "A", "case_id": "CTS4-FRESH-05B", "complete_valid": false, "reference_agreement": false, "truncated": true}
+{"advisory_outcome": "acceptable", "arm": "B", "case_id": "CTS4-FRESH-08B", "complete_valid": true, "reference_agreement": false, "truncated": false}
+{"advisory_outcome": "acceptable", "arm": "B", "case_id": "CTS3-QUAL-015", "complete_valid": true, "reference_agreement": true, "truncated": false}

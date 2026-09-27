@@ -124,6 +124,13 @@ included better evidence-relative decisions in the saved responses. Not
 "we proved a general increase in reasoning ability independent of the
 interface."
 
+And the evaluation is small: eight TEST cases across five families,
+previously investigated in the wider research programme — excluded from this
+training trajectory, but not untouched material. On the eight DEV cases, the
+adapted model matched complete references on only 2/8 (though 8/8 decisions).
+The TEST–DEV gap — fluent decision selection, weaker full-answer composition
+— remains open. No significance claim is made from reused cases.
+
 ## Two numbers, one honesty
 
 Why report both 6/8 and 7/8? Because they answer different questions. 6/8

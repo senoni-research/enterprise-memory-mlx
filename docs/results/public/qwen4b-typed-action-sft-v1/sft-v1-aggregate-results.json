@@ -1,0 +1,96 @@
+{
+  "experiment_id": "company-task-specialization/qwen4b-typed-action-sft-v1",
+  "historical_stops_unchanged": true,
+  "measured_updates": 192,
+  "adapter_sha256": "814fee23a53df4a43f735c41900335eba33025e8ac42a3b28170279be624a197",
+  "sets": {
+    "test": {
+      "base": {
+        "n": 8,
+        "complete_valid": 1,
+        "complete_reference_agreement": 0,
+        "decision_agreement": 1,
+        "truncated": 7,
+        "mean_elapsed_seconds": 15.26
+      },
+      "sft": {
+        "n": 8,
+        "complete_valid": 8,
+        "complete_reference_agreement": 6,
+        "decision_agreement": 8,
+        "truncated": 0,
+        "mean_elapsed_seconds": 3.43
+      }
+    },
+    "dev": {
+      "base": {
+        "n": 8,
+        "complete_valid": 1,
+        "complete_reference_agreement": 0,
+        "decision_agreement": 1,
+        "truncated": 7,
+        "mean_elapsed_seconds": 17.09
+      },
+      "sft": {
+        "n": 8,
+        "complete_valid": 8,
+        "complete_reference_agreement": 2,
+        "decision_agreement": 8,
+        "truncated": 0,
+        "mean_elapsed_seconds": 3.51
+      }
+    },
+    "train": {
+      "base": {
+        "n": 4,
+        "complete_valid": 0,
+        "complete_reference_agreement": 0,
+        "decision_agreement": 0,
+        "truncated": 4,
+        "mean_elapsed_seconds": 18.82
+      },
+      "sft": {
+        "n": 4,
+        "complete_valid": 4,
+        "complete_reference_agreement": 4,
+        "decision_agreement": 4,
+        "truncated": 0,
+        "mean_elapsed_seconds": 2.96
+      }
+    }
+  },
+  "test_classification": "observed_reference_agreement_gain",
+  "paired_test": {
+    "wins": 6,
+    "losses": 0,
+    "ties": 2
+  },
+  "advisory_join_summary": {
+    "join_kind": "append_only_local_join_with_private_mapping",
+    "advisory_zip_sha256": "0ba965c406cfa75d47f32bc71d28715a3d0947f67bc94a490d2cd3752d08bcbb",
+    "advisory_jsonl_sha256": "033d5dd5dc1796812f5ed59db96d34a6d86e6214a62a0543ce07e68ccb8dd484",
+    "review_ids_verified": 16,
+    "candidates_verified_against_measured_outputs": 16,
+    "original_scores_preserved": true,
+    "outcomes_by_arm": {
+      "A": {
+        "unacceptable": 7,
+        "acceptable": 1
+      },
+      "B": {
+        "acceptable": 7,
+        "minor_revision": 1
+      }
+    },
+    "blinded_pool_outcomes": {
+      "acceptable": 8,
+      "unacceptable": 7,
+      "minor_revision": 1
+    },
+    "note": "Advisory outcomes are a blinded-pool semantic review, not arm-level accuracy. The frozen reference-agreement scores in evaluation-*.json are unchanged and remain the experiment record.",
+    "human_attested": false,
+    "human_approved": false
+  },
+  "raw_outputs_published": false,
+  "references_published": false
+}
